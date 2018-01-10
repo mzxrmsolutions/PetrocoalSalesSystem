@@ -1,0 +1,285 @@
+﻿@using PatrocoalSalesSystem.Models
+<section class="content-header">
+    <h1>
+        Purchases
+        <small>Update Purchase Order</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Purchase</a></li>
+        <li class="active">Update PO</li>
+    </ol>
+</section>
+@{PurchaseOrder ThisPO = ViewBag.ThisPO;}
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-default box-solid collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Purchase Menu</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-lg-6">
+                <div class="col-sm-3">
+                    <a href="/Purchase" class="btn btn-block btn-primary margin">Purchase Orders</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/GRNList" class="btn btn-block btn-primary margin">GRNs</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-block btn-primary margin">Loan</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/DCLList" class="btn btn-block btn-primary margin">Duty Clear</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateOrder" class="btn btn-block btn-primary margin">Create PO</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateGRN" class="btn btn-block btn-primary margin">Create GRN</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateGRN?type=loan" class="btn btn-block btn-primary margin">Create LRN</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateDCL" class="btn btn-block btn-primary margin">Create DCL</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="col-sm-3">
+                    <a href="/Purchase" class="btn btn-block btn-info margin">Purchase Orders</a>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="box box-warning box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Purchase Order: @ThisPO.PONumber</h3>
+        </div>
+        <form method="post" action="/purchase/updateorder">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Origin</label>
+                            <select class="form-control" name="Origin">
+                                <option value="0">--- Origin ---</option>
+                                @foreach (Item item in Common.Origin)
+                                {
+                                    <option value="@item.Index" @(item.Index == ThisPO.Origin.Index ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select class="form-control" name="Size">
+                                <option value="0">--- Size ---</option>
+                                @foreach (Item item in Common.Size)
+                                {
+                                    <option value="@item.Index" @(item.Index == ThisPO.Size.Index ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Vessel</label>
+                            <select class="form-control" name="Vessel">
+                                <option value="0">--- Vessel ---</option>
+                                @foreach (Item item in Common.Vessel)
+                                {
+                                    <option value="@item.Index" @(item.Index == ThisPO.Vessel.Index ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>PO Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="PODate" value="@ThisPO.PODate.ToShortDateString()">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Target Days</label>
+                            <input type="text" class="form-control" name="TargetDays" value="@ThisPO.TargetDays">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Supplier</label>
+                            <select class="form-control" name="Supplier">
+                                <option>--- Supplier ---</option>
+                                @foreach (Item item in Common.Supplier)
+                                {
+                                    <option value="@item.Index" @(item.Index == ThisPO.Supplier.Index ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lead</label>
+                            <select class="form-control" name="Lead">
+                                <option>--- Lead ---</option>
+                                @foreach (User item in UserUtil.Users)
+                                {
+                                    <option value="@item.Id" @(item.Id == ThisPO.Lead.Id ? " selected " : " ")>@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Terms of Payments</label>
+                            <input type="text" class="form-control" name="PaymentTerms" value="@ThisPO.TermsOfPayment">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-condensed">
+                            <tbody>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Quantity</th>
+                                    <th>Rate</th>
+                                    <th>Allowed Wastage</th>
+                                    <th>Cost Per Ton</th>
+                                    <th>Target Date</th>
+                                    <th></th>
+                                </tr>
+                                @for (int i = 1; i <= ThisPO.PODetailsList.Count; i++)
+                                {
+                                    PODetail pod = ThisPO.PODetailsList[i - 1];
+                                    <tr id="row_@i.ToString()">
+                                        <td>
+                                            <select class="form-control" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
+                                                <option value="0">--- Customer ---</option>
+                                                @foreach (Customer item in CustomerUtil.Customers)
+                                                {
+                                                    <option value="@item.Id" @(item.Id == pod.Customer.Id ? " selected " : " ")>@item.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" name="Quantity_@i.ToString()" value="@pod.Quantity" /></td>
+                                        <td><input type="text" class="form-control" name="Rate_@i.ToString()" value="@pod.Rate" /></td>
+                                        <td><input type="text" class="form-control" name="AllowedWastage_@i.ToString()" value="@pod.AllowedWaistage" /></td>
+                                        <td><input type="text" class="form-control" name="CostPerTon_@i.ToString()" value="@pod.CostPerTon" /></td>
+                                        <td>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" data-selector="date" name="TargetDate_@i.ToString()" value="@pod.TargetDate.ToShortDateString()">
+                                            </div>
+                                        </td>
+                                        <th>
+                                            <input type="hidden" name="PODetailId_@i.ToString()" value="@pod.Id" />
+                                            <a href="#" class="btn btn-danger" onclick="hideRow(@i.ToString())">X</a>
+                                        </th>
+                                    </tr>
+                                }
+                                @for (int i = ThisPO.PODetailsList.Count + 1; i <= 10; i++)
+                                {
+                                    <tr id="row_@i.ToString()" style="display:none">
+                                        <td>
+                                            <select class="form-control" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
+                                                <option value="0">--- Customer ---</option>
+                                                @foreach (Customer item in CustomerUtil.Customers)
+                                                {
+                                                    <option value="@item.Id">@item.Name</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control" name="Quantity_@i.ToString()" /></td>
+                                        <td><input type="text" class="form-control" name="Rate_@i.ToString()" /></td>
+                                        <td><input type="text" class="form-control" name="AllowedWastage_@i.ToString()" /></td>
+                                        <td><input type="text" class="form-control" name="CostPerTon_@i.ToString()" /></td>
+                                        <td>
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" data-selector="date" name="TargetDate_@i.ToString()">
+                                            </div>
+                                        </td>
+                                        <th><a href="#" class="btn btn-danger" onclick="hideRow(@i.ToString())">X</a></th>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <div class="col-sm-3">
+                    <input type="hidden" name="ponumber" value="@ThisPO.PONumber" />
+                    <input type="hidden" name="poid" value="@ThisPO.Id" />
+                    <button type="submit" class="btn btn-primary" name="btn" value="Save">Save</button>
+                    @if (ThisPO.Status == POStatus.Created)
+                    {<button type="submit" class="btn btn-success" name="btn" value="ApprovalSubmit">Submit for Approval</button>}
+                    @if (ThisPO.Status == POStatus.PendingApproval)
+                    {<button type="submit" class="btn btn-success" name="btn" value="Approve">Approve</button>}
+                    <button type="reset" class="btn btn-danger" name="btn" value="Reset">Reset</button>
+                </div>
+                <div class="col-sm-3">
+                    <button type="submit" class="btn btn-danger btn-xs" name="btn" value="Cancel"><i class="fa fa-ban"></i> Cancel PO</button>
+                </div>
+                <div class="col-sm-1 pull-right">
+                    <span class="badge bg-blue pull-right">@ThisPO.Status</span>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<p class="pull-right">Last Modified: @ThisPO.ModifiedBy.Name on @ThisPO.ModifiedOn.ToShortDateString()</p>
+
+@section scripts
+{
+    <script>
+        $('input[data-selector=date]').datepicker({
+            autoclose: true
+        });
+        showRow(@(ThisPO.PODetailsList.Count));
+        function showRow(i) {
+            debugger;
+            if (i == 10)
+                alert('Max 10 rows');
+            if (i == 1)
+                $('#row_' + i).show();
+            //debugger;
+            var v = 0;
+            v = parseInt(i);
+            v++;
+            var option = $('#Customer_' + i + ' option:selected').val();
+            if (option == 0)
+                $('#row_' + v).hide();
+            else
+                $('#row_' + v).show();
+        }
+        function hideRow(i) {
+            $('#Customer_' + i).val("0");
+            $('#row_' + i).hide();
+        }
+    </script>
+}
+

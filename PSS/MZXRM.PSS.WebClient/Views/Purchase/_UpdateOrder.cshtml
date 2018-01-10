@@ -1,0 +1,338 @@
+﻿@using PatrocoalSalesSystem.Models
+<section class="content-header">
+    <h1>
+        Purchases
+        <small>Create Purchase Order</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Purchase</a></li>
+        <li class="active">Update</li>
+    </ol>
+</section>
+@{PurchaseOrder ThisPO = ViewBag.ThisPO;}
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-default box-solid collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Quick Links</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/purchase" class="btn btn-block btn-primary margin">My POs</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/purchase/createorder" class="btn btn-block btn-primary margin">Create PO</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/purchase/creategrn" class="btn btn-block btn-primary margin">Create GRN</a>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-block btn-primary margin">Duty Clear</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/Stock" class="btn btn-block btn-info margin ">TODO</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/Purchase" class="btn btn-block btn-info margin ">TODO</a>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <div class="box box-warning box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Purchase Order: @ThisPO.PONumber</h3>
+            <p class="pull-right">Last Modified: @ThisPO.CreatedBy.Name on @ThisPO.CreatedOn.ToShortDateString()</p>
+            @*<p class="pull-right">Modified: @ThisPO.ModifiedBy.Name on @ThisPO.ModifiedOn.ToShortDateString()</p>*@
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Origin</label>
+                        <select class="form-control">
+                            @foreach (Item item in Common.lOrigin)
+                            {
+                                <option value="@item.Index" @(item.Value==ThisPO.Origin.Value?"selected":"")>@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select class="form-control">
+                            @foreach (Item item in Common.lSize)
+                            {
+                                <option value="@item.Index" @(item.Value == ThisPO.Size.Value ? "selected" : "")>@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Vessel</label>
+                        <select class="form-control">
+                            @foreach (Item item in Common.lVessel)
+                            {
+                                <option value="@item.Index" @(item.Value == ThisPO.Vessel.Value ? "selected" : "")>@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>PO Date:</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control pull-right" id="datepicker" value="@ThisPO.PODate.ToShortDateString()">
+                        </div>
+                        <!-- /.input group -->
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Target Days</label>
+                        <input type="text" class="form-control" id="input" value="@ThisPO.TargetDays.ToString()">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Supplier</label>
+                        <select class="form-control">
+                            <option>--Supplier--</option>
+                            <option selected>[item1]</option>
+                            <option>[item2]</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Terms of Payments</label>
+                        <input type="text" class="form-control" id="input" value="check">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <label>Lead</label>
+                        <select class="form-control">
+                            <option>Faizan</option>
+                            <option>Umer</option>
+                            <option>Mohsin</option>
+                            <option selected>Waqar</option>
+                            <option>Mohsin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Coal Description</th>
+                                <th>Size</th>
+                                <th>Vessel</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Allowed Wastage</th>
+                                <th>Target Date</th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select class="form-control">
+                                        <option>PSL</option>
+                                        <option>Customer 1</option>
+                                        <option selected>Customer 2</option>
+                                        <option>Customer 3</option>
+                                        <option>Customer 4</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Coal--</option>
+                                        <option selected>Indo</option>
+                                        <option>Afghan</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Size--</option>
+                                        <option selected>0-50</option>
+                                        <option>10-25</option>
+                                        <option>25-50</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Vessel--</option>
+                                        <option selected>StarJing</option>
+                                        <option>SJ</option>
+                                        <option>item 1</option>
+                                        <option>item 2</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" id="input" value="40000" /></td>
+                                <td><input type="text" class="form-control" id="input" value="85" /></td>
+                                <td><input type="text" class="form-control" id="input" value="0.5%" /></td>
+                                <td>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="datepicker" value="31/12/2017">
+                                    </div>
+                                </td>
+                                <th><a href="#" class="btn btn-danger">X</a></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select class="form-control">
+                                        <option>PSL</option>
+                                        <option>Customer 1</option>
+                                        <option>Customer 2</option>
+                                        <option>Customer 3</option>
+                                        <option>Customer 4</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Coal--</option>
+                                        <option>Indo</option>
+                                        <option>Afghan</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Size--</option>
+                                        <option>0-50</option>
+                                        <option>10-25</option>
+                                        <option>25-50</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control">
+                                        <option>--Vessel--</option>
+                                        <option>StarJing</option>
+                                        <option>SJ</option>
+                                        <option>item 1</option>
+                                        <option>item 2</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" id="input" /></td>
+                                <td><input type="text" class="form-control" id="input" /></td>
+                                <td><input type="text" class="form-control" id="input" /></td>
+                                <td>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="datepicker">
+                                    </div>
+                                </td>
+                                <th><a href="#" class="btn btn-success">+</a></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                @*<div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Coal Description</label>
+                            <select class="form-control">
+                                <option>Indonesian</option>
+                                <option>South African</option>
+                                <option>Afghani</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Vessel</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Rate</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select class="form-control">
+                                <option>0-50</option>
+                                <option>10-25</option>
+                                <option>10-50</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Allowed Wastage</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Vendor</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Ownership</label>
+                            <select class="form-control">
+                                <option>PSL</option>
+                                <option>LC</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Remarks</label>
+                            <input type="text" class="form-control" id="input" value="This PO is complete">
+                        </div>
+                    </div>*@
+
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <div class="col-sm-3">
+                <a href="/purchase/updateorder" class="btn btn-primary">Update PO</a>
+                <a href="/purchase/approvedorder" class="btn btn-primary">Approve PO</a>
+            </div>
+
+        </div>
+    </div>
+    <!-- /.box -->
+
+</section>

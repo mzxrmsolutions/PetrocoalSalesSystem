@@ -1,0 +1,439 @@
+﻿
+<section class="content-header">
+    <h1>
+        Customers
+        <small>Manage your customers here</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Customer</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-default box-solid collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Quick Links</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/home" class="btn btn-block btn-primary margin">...</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/home" class="btn btn-block btn-primary margin">...</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/home" class="btn btn-block btn-primary margin">...</a>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-block btn-primary margin">...</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/Stock" class="btn btn-block btn-info margin ">TODO</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/Purchase" class="btn btn-block btn-info margin ">TODO</a>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Customers</h3>
+
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Filters</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>My POs</option>
+                                <option>All POs</option>
+                                <option>Pending</option>
+                                <option>Completed</option>
+                                <option>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                                    <span>
+                                        <i class="fa fa-calendar"></i> PO Date Range
+                                    </span>
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>--Customer--</option>
+                                <option>item 1</option>
+                                <option>item 2</option>
+                                <option>item 3</option>
+                                <option>item 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>--Manager--</option>
+                                <option>item 1</option>
+                                <option>item 2</option>
+                                <option>item 3</option>
+                                <option>item 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>--Supplier--</option>
+                                <option>item 1</option>
+                                <option>item 2</option>
+                                <option>item 3</option>
+                                <option>item 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <a href="" class="btn btn-info pull-right">Apply Filter</a>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+
+            <table id="example1" class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Short Name</th>
+                        <th>NTN</th>
+                        <th>STRN</th>
+                        <th>Address</th>
+                        <th>Invoice Address</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Contact Person</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="/customer" class="btn btn-block btn-primary btn-sm">BCL</a></td>
+                        <td></td>
+                        <td>12345</td>
+                        <td>54321</td>
+                        <td>street 2 Lahore</td>
+                        <td>abc xyz</td>
+                        <td>abc@bcl.com</td>
+                        <td>03204148980</td>
+                        <td>Usman</td>
+                        <td>
+                            <span class="badge bg-green">active</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- /.box-body -->
+        </div>
+
+    </div>
+    <div class="col-sm-12">
+        <a href="" class="btn btn-default pull-right">Download Report</a>
+    </div>
+</section>

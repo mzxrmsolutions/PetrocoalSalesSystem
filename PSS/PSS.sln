@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.WebClient", "MZXRM.PSS.WebClient\MZXRM.PSS.WebClient.csproj", "{E3DE9B87-E2EB-43A8-B005-D5FB0270005B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.Business", "MZXRM.PSS.Business\MZXRM.PSS.Business.csproj", "{0E84713D-395D-44D7-A570-B188AAC5BCFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.DataManager", "MZXRM.PSS.DataManager\MZXRM.PSS.DataManager.csproj", "{E033DD03-1DF6-4BEB-9CF1-F98946FB7BFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.Connector", "MZXRM.PSS.Connector\MZXRM.PSS.Connector.csproj", "{3276137A-3F67-454C-AE75-5568B05D71BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.Data", "MZXRM.PSS.Data\MZXRM.PSS.Data.csproj", "{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZXRM.PSS.Common", "MZXRM.PSS.Common\MZXRM.PSS.Common.csproj", "{1D34BD7D-555C-41D8-B893-A111E40D0D47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3DE9B87-E2EB-43A8-B005-D5FB0270005B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3DE9B87-E2EB-43A8-B005-D5FB0270005B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3DE9B87-E2EB-43A8-B005-D5FB0270005B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3DE9B87-E2EB-43A8-B005-D5FB0270005B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E84713D-395D-44D7-A570-B188AAC5BCFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E84713D-395D-44D7-A570-B188AAC5BCFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E84713D-395D-44D7-A570-B188AAC5BCFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E84713D-395D-44D7-A570-B188AAC5BCFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E033DD03-1DF6-4BEB-9CF1-F98946FB7BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033DD03-1DF6-4BEB-9CF1-F98946FB7BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E033DD03-1DF6-4BEB-9CF1-F98946FB7BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E033DD03-1DF6-4BEB-9CF1-F98946FB7BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3276137A-3F67-454C-AE75-5568B05D71BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3276137A-3F67-454C-AE75-5568B05D71BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3276137A-3F67-454C-AE75-5568B05D71BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3276137A-3F67-454C-AE75-5568B05D71BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D34BD7D-555C-41D8-B893-A111E40D0D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D34BD7D-555C-41D8-B893-A111E40D0D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D34BD7D-555C-41D8-B893-A111E40D0D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D34BD7D-555C-41D8-B893-A111E40D0D47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC4D52C3-6C17-42C1-BD4E-B7AEB59CBAB3}
+	EndGlobalSection
+EndGlobal

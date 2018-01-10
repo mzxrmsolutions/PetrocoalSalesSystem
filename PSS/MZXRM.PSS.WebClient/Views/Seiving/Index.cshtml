@@ -1,0 +1,307 @@
+﻿
+<section class="content-header">
+    <h1>
+        Seiving
+        <small>Seiving Coal</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Seiving</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-default box-solid collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Quick Links</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/stock" class="btn btn-block btn-primary margin">Stock Status</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/seiving" class="btn btn-block btn-primary margin">Sieving</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/stock" class="btn btn-block btn-primary margin">Wastage</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/stock" class="btn btn-block btn-primary margin">Vessel Transfer</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-sm-4">
+                    <a href="/Stock" class="btn btn-block btn-info margin ">Stock Status Report</a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="/Purchase" class="btn btn-block btn-info margin ">TODO</a>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="box box-warning box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Create Seiving</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Seiving Number</label>
+                            <input type="text" class="form-control" id="input" value="" disabled>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" id="datepicker">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Store</label>
+                            <select class="form-control">
+                                <option>--Store--</option>
+                                <option>KPT</option>
+                                <option>Hawks bay</option>
+                                <option>New Godown</option>
+                                <option>New Godown 2</option>
+                                <option>Groney Yard</option>
+                                <option>Port Qasim</option>
+                                <option>Wazir Mention</option>
+                                <option>Train/transit</option>
+                                <option>CCM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Vessel</label>
+                            <select class="form-control">
+                                <option>--Vessel--</option>
+                                <option>item 1</option>
+                                <option>item 2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Coal Description</label>
+                            <select class="form-control">
+                                <option>Indonesian</option>
+                                <option>South African</option>
+                                <option>Afghani</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>From Size</label>
+                            <select class="form-control">
+                                <option>--size--</option>
+                                <option>0-50</option>
+                                <option>10-25</option>
+                                <option>25-50</option>
+                                <option>0-0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>From Quantity</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Remarks</label>
+                            <input type="text" class="form-control" id="input" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <th>To Size</th>
+                                <th>Quantity</th>
+                            </tr>
+                            <tr>
+                                <th>0-50</th>
+                                <td><input type="text" class="form-control" id="input" value="" /></td>
+                            </tr>
+                            <tr>
+                                <th>10-25</th>
+                                <td><input type="text" class="form-control" id="input" value="" /></td>
+                            </tr>
+                            <tr>
+                                <th>25-50</th>
+                                <td><input type="text" class="form-control" id="input" value="" /></td>
+                            </tr>
+                            <tr>
+                                <th>0-0</th>
+                                <td><input type="text" class="form-control" id="input" value="" disabled/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <div class="col-sm-3">
+                <a href="/seiving" class="btn btn-primary">Create Seiving</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- /.box -->
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Seiving History</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Options</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="download"><i class="fa fa-download"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>--Store--</option>
+                                <option>KPT</option>
+                                <option>Hawks bay</option>
+                                <option>New Godown</option>
+                                <option>New Godown 2</option>
+                                <option>Groney Yard</option>
+                                <option>Port Qasim</option>
+                                <option>Wazir Mention</option>
+                                <option>Train/transit</option>
+                                <option>CCM</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="input" placeholder="Vessel">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select class="form-control">
+                                <option>Indonesian</option>
+                                <option>South African</option>
+                                <option>Afghani</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Store</th>
+                        <th>Vessel</th>
+                        <th>Coal Description</th>
+                        <th>From (0-50)</th>
+                        <th>To (25-50)</th>
+                        <th>To (10-25)</th>
+                        <th>To (0-0)</th>
+                    </tr>
+                    <tr>
+                        <th>SVN-1001</th>
+                        <td>01 Nov 2017</td>
+                        <td>KPT</td>
+                        <td>NP</td>
+                        <td>ind</td>
+                        <td><span class="badge bg-red">100</span></td>
+                        <td><span class="badge bg-green">58</span></td>
+                        <td><span class="badge bg-green">30</span></td>
+                        <td><span class="badge bg-green">12</span></td>
+                    </tr>
+                    <tr>
+                        <th>SVN-1002</th>
+                        <td>01 Nov 2017</td>
+                        <td>KPT</td>
+                        <td>NP</td>
+                        <td>ind</td>
+                        <td><span class="badge bg-red">100</span></td>
+                        <td><span class="badge bg-green">59</span></td>
+                        <td><span class="badge bg-green"></span></td>
+                        <td><span class="badge bg-green"></span></td>
+                    </tr>
+                    <tr>
+                        <th>SVN-1003</th>
+                        <td>01 Nov 2017</td>
+                        <td>KPT</td>
+                        <td>NP</td>
+                        <td>ind</td>
+                        <td><span class="badge bg-red">100</span></td>
+                        <td><span class="badge bg-green">100</span></td>
+                        <td><span class="badge bg-green">40</span></td>
+                        <td><span class="badge bg-green">1</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- /.box-body -->
+        </div>
+
+    </div>
+    <div class="col-sm-12">
+        <a href="" class="btn btn-default pull-right">Download Report</a>
+    </div>
+</section>
+<script src="../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<script>
+    //Date picker
+    $('#datepicker').datepicker({
+        autoclose: true
+    })
+</script>

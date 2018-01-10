@@ -1,0 +1,75 @@
+﻿@using PatrocoalSalesSystem.Models
+<section class="content-header">
+    <h1>
+        Vessel
+        <small>Manage your Vessels here</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/Admin"><i class="fa fa-dashboard"></i> Admin</a></li>
+        <li class="active">Vessel</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Stores List</h3>
+
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <form method="post" id="form" action="/Admin/Vessel">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Value</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Item data in Model)
+                        {
+                            <tr>
+                                <td class="col-sm-1"><input type="text" class="form-control" id="index" name="index" value="@data.Index" /></td>
+                                <td class="col-sm-3"><input type="text" class="form-control" id="value" name="value" value="@data.Value" /></td>
+                                <th>
+                                    <button type="submit" name="btn" class="btn btn-success" value="edit"><i class="fa fa-edit"></i></button>&nbsp;
+                                    <button type="button" name="btn" class="btn btn-danger delete" value="delete"><i class="fa fa-trash"></i></button>
+                                </th>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="col-sm-1"><input type="text" class="form-control" name="index" value="" /></td>
+                            <td class="col-sm-3"><input type="text" class="form-control" name="value" value="" /></td>
+                            <th><button type="submit" name="btn" class="btn btn-success" value="add"><i class="fa fa-plus"></i></button></th>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <!-- /.box-body -->
+        </div>
+        <div class="box-footer">
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <a href="#" class="btn btn-default pull-right">Download Report</a>
+    </div>
+</section>
+
+@section scripts
+{
+    <script>
+
+        $(function () {
+            $('.delete').on('click', function () {
+                var tr = $(this).parents('tr:first');
+                tr.find("#index").val("-1");
+                tr.find("#value").val("");
+                tr.hide();
+                $("#form").submit();
+            });
+        });
+    </script>
+}

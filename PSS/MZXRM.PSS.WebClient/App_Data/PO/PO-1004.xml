@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PurchaseOrder xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>5e46793e-dc2b-4b74-9917-040ecb5e4651</Id>
+  <Status>InProcess</Status>
+  <CreatedOn>2018-01-05T14:20:45.9158031+05:00</CreatedOn>
+  <CreatedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </CreatedBy>
+  <ModifiedOn>2018-01-05T14:20:45.9158031+05:00</ModifiedOn>
+  <ModifiedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </ModifiedBy>
+  <CompletedOn>0001-01-01T00:00:00</CompletedOn>
+  <Lead>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </Lead>
+  <ApprovedDate>0001-01-01T00:00:00</ApprovedDate>
+  <PONumber>PO-1004</PONumber>
+  <PODate>2018-01-05T00:00:00</PODate>
+  <Origin>
+    <Index>2</Index>
+    <Value>Indo</Value>
+  </Origin>
+  <Size>
+    <Index>5</Index>
+    <Value>05-10</Value>
+  </Size>
+  <Vessel>
+    <Index>4</Index>
+    <Value>ARIETTA</Value>
+  </Vessel>
+  <TargetDays>45</TargetDays>
+  <Supplier>
+    <Index>2</Index>
+    <Value>MARE TRACER</Value>
+  </Supplier>
+  <TermsOfPayment>ghj</TermsOfPayment>
+  <PODetailsList>
+    <PODetail>
+      <Id>8c7167b0-0ab2-45ad-be70-224fcd209ebf</Id>
+      <PONumber>PO-1004</PONumber>
+      <Customer>
+        <Id>b288c06d-1609-4de8-97b5-823d0f2db1d9</Id>
+        <Name>PSL</Name>
+      </Customer>
+      <Quantity>50000</Quantity>
+      <Rate>0.85</Rate>
+      <CostPerTon>56</CostPerTon>
+      <AllowedWaistage>0.5</AllowedWaistage>
+      <TargetDate>2018-01-28T00:00:00</TargetDate>
+      <Remarks />
+      <Received>30000</Received>
+      <Remaining>20000</Remaining>
+      <DutyCleared>20000</DutyCleared>
+      <DutyRemaining>10000</DutyRemaining>
+      <Wastage>100.0</Wastage>
+      <GRNsList>
+        <GRN>
+          <Id>558cdbce-54de-4137-b622-8e6d698162d8</Id>
+          <Status>Recieved</Status>
+          <CreatedOn>2018-01-05T14:22:03.7187851+05:00</CreatedOn>
+          <CreatedBy>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
+          </CreatedBy>
+          <ModifiedOn>2018-01-05T14:22:03.7187851+05:00</ModifiedOn>
+          <ModifiedBy>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
+          </ModifiedBy>
+          <CompletedOn>2018-01-05T14:22:03.7187851+05:00</CompletedOn>
+          <GRNNumber>GRN-1014</GRNNumber>
+          <GRNDate>2018-01-05T14:22:03.7187851+05:00</GRNDate>
+          <PO>
+            <Id>5e46793e-dc2b-4b74-9917-040ecb5e4651</Id>
+            <Name>PO-1004</Name>
+          </PO>
+          <PODetail>
+            <Id>8c7167b0-0ab2-45ad-be70-224fcd209ebf</Id>
+            <Name>PO-1004</Name>
+          </PODetail>
+          <Store>
+            <Id>a2480192-36e2-4b65-83ca-5a3bbb0b3f5a</Id>
+            <Name>Groney Yard</Name>
+          </Store>
+          <InvoiceNo>34</InvoiceNo>
+          <AdjPrice>45</AdjPrice>
+          <Quantity>30000</Quantity>
+          <Remarks>sdfg</Remarks>
+        </GRN>
+      </GRNsList>
+      <DutyClearsList>
+        <DutyClear>
+          <Id>0422e64a-e571-49c0-8c33-d2b2ab646fc3</Id>
+          <CreatedOn>2018-01-05T14:22:42.4501359+05:00</CreatedOn>
+          <CreatedBy>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
+          </CreatedBy>
+          <ModifiedOn>2018-01-05T14:22:42.4501359+05:00</ModifiedOn>
+          <ModifiedBy>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
+          </ModifiedBy>
+          <DCLNumber>DCL-1004</DCLNumber>
+          <DCLDate>2018-01-05T14:22:42.4501359+05:00</DCLDate>
+          <PO>
+            <Id>5e46793e-dc2b-4b74-9917-040ecb5e4651</Id>
+            <Name>PO-1004</Name>
+          </PO>
+          <PODetail>
+            <Id>8c7167b0-0ab2-45ad-be70-224fcd209ebf</Id>
+            <Name>PO-1004</Name>
+          </PODetail>
+          <Store>
+            <Id>dbd94a69-cf18-44d3-948b-e79b48439aaf</Id>
+            <Name>New Godown 2</Name>
+          </Store>
+          <Quantity>20000</Quantity>
+          <Remarks>dfgh</Remarks>
+        </DutyClear>
+      </DutyClearsList>
+    </PODetail>
+  </PODetailsList>
+  <TotalQuantity>50000</TotalQuantity>
+  <Available>0</Available>
+  <Received>30000</Received>
+  <DutyCleared>20000</DutyCleared>
+</PurchaseOrder>

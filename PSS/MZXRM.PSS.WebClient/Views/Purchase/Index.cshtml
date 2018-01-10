@@ -1,0 +1,231 @@
+﻿@using PatrocoalSalesSystem.Models
+
+<section class="content-header">
+    <h1>
+        Purchase
+        <small>Manage your POs here</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Purchase</li>
+    </ol>
+</section>
+@{List<PurchaseOrder> FilteredPOs = ViewBag.POs;}
+<!-- Main content -->
+<section class="content container-fluid">
+    <div class="box box-default box-solid collapsed-box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Purchase Menu</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-lg-6">
+                <div class="col-sm-3">
+                    <a href="/Purchase" class="btn btn-block btn-primary margin">Purchase Orders</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/GRNList" class="btn btn-block btn-primary margin">GRNs</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-block btn-primary margin">Loan</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/DCLList" class="btn btn-block btn-primary margin">Duty Clear</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateOrder" class="btn btn-block btn-primary margin">Create PO</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateGRN" class="btn btn-block btn-primary margin">Create GRN</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateGRN?type=loan" class="btn btn-block btn-primary margin">Create LRN</a>
+                </div>
+                <div class="col-sm-3">
+                    <a href="/Purchase/CreateDCL" class="btn btn-block btn-primary margin">Create DCL</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="col-sm-3">
+                    <a href="/Purchase" class="btn btn-block btn-info margin">Purchase Orders</a>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Purchase Orders</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <form method="post" action="/purchase">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control" name="PO">
+                                <option value="my" @(ViewBag.SelectedPO == "my" ? " selected " : "")> My POs (@Common.CurrentUser.Name)</option>
+                                <option value="all"  @(ViewBag.SelectedPO == "all" ? " selected " : "")>All POs</option>
+                                <option value="inprocess"  @(ViewBag.SelectedPO == "inprocess" ? " selected " : "")>In Process</option>
+                                <option value="complete"  @(ViewBag.SelectedPO == "complete" ? " selected " : "")>Complete</option>
+                                <option value="cancelled"  @(ViewBag.SelectedPO == "cancelled" ? " selected " : "")>Cancelled</option>
+                                <option value="new"  @(ViewBag.SelectedPO == "new" ? " selected " : "")>Pending Approval</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control" name="Origin">
+                                <option value="0">--- Origin ---</option>
+                                @foreach (Item item in Common.Origin)
+                                {
+                                    <option value="@item.Index" @(item.Index.ToString() == ViewBag.SelectedOrigin ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control" name="Size">
+                                <option value="0">--- Size ---</option>
+                                @foreach (Item item in Common.Size)
+                                {
+                                    <option value="@item.Index" @(item.Index.ToString() == ViewBag.SelectedSize ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <select class="form-control" name="Vessel">
+                                <option value="0">--- Vessel ---</option>
+                                @foreach (Item item in Common.Vessel)
+                                {
+                                    <option value="@item.Index" @(item.Index.ToString() == ViewBag.SelectedOrigin ? " selected " : " ")>@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-info pull-right">Apply Filter</button>
+                    </div>
+                </form>
+            </div>
+            <table id="data" class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Date</th>
+                        <th>Target Days</th>
+                        <th>Origin</th>
+                        <th>Size</th>
+                        <th>Vessel</th>
+                        <th>Customer</th>
+                        <th>Quantity</th>
+                        <th>GRN Received</th>
+                        <th>GRN Remaining</th>
+                        <th>Duty Cleared</th>
+                        <th>Duty Remaining</th>
+                        <th>Lead</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PurchaseOrder po in FilteredPOs)
+                    {
+                        foreach (PODetail pod in po.PODetailsList)
+                        {
+                            <tr>
+                                <td>
+                                    @if (po.Status == POStatus.Created || po.Status == POStatus.PendingApproval)
+                                    {
+                                        <a href="/purchase/updateorder/@po.PONumber" class="btn btn-block btn-primary btn-sm">@po.PONumber</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/purchase/orderdetail/@po.PONumber" class="btn btn-block btn-primary btn-sm">@po.PONumber</a>
+                                    }
+                                </td>
+                                <td>@po.PODate.ToShortDateString()</td>
+                                <td>@po.TargetDays</td>
+                                <td>@po.Origin.Value</td>
+                                <td>@po.Size.Value</td>
+                                <td>@po.Vessel.Value</td>
+                                <td><a href="/Customer/@pod.Customer.Id">@pod.Customer.Name</a></td>
+                                <td align="right">@pod.Quantity.ToString("#,##,###.000")</td>
+                                <td align="right">
+                                    @if (pod.Received > 0)
+                                    {
+                                        @pod.Received.ToString("#,##,###.000");
+                                    }
+                                </td>
+                                <td align="right">
+                                    @if (pod.Remaining > 0)
+                                    {
+                                        @pod.Remaining.ToString("#,##,###.000");
+                                    }
+                                </td>
+                                <td align="right">
+                                    @if (pod.DutyCleared > 0)
+                                    {
+                                        pod.DutyCleared.ToString("#,##,###.000");
+                                    }
+                                </td>
+                                <td align="right">
+                                    @if (pod.DutyRemaining > 0)
+                                    {
+                                        @pod.DutyRemaining.ToString("#,##,###.000");
+                                    }
+                                </td>
+
+                                <td>@po.Lead.Name</td>
+                                <td>
+                                    @switch (po.Status)
+                                    {
+                                        case POStatus.Created:
+                                            <span class="badge bg-yellow">New PO</span>
+                                            break;
+                                        case POStatus.PendingApproval:
+                                            <span class="badge bg-yellow">Waiting Approval</span>
+                                            break;
+                                        case POStatus.InProcess:
+                                            <span class="badge bg-blue">In Process</span>
+                                            break;
+                                        case POStatus.Completed:
+                                            <span class="badge bg-green">Complete</span>
+                                            break;
+                                        case POStatus.Cancelled:
+                                            <span class="badge bg-red">Cancelled</span>
+                                            break;
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+
+            <!-- /.box-body -->
+        </div>
+
+    </div>
+    <div class="col-sm-12">
+        <a href="" class="btn btn-default pull-right">Download Report</a>
+    </div>
+</section>
+@section Scripts {
+    <script>
+        $('#data').DataTable();
+    </script>
+}

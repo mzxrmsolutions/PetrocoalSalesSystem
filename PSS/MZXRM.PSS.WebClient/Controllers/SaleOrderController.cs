@@ -1,0 +1,155 @@
+﻿using PatrocoalSalesSystem.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace PatrocoalSalesSystem.Controllers
+{
+    public class SaleOrderController : Controller
+    {
+        // GET: SaleOrder
+        public ActionResult Index()
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+
+            string SelectedSO = ViewBag.SelectedSO = !string.IsNullOrEmpty(Request.Form["SO"]) ? Request.Form["SO"] : "my";
+            //string SelectedOrigin = ViewBag.SelectedOrigin = !string.IsNullOrEmpty(Request.Form["Origin"]) ? Request.Form["Origin"] : "0";
+            //string SelectedSize = ViewBag.SelectedSize = !string.IsNullOrEmpty(Request.Form["Size"]) ? Request.Form["Size"] : "0";
+            //string SelectedVessel = ViewBag.SelectedVessel = !string.IsNullOrEmpty(Request.Form["Vessel"]) ? Request.Form["Vessel"] : "0";
+            //string SelectedCustomer = ViewBag.SelectedCustomer = !string.IsNullOrEmpty(Request.Form["Customer"]) ? Request.Form["Customer"] : "0";
+
+            List<SaleOrder> allSO = SaleUtil.AllSOs;
+            List<SaleOrder> filteredSO = new List<SaleOrder>();
+
+            foreach (SaleOrder so in allSO)
+            {
+                bool include = false;
+                /*switch (SelectedPO)
+                {
+                    default:
+                    case "my":
+                        if (po.Lead.Id == Common.CurrentUser.Id)
+                            include = true;
+                        break;
+                    case "all":
+                        include = true;
+                        break;
+                    case "inprocess":
+                        if (po.Status == POStatus.InProcess)
+                            include = true;
+                        break;
+                    case "complete":
+                        if (po.Status == POStatus.Completed)
+                            include = true;
+                        break;
+                    case "cancelled":
+                        if (po.Status == POStatus.Cancelled)
+                            include = true;
+                        break;
+                    case "new":
+                        if (po.Status == POStatus.Created || po.Status == POStatus.PendingApproval)
+                            include = true;
+                        break;
+                }
+                if (include && SelectedOrigin != "0")
+                {
+                    if (po.Origin.Index != int.Parse(SelectedOrigin))
+                        include = false;
+                }
+                if (include && SelectedSize != "0")
+                {
+                    if (po.Size.Index != int.Parse(SelectedSize))
+                        include = false;
+                }
+                if (include && SelectedVessel != "0")
+                {
+                    if (po.Vessel.Index != int.Parse(SelectedVessel))
+                        include = false;
+                }
+                if (include)*/
+                    filteredSO.Add(so);
+            }
+
+            ViewBag.SOs = filteredSO;
+
+            return View();
+        }
+        public ActionResult OrderDetail()
+        {
+            return View();
+        }
+        public ActionResult UpdateOrder()
+        {
+            return View();
+        }
+        #region CreateOrder
+        public ActionResult CreateOrder()
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateOrder(FormCollection form)
+        {
+            if (!Common.isAuthorize())
+            {
+                ExceptionHandler.Error("Session Timeout");
+                return View();
+            }
+            if (form["btn"] != null && form["btn"] == "Reset")
+                return View();
+            if (ValidateCreateSOForm(form))
+            {
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                SaleOrder SO = SaleUtil.CreateSO(values);
+                if (SO != null)
+                    Response.Redirect("/SaleOrder/UpdateOrder" + SO.SONumber);
+            }
+            return View();
+        }
+
+        private bool ValidateCreateSOForm(FormCollection form)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        public ActionResult DODetail()
+        {
+            return View();
+        }
+        public ActionResult ApprovedSO()
+        {
+            return View();
+        }
+        public ActionResult UpdateDO()
+        {
+            return View();
+        }
+        public ActionResult DeliveryOrder()
+        {
+            return View();
+        }
+        public ActionResult CreateDO()
+        {
+            return View();
+        }
+        public ActionResult CreateDC()
+        {
+            return View();
+        }
+        public ActionResult DeliveryChalan()
+        {
+            return View();
+        }
+    }
+}
