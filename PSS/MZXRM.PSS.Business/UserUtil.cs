@@ -1,9 +1,12 @@
-﻿using System;
+﻿using MZXRM.PSS.Common;
+using MZXRM.PSS.Data;
+using MZXRM.PSS.DataManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Business
 {
     public class UserUtil
     {
@@ -29,7 +32,7 @@ namespace PatrocoalSalesSystem.Models
             return Reference.GetNull();
         }
 
-        internal static void Login(string login, string password)
+        public static void Login(string login, string password)
         {
             foreach (User user in Users)
             {
@@ -42,7 +45,7 @@ namespace PatrocoalSalesSystem.Models
             Common.CurrentUser = null;
         }
 
-        internal static User GetUser(string id)
+        public static User GetUser(string id)
         {
             foreach (User user in Users)
             {
@@ -53,7 +56,7 @@ namespace PatrocoalSalesSystem.Models
             return null;
         }
 
-        internal static Reference GetUserRef(string id)
+        public static Reference GetUserRef(string id)
         {
             foreach (User user in Users)
             {

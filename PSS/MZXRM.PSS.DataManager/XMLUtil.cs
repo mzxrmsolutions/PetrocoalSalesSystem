@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.DataManager
 {
     public static class XMLUtil
     {

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using MZXRM.PSS.Data;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Net.Http;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.DataManager
 {
     public static class DBUtil
     {
@@ -12,7 +14,7 @@ namespace PatrocoalSalesSystem.Models
         public static List<PurchaseOrder> ReadAllPO()
         {
             List<PurchaseOrder> openPOs = new List<PurchaseOrder>();
-            if (HttpContext.Current.Session["DBPurchaseOrders"] == null)
+            //if (HttpContent.Current.Session["DBPurchaseOrders"] == null)
             {
                 string poPath = _dataPath + "/PO";
                 string poPath2 = "./PO";
@@ -25,19 +27,19 @@ namespace PatrocoalSalesSystem.Models
                     PurchaseOrder po = XMLUtil.ReadFromXmlFile<PurchaseOrder>(file);
                     openPOs.Add(po);
                 }
-                HttpContext.Current.Session.Add("DBPurchaseOrders", openPOs);
+                //HttpContext.Current.Session.Add("DBPurchaseOrders", openPOs);
             }
-            else
-            {
-                openPOs = HttpContext.Current.Session["DBPurchaseOrders"] as List<PurchaseOrder>;
-            }
+            //else
+            //{
+            //    openPOs = HttpContext.Current.Session["DBPurchaseOrders"] as List<PurchaseOrder>;
+            //}
             return openPOs;
         }
 
-        internal static List<SaleOrder> ReadAllSO()
+        public static List<SaleOrder> ReadAllSO()
         {
             List<SaleOrder> allData = new List<SaleOrder>();
-            if (HttpContext.Current.Session["DBSaleOrders"] == null)
+            //if (HttpContext.Current.Session["DBSaleOrders"] == null)
             {
                 string soPath = _dataPath + "/SO";
 
@@ -49,16 +51,16 @@ namespace PatrocoalSalesSystem.Models
                     SaleOrder so = XMLUtil.ReadFromXmlFile<SaleOrder>(file);
                     allData.Add(so);
                 }
-                HttpContext.Current.Session.Add("DBSaleOrders", allData);
+                //HttpContext.Current.Session.Add("DBSaleOrders", allData);
             }
-            else
-            {
-                allData = HttpContext.Current.Session["DBSaleOrders"] as List<SaleOrder>;
-            }
+            //else
+            //{
+            //    allData = HttpContext.Current.Session["DBSaleOrders"] as List<SaleOrder>;
+            //}
             return allData;
         }
 
-        internal static List<Customer> GetAllCustomers()
+        public static List<Customer> GetAllCustomers()
         {
             string filePath = _dataPath + "/Customer";
             List<Customer> allCustomers = new List<Customer>();
@@ -90,44 +92,44 @@ namespace PatrocoalSalesSystem.Models
             return list;
         }
 
-        internal static List<Item> GetVesselList()
+        public static List<Item> GetVesselList()
         {
             string fileName = _dataPath + "/Lists/Vessel.xml";
             List<Item> list = XMLUtil.ReadFromXmlFile<List<Item>>(fileName);
             return list;
         }
-        internal static List<Item> GetTraderList()
+        public static List<Item> GetTraderList()
         {
             string fileName = _dataPath + "/Lists/Trader.xml";
             List<Item> list = XMLUtil.ReadFromXmlFile<List<Item>>(fileName);
             return list;
         }
 
-        internal static List<Reference> GetStoreList()
+        public static List<Reference> GetStoreList()
         {
             string fileName = _dataPath + "/Lists/Store.xml";
             List<Reference> list = XMLUtil.ReadFromXmlFile<List<Reference>>(fileName);
             return list;
         }
 
-        internal static List<Item> GetSizeList()
+        public static List<Item> GetSizeList()
         {
             string fileName = _dataPath + "/Lists/Size.xml";
             List<Item> list = XMLUtil.ReadFromXmlFile<List<Item>>(fileName);
             return list;
         }
-        internal static List<Item> GetSupplierList()
+        public static List<Item> GetSupplierList()
         {
             string fileName = _dataPath + "/Lists/Supplier.xml";
             List<Item> list = XMLUtil.ReadFromXmlFile<List<Item>>(fileName);
             return list;
         }
-        internal static void SaveVesselList(List<Item> data)
+        public static void SaveVesselList(List<Item> data)
         {
             string fileName = _dataPath + "/Lists/Vessel.xml";
             XMLUtil.WriteToXmlFile<List<Item>>(fileName, data);
         }
-        internal static void SaveStoreList(List<Reference> data)
+        public static void SaveStoreList(List<Reference> data)
         {
             string fileName = _dataPath + "/Lists/Store.xml";
             XMLUtil.WriteToXmlFile<List<Reference>>(fileName, data);
@@ -155,7 +157,7 @@ namespace PatrocoalSalesSystem.Models
             XMLUtil.WriteToXmlFile<User>(fileName, user);
             return true;
         }
-        internal static List<User> GetAllUsers()
+        public static List<User> GetAllUsers()
         {
             string filePath = _dataPath + "/User";
             List<User> users = new List<User>();

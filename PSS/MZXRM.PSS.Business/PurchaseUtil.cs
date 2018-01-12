@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MZXRM.PSS.Data;
+using MZXRM.PSS.DataManager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Business
 {
     public static class PurchaseUtil
     {
@@ -324,13 +326,13 @@ namespace PatrocoalSalesSystem.Models
             PO.PODetailsList = new List<PODetail>();
             return PO;
         }
-        internal static void CompleteOrder(PurchaseOrder PO)
+        public static void CompleteOrder(PurchaseOrder PO)
         {
             PO.Status = POStatus.Completed;
             PO = CalculatePO(PO);
             DBUtil.SavePO(PO);
         }
-        internal static GRN CreateGRN(Dictionary<string, string> keyvalues)
+        public static GRN CreateGRN(Dictionary<string, string> keyvalues)
         {
 
             string poNumber = keyvalues.ContainsKey("PO") ? keyvalues["PO"] : "";
@@ -390,7 +392,7 @@ namespace PatrocoalSalesSystem.Models
             dcl.PO = dcl.PODetail = dcl.Store = new Reference() { Id = Guid.Empty, Name = "" };
             return dcl;
         }
-        internal static DutyClear CreateDutyClear(Dictionary<string, string> keyvalues)
+        public static DutyClear CreateDutyClear(Dictionary<string, string> keyvalues)
         {
             string poNumber = keyvalues.ContainsKey("PO") ? keyvalues["PO"] : "";
             string cusId = keyvalues.ContainsKey("Customer") ? keyvalues["Customer"] : "";

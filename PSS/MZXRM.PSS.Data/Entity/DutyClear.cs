@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Data
 {
     public class DutyClear
     {

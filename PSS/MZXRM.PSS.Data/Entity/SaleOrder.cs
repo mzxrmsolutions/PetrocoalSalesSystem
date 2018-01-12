@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Data
 {
     public class SaleOrder
     {

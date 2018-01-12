@@ -1,9 +1,12 @@
-﻿using System;
+﻿using MZXRM.PSS.Common;
+using MZXRM.PSS.Data;
+using MZXRM.PSS.DataManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Business
 {
     public class CustomerUtil
     {

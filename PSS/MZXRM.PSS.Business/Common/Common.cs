@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MZXRM.PSS.Data;
+using MZXRM.PSS.DataManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Business
 {
     public static class Common
     {
@@ -15,7 +17,7 @@ namespace PatrocoalSalesSystem.Models
         private static List<Item> _lTrader;
         private static List<Reference> _lStore;
 
-        internal static void ReloadData()
+        public static void ReloadData()
         {
             PurchaseUtil.AllPOs = DBUtil.ReadAllPO();
             UserUtil.Users = DBUtil.GetAllUsers();
@@ -90,7 +92,7 @@ namespace PatrocoalSalesSystem.Models
             }
         }
 
-        internal static int GenerateIndex(List<Item> items)
+        public static int GenerateIndex(List<Item> items)
         {
             throw new NotImplementedException();
         }
@@ -123,7 +125,7 @@ namespace PatrocoalSalesSystem.Models
             }
         }
 
-        internal static Item GetSize(string id)
+        public static Item GetSize(string id)
         {
             foreach (Item size in Size)
                 if (size.Index.ToString() == id)
@@ -131,7 +133,7 @@ namespace PatrocoalSalesSystem.Models
             return new Item() { Index = 0, Value = "" };
         }
 
-        internal static Item GetVessel(string id)
+        public static Item GetVessel(string id)
         {
             foreach (Item vessel in Vessel)
                 if (vessel.Index.ToString() == id)
@@ -139,21 +141,21 @@ namespace PatrocoalSalesSystem.Models
             return new Item() { Index = 0, Value = "" };
         }
 
-        internal static Item GetSupplier(string id)
+        public static Item GetSupplier(string id)
         {
             foreach (Item supplier in Supplier)
                 if (supplier.Index.ToString() == id)
                     return supplier;
             return new Item() { Index = 0, Value = "" };
         }
-        internal static Item GetOrigin(string id)
+        public static Item GetOrigin(string id)
         {
             foreach (Item origin in Origin)
                 if (origin.Index.ToString() == id)
                     return origin;
             return new Item() { Index = 0, Value = "" };
         }
-        internal static Reference GetStore(string id)
+        public static Reference GetStore(string id)
         {
             foreach (Reference origin in Store)
                 if (origin.Id == new Guid(id))
@@ -185,7 +187,7 @@ namespace PatrocoalSalesSystem.Models
 
         }
 
-        internal static bool isAuthorize()
+        public static bool isAuthorize()
         {
             /* if (CurrentUser == null)
              {

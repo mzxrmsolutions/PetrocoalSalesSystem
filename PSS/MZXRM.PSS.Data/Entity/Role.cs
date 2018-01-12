@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Data
 {
     public class Role
     {
         public Guid Id;
         public string Name;
-        internal Reference Ref()
+        public Reference Ref()
         {
             return new Reference() {
                 Id = Id,

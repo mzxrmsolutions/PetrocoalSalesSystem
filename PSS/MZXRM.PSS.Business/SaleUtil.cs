@@ -1,9 +1,11 @@
-﻿using System;
+﻿using MZXRM.PSS.Data;
+using MZXRM.PSS.DataManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PatrocoalSalesSystem.Models
+namespace MZXRM.PSS.Business
 {
     public class SaleUtil
     {
@@ -21,7 +23,7 @@ namespace PatrocoalSalesSystem.Models
             }
         }
 
-        internal static SaleOrder CreateSO(Dictionary<string, string> values)
+        public static SaleOrder CreateSO(Dictionary<string, string> values)
         {
             throw new NotImplementedException();
         }

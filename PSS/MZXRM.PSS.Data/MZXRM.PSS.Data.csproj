@@ -40,10 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\Customer.cs" />
+    <Compile Include="Entity\DutyClear.cs" />
+    <Compile Include="Entity\GRN.cs" />
+    <Compile Include="Entity\PODetail.cs" />
+    <Compile Include="Entity\PurchaseOrder.cs" />
+    <Compile Include="Entity\Role.cs" />
+    <Compile Include="Entity\SaleOrder.cs" />
+    <Compile Include="Entity\Supporting.cs" />
+    <Compile Include="Entity\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Entity\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
