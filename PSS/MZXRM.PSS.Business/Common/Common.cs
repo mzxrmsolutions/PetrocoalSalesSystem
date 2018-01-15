@@ -19,8 +19,8 @@ namespace MZXRM.PSS.Business
 
         public static void ReloadData()
         {
-            PurchaseUtil.AllPOs = DBUtil.ReadAllPO();
-            UserUtil.Users = DBUtil.GetAllUsers();
+            PurchaseUtil.AllPOs = PurchaseDataManager.ReadAllPO();
+            UserUtil.Users = UserDataManager.GetAllUsers();
             //CurrentUser = null;
         }
 
@@ -30,7 +30,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lOrigin == null || _lOrigin.Count == 0)
-                    _lOrigin = DBUtil.GetOriginList();
+                    _lOrigin = CommonDataManager.GetOriginList();
                 return _lOrigin;
             }
             set
@@ -43,7 +43,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lTaxRate == null || _lTaxRate.Count == 0)
-                    _lTaxRate = DBUtil.GetTaxRateList();
+                    _lTaxRate = CommonDataManager.GetTaxRateList();
                 return _lTaxRate;
             }
             set
@@ -56,7 +56,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lTrader == null || _lTrader.Count == 0)
-                    _lTrader = DBUtil.GetTraderList();
+                    _lTrader = CommonDataManager.GetTraderList();
                 return _lTrader;
             }
             set
@@ -69,7 +69,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lSize == null || _lSize.Count == 0)
-                    _lSize = DBUtil.GetSizeList();
+                    _lSize = CommonDataManager.GetSizeList();
                 return _lSize;
             }
             set
@@ -82,13 +82,13 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lVessel == null || _lVessel.Count == 0)
-                    _lVessel = DBUtil.GetVesselList();
+                    _lVessel = CommonDataManager.GetVesselList();
                 return _lVessel;
             }
             set
             {
                 _lVessel = value;
-                DBUtil.SaveVesselList(_lVessel);
+                CommonDataManager.SaveVesselList(_lVessel);
             }
         }
 
@@ -102,7 +102,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lSupplier == null || _lSupplier.Count == 0)
-                    _lSupplier = DBUtil.GetSupplierList();
+                    _lSupplier = CommonDataManager.GetSupplierList();
                 return _lSupplier;
             }
             set
@@ -115,13 +115,13 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_lStore == null || _lStore.Count == 0)
-                    _lStore = DBUtil.GetStoreList();
+                    _lStore = CommonDataManager.GetStoreList();
                 return _lStore;
             }
             set
             {
                 _lStore = value;
-                DBUtil.SaveStoreList(_lStore);
+                CommonDataManager.SaveStoreList(_lStore);
             }
         }
 

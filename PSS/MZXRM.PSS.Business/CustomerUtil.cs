@@ -16,7 +16,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_allCustomers == null || _allCustomers.Count == 0)
-                    _allCustomers = DBUtil.GetAllCustomers();
+                    _allCustomers = CustomerDataManager.GetAllCustomers();
                 return _allCustomers;
             }
             set

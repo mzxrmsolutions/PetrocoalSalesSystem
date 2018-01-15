@@ -14,7 +14,7 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _AllSOs = DBUtil.ReadAllSO();
+                _AllSOs = SaleDataManager.ReadAllSO();
                 return _AllSOs;
             }
             set

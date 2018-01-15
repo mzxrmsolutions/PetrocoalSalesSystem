@@ -17,7 +17,7 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _AllPOs = DBUtil.ReadAllPO();
+                _AllPOs = PurchaseDataManager.ReadAllPO();
                 return _AllPOs;
             }
             set
@@ -151,7 +151,8 @@ namespace MZXRM.PSS.Business
                     }
             }
             PO = CalculatePO(PO);
-            DBUtil.SavePO(PO);
+            //PurchaseDataManager.SavePO(PO);
+            PurchaseDataManager.CreatePO(PO);
             return PO;
         }
         public static PurchaseOrder UpdatePO(Dictionary<string, string> keyvalues)
@@ -196,7 +197,7 @@ namespace MZXRM.PSS.Business
             PO.ModifiedOn = DateTime.Now;
             PO.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
             PO = CalculatePO(PO);
-            DBUtil.SavePO(PO);
+            PurchaseDataManager.SavePO(PO);
             return PO;
         }
         public static GRN UpdateGRN(Dictionary<string, string> keyvalues)
@@ -233,7 +234,7 @@ namespace MZXRM.PSS.Business
                     }
                 }
                 PO = CalculatePO(PO);
-                DBUtil.SavePO(PO);
+                PurchaseDataManager.SavePO(PO);
                 return Grn;
             }
             return null;
@@ -270,7 +271,7 @@ namespace MZXRM.PSS.Business
                     }
                 }
                 PO = CalculatePO(PO);
-                DBUtil.SavePO(PO);
+                PurchaseDataManager.SavePO(PO);
                 return Dcl;
             }
             return null;
@@ -281,7 +282,7 @@ namespace MZXRM.PSS.Business
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.PendingApproval;
             PO = CalculatePO(PO);
-            DBUtil.SavePO(PO);
+            PurchaseDataManager.SavePO(PO);
             return PO;
         }
         public static PurchaseOrder ApprovePO(Dictionary<string, string> keyvalues)
@@ -290,7 +291,7 @@ namespace MZXRM.PSS.Business
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.InProcess;
             PO = CalculatePO(PO);
-            DBUtil.SavePO(PO);
+            PurchaseDataManager.SavePO(PO);
             return PO;
         }
         private static PODetail NewPODetail(PurchaseOrder PO)
@@ -330,7 +331,7 @@ namespace MZXRM.PSS.Business
         {
             PO.Status = POStatus.Completed;
             PO = CalculatePO(PO);
-            DBUtil.SavePO(PO);
+            PurchaseDataManager.SavePO(PO);
         }
         public static GRN CreateGRN(Dictionary<string, string> keyvalues)
         {
@@ -361,7 +362,7 @@ namespace MZXRM.PSS.Business
 
                     POD.GRNsList.Add(Grn);
                     PO = CalculatePO(PO);
-                    DBUtil.SavePO(PO);
+                    PurchaseDataManager.SavePO(PO);
                     return Grn;
                 }
             }
@@ -420,7 +421,7 @@ namespace MZXRM.PSS.Business
                     POD.DutyClearsList.Add(Dcl);
 
                     PO = CalculatePO(PO);
-                    DBUtil.SavePO(PO);
+                    PurchaseDataManager.SavePO(PO);
                     return Dcl;
                 }
             }

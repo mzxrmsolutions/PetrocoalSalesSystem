@@ -24,4 +24,27 @@ namespace MZXRM.PSS.Data
         public int Index;
         public string Value;
     }
+    public class POFilters
+    {
+        public FilterType poList;
+        public DateRange poDate;
+        public Guid Customer;
+        public int Origin;
+        public int Size;
+        public int Vessel;
+    }
+    public enum FilterType
+    {
+        My,
+        All,
+        New,
+        InProcess,
+        Complete,
+        Cancelled
+    }
+    public class DateRange
+    {
+        public DateTime Start;
+        public DateTime End;
+    }
 }
