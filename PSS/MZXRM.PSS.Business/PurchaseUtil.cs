@@ -1,4 +1,5 @@
-﻿using MZXRM.PSS.Data;
+﻿using MZXRM.PSS.Common;
+using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
 using System.Collections;
@@ -122,83 +123,118 @@ namespace MZXRM.PSS.Business
             lNumber++;
             return "PO-" + lNumber.ToString();
         }
-
+        public static bool ValidateCreatePOForm(Dictionary<string, string> values)
+        {
+            bool valid = true;
+            foreach (KeyValuePair<string, string> keyValue in values)
+            {
+                string key = keyValue.Key;
+                string value = keyValue.Value;
+                if (key == "Origin" && value == "0") return false;
+                if (key == "Size" && value == "0") return false;
+                if (key == "Vessel" && value == "0") return false;
+                if (key == "PODate" && string.IsNullOrEmpty(value)) return false;
+                if (key == "TargetDays" && string.IsNullOrEmpty(value)) return false;
+                if (key == "Supplier" && string.IsNullOrEmpty(value)) return false;
+                if (key == "Lead" && string.IsNullOrEmpty(value)) return false;
+                if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) return false;
+            }
+            return valid;
+        }
         public static PurchaseOrder CreatePO(Dictionary<string, string> keyvalues)
         {
-            PurchaseOrder PO = NewPO();
-            PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
-            PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
-            PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
-            PO.Size = Common.GetSize(keyvalues["Size"]);
-            PO.Vessel = Common.GetVessel(keyvalues["Vessel"]);
-            PO.TargetDays = keyvalues.ContainsKey("TargetDays") ? int.Parse(keyvalues["TargetDays"]) : 0;
-            PO.Supplier = Common.GetSupplier(keyvalues["Supplier"]);
-            PO.TermsOfPayment = keyvalues["PaymentTerms"];
-
-            for (int i = 1; i <= 10; i++)
+            try
             {
-                if (keyvalues.ContainsKey("Customer_" + i.ToString()))
-                    if (keyvalues["Customer_" + i.ToString()] != "0")
-                    {
-                        PODetail pod = NewPODetail(PO);
-                        pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
-                        pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
-                        pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
-                        pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
-                        pod.CostPerTon = keyvalues.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(keyvalues["CostPerTon_" + i.ToString()]) : 0;
-                        pod.TargetDate = keyvalues.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(keyvalues["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
-                        PO.PODetailsList.Add(pod);
-                    }
+                PurchaseOrder PO = NewPO();
+                PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
+                PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
+                PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
+                PO.Size = Common.GetSize(keyvalues["Size"]);
+                PO.Vessel = Common.GetVessel(keyvalues["Vessel"]);
+                PO.TargetDays = keyvalues.ContainsKey("TargetDays") ? int.Parse(keyvalues["TargetDays"]) : 0;
+                PO.Supplier = Common.GetSupplier(keyvalues["Supplier"]);
+                PO.TermsOfPayment = keyvalues["PaymentTerms"];
+                PO.BufferQuantityMin = keyvalues.ContainsKey("BufferMin") ? decimal.Parse(keyvalues["BufferMin"]):10;
+                PO.BufferQuantityMax = keyvalues.ContainsKey("BufferMax") ? decimal.Parse(keyvalues["BufferMax"]) : 10;
+                for (int i = 1; i <= 10; i++)
+                {
+                    if (keyvalues.ContainsKey("Customer_" + i.ToString()))
+                        if (keyvalues["Customer_" + i.ToString()] != "0")
+                        {
+                            PODetail pod = NewPODetail(PO);
+                            pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
+                            pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
+                            pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
+                            pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
+                            pod.CostPerTon = keyvalues.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(keyvalues["CostPerTon_" + i.ToString()]) : 0;
+                            pod.TargetDate = keyvalues.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(keyvalues["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
+                            PO.PODetailsList.Add(pod);
+                        }
+                }
+                //PO = CalculatePO(PO);
+                //PurchaseDataManager.SavePO(PO);
+                PurchaseDataManager.SavePO(PO);
+                return PO;
             }
-            PO = CalculatePO(PO);
-            //PurchaseDataManager.SavePO(PO);
-            PurchaseDataManager.CreatePO(PO);
-            return PO;
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return null;
         }
         public static PurchaseOrder UpdatePO(Dictionary<string, string> keyvalues)
         {
-            string PONumber = keyvalues["ponumber"];
-            PurchaseOrder PO = GetPO(PONumber);
-            PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
-            PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
-            PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
-            PO.Size = Common.GetSize(keyvalues["Size"]);
-            PO.Vessel = Common.GetVessel(keyvalues["Vessel"]);
-            PO.TargetDays = keyvalues.ContainsKey("TargetDays") ? int.Parse(keyvalues["TargetDays"]) : 0;
-            PO.Supplier = Common.GetSupplier(keyvalues["Supplier"]);
-            PO.TermsOfPayment = keyvalues["PaymentTerms"];
-            List<PODetail> updatedPOD = new List<PODetail>();
-            for (int i = 1; i <= 10; i++)
+            try
             {
-                if (keyvalues.ContainsKey("Customer_" + i.ToString()))
-                    if (keyvalues["Customer_" + i.ToString()] != "0")
-                    {
-                        PODetail pod = null;
-                        if (keyvalues.ContainsKey("PODetailId_" + i.ToString()) && keyvalues["PODetailId_" + i.ToString()] != "")
-                            foreach (PODetail pd in PO.PODetailsList)
-                            {
-                                if (pd.Id == new Guid(keyvalues["PODetailId_" + i.ToString()]))
+                string PONumber = keyvalues["ponumber"];
+                PurchaseOrder PO = GetPO(PONumber);
+                PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
+                PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
+                PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
+                PO.Size = Common.GetSize(keyvalues["Size"]);
+                PO.Vessel = Common.GetVessel(keyvalues["Vessel"]);
+                PO.TargetDays = keyvalues.ContainsKey("TargetDays") ? int.Parse(keyvalues["TargetDays"]) : 0;
+                PO.Supplier = Common.GetSupplier(keyvalues["Supplier"]);
+                PO.TermsOfPayment = keyvalues["PaymentTerms"];
+                PO.BufferQuantityMin = keyvalues.ContainsKey("BufferMin") ? decimal.Parse(keyvalues["BufferMin"]) : 10;
+                PO.BufferQuantityMax = keyvalues.ContainsKey("BufferMax") ? decimal.Parse(keyvalues["BufferMax"]) : 10;
+                List<PODetail> updatedPOD = new List<PODetail>();
+                for (int i = 1; i <= 10; i++)
+                {
+                    if (keyvalues.ContainsKey("Customer_" + i.ToString()))
+                        if (keyvalues["Customer_" + i.ToString()] != "0")
+                        {
+                            PODetail pod = null;
+                            if (keyvalues.ContainsKey("PODetailId_" + i.ToString()) && keyvalues["PODetailId_" + i.ToString()] != "")
+                                foreach (PODetail pd in PO.PODetailsList)
                                 {
-                                    pod = pd;
+                                    if (pd.Id == new Guid(keyvalues["PODetailId_" + i.ToString()]))
+                                    {
+                                        pod = pd;
+                                    }
                                 }
-                            }
-                        if (pod == null)
-                            pod = NewPODetail(PO);
-                        pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
-                        pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
-                        pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
-                        pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
-                        pod.CostPerTon = keyvalues.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(keyvalues["CostPerTon_" + i.ToString()]) : 0;
-                        pod.TargetDate = keyvalues.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(keyvalues["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
-                        updatedPOD.Add(pod);
-                    }
+                            if (pod == null)
+                                pod = NewPODetail(PO);
+                            pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
+                            pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
+                            pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
+                            pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
+                            pod.CostPerTon = keyvalues.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(keyvalues["CostPerTon_" + i.ToString()]) : 0;
+                            pod.TargetDate = keyvalues.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(keyvalues["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
+                            updatedPOD.Add(pod);
+                        }
+                }
+                PO.PODetailsList = updatedPOD;
+                PO.ModifiedOn = DateTime.Now;
+                PO.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
+                PurchaseDataManager.SavePO(PO);
+                return PO;
             }
-            PO.PODetailsList = updatedPOD;
-            PO.ModifiedOn = DateTime.Now;
-            PO.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
-            PO = CalculatePO(PO);
-            PurchaseDataManager.SavePO(PO);
-            return PO;
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return null;
         }
         public static GRN UpdateGRN(Dictionary<string, string> keyvalues)
         {
@@ -233,7 +269,6 @@ namespace MZXRM.PSS.Business
                         break;
                     }
                 }
-                PO = CalculatePO(PO);
                 PurchaseDataManager.SavePO(PO);
                 return Grn;
             }
@@ -270,7 +305,6 @@ namespace MZXRM.PSS.Business
                         break;
                     }
                 }
-                PO = CalculatePO(PO);
                 PurchaseDataManager.SavePO(PO);
                 return Dcl;
             }
@@ -281,7 +315,6 @@ namespace MZXRM.PSS.Business
             string PONumber = keyvalues["ponumber"];
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.PendingApproval;
-            PO = CalculatePO(PO);
             PurchaseDataManager.SavePO(PO);
             return PO;
         }
@@ -290,15 +323,14 @@ namespace MZXRM.PSS.Business
             string PONumber = keyvalues["ponumber"];
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.InProcess;
-            PO = CalculatePO(PO);
             PurchaseDataManager.SavePO(PO);
             return PO;
         }
         private static PODetail NewPODetail(PurchaseOrder PO)
         {
             PODetail pod = new PODetail();
-            pod.Id = Guid.NewGuid();
-            pod.PONumber = PO.PONumber;
+            pod.Id = Guid.Empty;
+            pod.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
             pod.Customer = new Reference() { Id = Guid.Empty, Name = "" };
             pod.Quantity = 0;
             pod.Rate = 0;
@@ -314,7 +346,7 @@ namespace MZXRM.PSS.Business
         {
             PurchaseOrder PO = new PurchaseOrder();
             Reference currUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
-            PO.Id = Guid.NewGuid();
+            PO.Id = Guid.Empty;
             PO.Status = POStatus.Created;
             PO.CreatedOn = PO.ModifiedOn = PO.PODate = DateTime.Now;
             PO.CreatedBy = PO.ModifiedBy = PO.Lead = currUser;
@@ -330,7 +362,6 @@ namespace MZXRM.PSS.Business
         public static void CompleteOrder(PurchaseOrder PO)
         {
             PO.Status = POStatus.Completed;
-            PO = CalculatePO(PO);
             PurchaseDataManager.SavePO(PO);
         }
         public static GRN CreateGRN(Dictionary<string, string> keyvalues)
@@ -352,7 +383,7 @@ namespace MZXRM.PSS.Business
                 {
                     GRN Grn = NewGRN();
                     Grn.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
-                    Grn.PODetail = new Reference() { Id = POD.Id, Name = POD.PONumber };
+                    Grn.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     if (keyvalues.ContainsKey("Store"))
                         Grn.Store = Common.GetStore(keyvalues["Store"]);
                     Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
@@ -361,7 +392,6 @@ namespace MZXRM.PSS.Business
                     Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
 
                     POD.GRNsList.Add(Grn);
-                    PO = CalculatePO(PO);
                     PurchaseDataManager.SavePO(PO);
                     return Grn;
                 }
@@ -372,7 +402,7 @@ namespace MZXRM.PSS.Business
         {
             GRN Grn = new GRN();
             Reference currUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
-            Grn.Id = Guid.NewGuid();
+            Grn.Id = Guid.Empty;
             Grn.Status = GRNStatus.Recieved;
             Grn.CreatedOn = Grn.ModifiedOn = Grn.GRNDate = Grn.CompletedOn = DateTime.Now;
             Grn.CreatedBy = Grn.ModifiedBy = currUser;
@@ -386,7 +416,7 @@ namespace MZXRM.PSS.Business
         {
             DutyClear dcl = new DutyClear();
             Reference currUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
-            dcl.Id = Guid.NewGuid();
+            dcl.Id = Guid.Empty;
             dcl.CreatedOn = dcl.ModifiedOn = dcl.DCLDate = DateTime.Now;
             dcl.CreatedBy = dcl.ModifiedBy = currUser;
             dcl.DCLNumber = GenerateNextDCLNumber();
@@ -413,14 +443,13 @@ namespace MZXRM.PSS.Business
                         POD.DutyClearsList = new List<DutyClear>();
                     DutyClear Dcl = NewDCL();
                     Dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
-                    Dcl.PODetail = new Reference() { Id = POD.Id, Name = POD.PONumber };
+                    Dcl.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     if (keyvalues.ContainsKey("Store"))
                         Dcl.Store = Common.GetStore(keyvalues["Store"]);
                     Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                     Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                     POD.DutyClearsList.Add(Dcl);
 
-                    PO = CalculatePO(PO);
                     PurchaseDataManager.SavePO(PO);
                     return Dcl;
                 }
@@ -453,38 +482,6 @@ namespace MZXRM.PSS.Business
             lNumber++;
             return "DCL-" + lNumber.ToString();
         }
-        private static PurchaseOrder CalculatePO(PurchaseOrder PO)
-        {
-            if (PO == null)
-                return null;
-            if (PO.Id == Guid.Empty) PO.Id = Guid.NewGuid();
-            PO.TotalQuantity = 0;
-            PO.Received = 0;
-            PO.DutyCleared = 0;
-            foreach (PODetail pod in PO.PODetailsList)
-            {
-                pod.Received = 0;
-                pod.DutyCleared = 0;
-                pod.Wastage = 0;
 
-                foreach (GRN grn in pod.GRNsList)
-                {
-                    pod.Received += grn.Quantity;
-                }
-                foreach (DutyClear dc in pod.DutyClearsList)
-                {
-                    pod.DutyCleared += dc.Quantity;
-                }
-                pod.Wastage = pod.DutyCleared * pod.AllowedWaistage / 100;
-                pod.Remaining = pod.Quantity - pod.Received;
-                pod.DutyRemaining = pod.Received - pod.DutyCleared;
-
-                PO.TotalQuantity += pod.Quantity;
-                PO.Received += pod.Received;
-                PO.DutyCleared += pod.DutyCleared;
-            }
-
-            return PO;
-        }
     }
 }

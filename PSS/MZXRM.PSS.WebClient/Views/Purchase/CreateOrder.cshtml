@@ -1,5 +1,6 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
 <section class="content-header">
     <h1>
         Purchases
@@ -7,72 +8,54 @@
     </h1>
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="/home"><i class="fa fa-dashboard"></i> Purchase</a></li>
+        <li><a href="/home"><i class="fa fa-ship"></i> Purchase</a></li>
         <li class="active">Create PO</li>
     </ol>
 </section>
 
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Purchase Menu</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
+    <form method="post" action="/purchase/createorder">
+        @if (ExceptionHandler.HasException())
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                @ExceptionHandler.GetExceptionMessage()
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-primary margin">Purchase Orders</a>
+            { ExceptionHandler.CloseException(); }
+        }
+        <div class="box box-default box-solid">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-app" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    <button type="reset" class="btn btn-app" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                    <a class="btn btn-app" href="/Purchase/CreateGRN"><i class="fa fa-plus"></i> New GRN</a>
+                    <a class="btn btn-app" href="/Purchase/CreateDCL"><i class="fa fa-plus"></i> New DCL</a>
+                    <a class="btn btn-app" href="/Purchase/CreateLRN" disabled><i class="fa fa-plus"></i> New LRN</a>
                 </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList" class="btn btn-block btn-primary margin">GRNs</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList?type=loan" class="btn btn-block btn-primary margin">Loan</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/DCLList" class="btn btn-block btn-primary margin">Duty Clear</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateOrder" class="btn btn-block btn-primary margin">Create PO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN" class="btn btn-block btn-primary margin">Create GRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN?type=loan" class="btn btn-block btn-primary margin">Create LRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateDCL" class="btn btn-block btn-primary margin">Create DCL</a>
+                <div class="col-lg-6">
+                    <a href="/Purchase" class="btn btn-app"><i class="fa fa-list"></i> My POs List</a>
+                    <a href="/Purchase/GRNList" class="btn btn-app"><i class="fa fa-list"></i> My GRNs List</a>
+                    <a href="/Purchase/DCLList" class="btn btn-app"><i class="fa fa-list"></i> My DCLs List</a>
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-app" disabled><i class="fa fa-list"></i> My LRNs List</a>
+                    <a href="/Purchase/DownloadPOs" class="btn btn-app" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-info margin">Purchase Orders</a>
-                </div>
-
+            <!-- /.box-body -->
+        </div>
+        <div class="box box-warning box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">New Purchase Order</h3>
             </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
-    <div class="box box-warning box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">New Purchase Order</h3>
-        </div>
-        <form method="post" action="/purchase/createorder">
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="row">
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Origin</label>
-                            <select class="form-control" name="Origin">
+                            <select class="form-control" name="Origin" required>
                                 <option value="0">--- Origin ---</option>
                                 @foreach (Item item in Common.Origin)
                                 {
@@ -96,7 +79,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Vessel</label>
-                            <select class="form-control" name="Vessel">
+                            <select class="form-control select2" name="Vessel">
                                 <option value="0">--- Vessel ---</option>
                                 @foreach (Item item in Common.Vessel)
                                 {
@@ -126,8 +109,8 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Supplier</label>
-                            <select class="form-control" name="Supplier">
-                                <option>--- Supplier ---</option>
+                            <select class="form-control select2" name="Supplier">
+                                <option value="0">--- Supplier ---</option>
                                 @foreach (Item item in Common.Supplier)
                                 {
                                     <option value="@item.Index">@item.Value</option>
@@ -138,24 +121,33 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Lead</label>
-                            <select class="form-control" name="Lead">
-                                <option>--- Lead ---</option>
+                            <select class="form-control select2" name="Lead">
+                                <option value="0">--- Lead ---</option>
                                 @foreach (User item in UserUtil.Users)
                                 {
-                                    <option value="@item.Id" @(item.Id==Common.CurrentUser.Id?" selected ":"")>@item.Name</option>
+                                    <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
                                 }
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group">
-                            <label>Terms of Payments</label>
+                            <label>Terms of Payment</label>
                             <input type="text" class="form-control" name="PaymentTerms">
                         </div>
                     </div>
-                    @*<div class="col-sm-1 pull-right">
-                            <a href="#" class="btn btn-success pull-right">+</a>
-                        </div>*@
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Min Quantity Buffer (%)</label>
+                            <input type="text" class="form-control" name="BufferMin" value="10">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Max Quantity Buffer (%)</label>
+                            <input type="text" class="form-control" name="BufferMax" value="10">
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -172,9 +164,9 @@
                                 </tr>
                                 @for (int i = 1; i <= 10; i++)
                                 {
-                                    <tr id="row_@i.ToString()" style="display:none">
+                                    <tr id="row_@i.ToString()" style="display:none;">
                                         <td>
-                                            <select class="form-control" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
+                                            <select class="form-control select2" style="width:250px;" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
                                                 <option value="0">--- Customer ---</option>
                                                 @foreach (Customer item in CustomerUtil.Customers)
                                                 {
@@ -209,8 +201,8 @@
                     <button type="reset" class="btn btn-danger" name="btn" value="Reset">Reset</button>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </section>
 @section scripts
 {
@@ -220,26 +212,24 @@
             autoclose: true
         });
         showRow(1);
-        function showRow(i)
-        {
-            if(i==10)
+        function showRow(i) {
+            if (i == 10)
                 alert('Max 10 rows');
-            if(i==1)
-                $('#row_'+i).show();
+            if (i == 1)
+                $('#row_' + i).show();
             //debugger;
-            var v=0;
-            v=parseInt(i);
+            var v = 0;
+            v = parseInt(i);
             v++;
-            var option=  $('#Customer_'+i+' option:selected').val();
-            if(option==0)
-                $('#row_'+v).hide();
+            var option = $('#Customer_' + i + ' option:selected').val();
+            if (option == 0)
+                $('#row_' + v).hide();
             else
-                $('#row_'+v).show();
+                $('#row_' + v).show();
         }
-        function hideRow(i)
-        {
-            $('#Customer_'+i).val("0");
-            $('#row_'+i).hide();
+        function hideRow(i) {
+            $('#Customer_' + i).val("0");
+            $('#row_' + i).hide();
         }
     </script>
 }

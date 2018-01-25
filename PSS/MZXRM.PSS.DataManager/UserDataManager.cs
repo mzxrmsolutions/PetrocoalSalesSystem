@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MZXRM.PSS.DataManager
 {
-   public class UserDataManager
+    public class UserDataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         public static List<User> GetAllUsers()
@@ -30,6 +30,16 @@ namespace MZXRM.PSS.DataManager
                 Directory.CreateDirectory(filePath);
             return users;
         }
+        public static User GetUser(Guid userId)
+        {
+            List<User> allUsers = GetAllUsers();
+            foreach (User user in allUsers)
+            {
+                if (user.Id == userId)
+                    return user;
+            }
+            return null;
+        }
         public static bool SaveUser(User user)
         {
             string poPath = _dataPath + "/User";
@@ -37,5 +47,23 @@ namespace MZXRM.PSS.DataManager
             XMLUtil.WriteToXmlFile<User>(fileName, user);
             return true;
         }
+
+        public static Reference GetDefaultRef()
+        {
+            return new Reference() { Id = Guid.Empty, Name = "" };
+        }
+
+        public static Reference GetUserRef(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return GetDefaultRef();
+            Guid userId = new Guid(id);
+            User user = GetUser(userId);
+            if (user != null)
+                return new Reference() { Id = user.Id, Name = user.Name };
+            return GetDefaultRef();
+        }
+
+
     }
 }

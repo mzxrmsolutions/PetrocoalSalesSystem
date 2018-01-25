@@ -28,9 +28,9 @@ namespace MZXRM.PSS.Data
     }
     public enum GRNStatus
     {
-        PendingRecieve,
-        Recieved,
-        Loan,
-        Cancelled
+        PendingRecieve,//2
+        Recieved,//1
+        Loan,//3
+        Cancelled//0
     }
 }

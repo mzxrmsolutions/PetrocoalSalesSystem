@@ -31,6 +31,9 @@ namespace MZXRM.PSS.Data
         public Item Supplier;
         public string TermsOfPayment;
 
+        public decimal BufferQuantityMax;
+        public decimal BufferQuantityMin;
+
         public List<PODetail> PODetailsList;
         public decimal TotalQuantity;
 
@@ -38,13 +41,14 @@ namespace MZXRM.PSS.Data
         public decimal Received;
         
         public decimal DutyCleared;
+        public bool isPSL=true;
     }
     public enum POStatus
     {
-        Created,
-        PendingApproval,
-        InProcess,
-        Completed,
-        Cancelled
+        Created,//1
+        PendingApproval,//2
+        InProcess,//3
+        Completed,//4
+        Cancelled//0
     }
 }

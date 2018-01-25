@@ -5,11 +5,30 @@ using System.Web;
 
 namespace MZXRM.PSS.Common
 {
-    public static class ExceptionHandler
+    public class ExceptionHandler
     {
-        public static void Error(string Message)
+        public static Exception Ex = null;
+        public static void Error(string message)
         {
-            throw new Exception(Message);
+            Ex = new Exception(message);
+        }
+        public static void Error(string message, Exception ex)
+        {
+            Ex = new Exception(message, ex);
+        }
+        public static void CloseException()
+        {
+            Ex = null;
+        }
+        public static bool HasException()
+        {
+            if (Ex == null)
+                return false;
+            return true;
+        }
+        public static string GetExceptionMessage()
+        {
+           return Ex.Message;
         }
     }
 }

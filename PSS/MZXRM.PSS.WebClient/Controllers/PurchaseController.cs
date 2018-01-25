@@ -17,77 +17,123 @@ namespace PatrocoalSalesSystem.Controllers
         //[AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Index()
         {
-            Common.MyUrl = Request.RawUrl;
-            if (!Common.isAuthorize())
-                Response.Redirect("/Login");
-
-            string SelectedPO = ViewBag.SelectedPO = !string.IsNullOrEmpty(Request.Form["PO"]) ? Request.Form["PO"] : "my";
-            string SelectedOrigin = ViewBag.SelectedOrigin = !string.IsNullOrEmpty(Request.Form["Origin"]) ? Request.Form["Origin"] : "0";
-            string SelectedSize = ViewBag.SelectedSize = !string.IsNullOrEmpty(Request.Form["Size"]) ? Request.Form["Size"] : "0";
-            string SelectedVessel = ViewBag.SelectedVessel = !string.IsNullOrEmpty(Request.Form["Vessel"]) ? Request.Form["Vessel"] : "0";
-            string SelectedCustomer = ViewBag.SelectedCustomer = !string.IsNullOrEmpty(Request.Form["Customer"]) ? Request.Form["Customer"] : "0";
-
-            List<PurchaseOrder> allPO = PurchaseUtil.AllPOs;
-            List<PurchaseOrder> filteredPO = new List<PurchaseOrder>();
-
-            foreach (PurchaseOrder po in allPO)
+            try
             {
-                bool include = false;
-                switch (SelectedPO)
-                {
-                    default:
-                    case "my":
-                        if (po.Lead.Id == Common.CurrentUser.Id)
-                            include = true;
-                        break;
-                    case "all":
-                        include = true;
-                        break;
-                    case "inprocess":
-                        if (po.Status == POStatus.InProcess)
-                            include = true;
-                        break;
-                    case "complete":
-                        if (po.Status == POStatus.Completed)
-                            include = true;
-                        break;
-                    case "cancelled":
-                        if (po.Status == POStatus.Cancelled)
-                            include = true;
-                        break;
-                    case "new":
-                        if (po.Status == POStatus.Created || po.Status == POStatus.PendingApproval)
-                            include = true;
-                        break;
-                }
-                if (include && SelectedOrigin != "0")
-                {
-                    if (po.Origin.Index != int.Parse(SelectedOrigin))
-                        include = false;
-                }
-                if (include && SelectedSize != "0")
-                {
-                    if (po.Size.Index != int.Parse(SelectedSize))
-                        include = false;
-                }
-                if (include && SelectedVessel != "0")
-                {
-                    if (po.Vessel.Index != int.Parse(SelectedVessel))
-                        include = false;
-                }
-                if (include)
-                    filteredPO.Add(po);
-            }
+                Common.MyUrl = Request.RawUrl;
+                if (!Common.isAuthorize())
+                    Response.Redirect("/Login");
 
-            ViewBag.POs = filteredPO;
+                string SelectedPO = ViewBag.SelectedPO = !string.IsNullOrEmpty(Request.Form["PO"]) ? Request.Form["PO"] : "my";
+                string SelectedOrigin = ViewBag.SelectedOrigin = !string.IsNullOrEmpty(Request.Form["Origin"]) ? Request.Form["Origin"] : "0";
+                string SelectedSize = ViewBag.SelectedSize = !string.IsNullOrEmpty(Request.Form["Size"]) ? Request.Form["Size"] : "0";
+                string SelectedVessel = ViewBag.SelectedVessel = !string.IsNullOrEmpty(Request.Form["Vessel"]) ? Request.Form["Vessel"] : "0";
+                string SelectedCustomer = ViewBag.SelectedCustomer = !string.IsNullOrEmpty(Request.Form["Customer"]) ? Request.Form["Customer"] : "0";
+                string PODate = ViewBag.PODate = !string.IsNullOrEmpty(Request.Form["PODate"]) ? Request.Form["PODate"] : "";
+
+                List<PurchaseOrder> allPO = PurchaseUtil.AllPOs;
+                List<PurchaseOrder> filteredPO = new List<PurchaseOrder>();
+
+                foreach (PurchaseOrder po in allPO)
+                {
+                    bool include = false;
+                    switch (SelectedPO)
+                    {
+                        default:
+                        case "my":
+                            if (po.Lead.Id == Common.CurrentUser.Id)
+                                include = true;
+                            break;
+                        case "all":
+                            include = true;
+                            break;
+                        case "inprocess":
+                            if (po.Status == POStatus.InProcess)
+                                include = true;
+                            break;
+                        case "complete":
+                            if (po.Status == POStatus.Completed)
+                                include = true;
+                            break;
+                        case "cancelled":
+                            if (po.Status == POStatus.Cancelled)
+                                include = true;
+                            break;
+                        case "new":
+                            if (po.Status == POStatus.Created || po.Status == POStatus.PendingApproval)
+                                include = true;
+                            break;
+                    }
+                    if (include && SelectedOrigin != "0")
+                    {
+                        if (po.Origin.Index != int.Parse(SelectedOrigin))
+                            include = false;
+                    }
+                    if (include && SelectedSize != "0")
+                    {
+                        if (po.Size.Index != int.Parse(SelectedSize))
+                            include = false;
+                    }
+                    if (include && SelectedVessel != "0")
+                    {
+                        if (po.Vessel.Index != int.Parse(SelectedVessel))
+                            include = false;
+                    }
+                    if (include && SelectedCustomer == "PSL")
+                    {
+                        if (SelectedCustomer == "PSL")
+                            if (!po.isPSL)
+                                include = false;
+                    }
+                    if (include && SelectedCustomer != "0" && SelectedCustomer != "PSL")
+                    {
+                        bool flg = false;
+                        foreach (PODetail pod in po.PODetailsList)
+                        {
+                            if (pod.Customer.Id.ToString() == SelectedCustomer)
+                            {
+                                flg = true;
+                                break;
+                            }
+                        }
+                        if (flg == false)
+                            include = false;
+                    }
+                    if (include && PODate != "")
+                    {
+                        string[] splitdate = PODate.Split(new char[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                        DateTime fromDate = DateTime.Parse(splitdate[0]);
+                        DateTime toDate = DateTime.Parse(splitdate[1]);
+                        if (!(fromDate == DateTime.Now.Date && toDate == DateTime.Now.Date))
+                            if (po.PODate < fromDate || po.PODate > toDate)
+                            {
+                                include = false;
+                            }
+                    }
+                    if (include)
+                        filteredPO.Add(po);
+                }
+
+                ViewBag.POs = filteredPO;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
             return View();
         }
         public ActionResult OrderDetail(string id)
         {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+
             PurchaseOrder PO = PurchaseUtil.GetPO(id);
             if (PO == null)
                 return Redirect("/Purchase");
             ViewBag.ThisPO = PO;
+            ViewBag.CanEdit = false;
+            if (PO.Status == POStatus.Created || PO.Status == POStatus.PendingApproval)
+                ViewBag.CanEdit = true;
             return View();
         }
         #region CreateOrder
@@ -101,23 +147,31 @@ namespace PatrocoalSalesSystem.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateOrder(FormCollection form)
         {
-            if (!Common.isAuthorize())
+            try
             {
-                ExceptionHandler.Error("Session Timeout");
-                return View();
-            }
-            if (form["btn"] != null && form["btn"] == "Reset")
-                return View();
-            if (ValidateCreatePOForm(form))
-            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
                 Dictionary<string, string> values = new Dictionary<string, string>();
                 foreach (string Key in form.Keys)
                 {
                     values.Add(Key, form[Key]);
                 }
-                PurchaseOrder PO = PurchaseUtil.CreatePO(values);
-                if (PO != null)
-                    Response.Redirect("/Purchase/UpdateOrder/" + PO.PONumber);
+                if (PurchaseUtil.ValidateCreatePOForm(values))
+                {
+                    PurchaseOrder PO = PurchaseUtil.CreatePO(values);
+                    if (PO != null)
+                        Response.Redirect("/Purchase/UpdateOrder/" + PO.PONumber);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
             }
             return View();
         }
@@ -146,13 +200,15 @@ namespace PatrocoalSalesSystem.Controllers
             }
             if (form["btn"] != null && form["btn"] == "Reset")
                 return View();
-            if (ValidateCreatePOForm(form))
+
+            Dictionary<string, string> values = new Dictionary<string, string>();
+
+            foreach (string Key in form.Keys)
             {
-                Dictionary<string, string> values = new Dictionary<string, string>();
-                foreach (string Key in form.Keys)
-                {
-                    values.Add(Key, form[Key]);
-                }
+                values.Add(Key, form[Key]);
+            }
+            if (PurchaseUtil.ValidateCreatePOForm(values))
+            {
                 if (form["btn"] != null && form["btn"] == "Save")
                 {
                     PurchaseOrder PO = PurchaseUtil.UpdatePO(values);
@@ -389,7 +445,7 @@ namespace PatrocoalSalesSystem.Controllers
                 }
                 if (include && SelectedPO != "0")
                 {
-                    if (grn.PO.Name !=SelectedPO)
+                    if (grn.PO.Name != SelectedPO)
                         include = false;
                 }
                 if (include && SelectedStore != "0")
@@ -423,11 +479,7 @@ namespace PatrocoalSalesSystem.Controllers
         }
 
 
-        private bool ValidateCreatePOForm(FormCollection form)
-        {
-            // ZTODO
-            return true;
-        }
+
         private bool ValidateCreateGRNForm(FormCollection form)
         {
             // ZTODO
@@ -435,7 +487,7 @@ namespace PatrocoalSalesSystem.Controllers
         }
 
 
-        
+
 
         public ActionResult ApprovedOrder()
         {

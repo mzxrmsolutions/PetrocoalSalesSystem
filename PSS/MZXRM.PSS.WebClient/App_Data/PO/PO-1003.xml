@@ -1,227 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PurchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
-  <Status>Completed</Status>
-  <CreatedOn>2018-01-01T03:35:30.5296556+05:00</CreatedOn>
+<PurchaseOrder xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>cdbb3e7f-095b-42bb-8f40-66fd9e8ea8b1</Id>
+  <Status>InProcess</Status>
+  <CreatedOn>2018-01-22T13:07:51</CreatedOn>
   <CreatedBy>
-    <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-    <Name>Faisal Nawaz</Name>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
   </CreatedBy>
-  <ModifiedOn>2018-01-01T03:36:12.3735125+05:00</ModifiedOn>
+  <ModifiedOn>2018-01-22T15:02:11.3122024+05:00</ModifiedOn>
   <ModifiedBy>
-    <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-    <Name>Faisal Nawaz</Name>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
   </ModifiedBy>
   <CompletedOn>0001-01-01T00:00:00</CompletedOn>
   <Lead>
-    <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-    <Name>Faisal Nawaz</Name>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
   </Lead>
+  <ApprovedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </ApprovedBy>
   <ApprovedDate>0001-01-01T00:00:00</ApprovedDate>
   <PONumber>PO-1003</PONumber>
-  <PODate>2018-01-01T00:00:00</PODate>
+  <PODate>2018-01-22T00:00:00</PODate>
   <Origin>
-    <Index>3</Index>
-    <Value>Afghan</Value>
+    <Index>1</Index>
+    <Value>SA</Value>
   </Origin>
   <Size>
-    <Index>4</Index>
-    <Value>25-50</Value>
+    <Index>1</Index>
+    <Value>00-10</Value>
   </Size>
   <Vessel>
-    <Index>4</Index>
-    <Value>ARIETTA</Value>
+    <Index>2</Index>
+    <Value>MARE TRACER</Value>
   </Vessel>
-  <TargetDays>50</TargetDays>
+  <TargetDays>45</TargetDays>
   <Supplier>
-    <Index>3</Index>
-    <Value>IVS Pinehurst</Value>
+    <Index>2</Index>
+    <Value>MARE TRACER</Value>
   </Supplier>
-  <TermsOfPayment>jhg25</TermsOfPayment>
+  <TermsOfPayment>dfgh</TermsOfPayment>
+  <BufferQuantityMax>0</BufferQuantityMax>
+  <BufferQuantityMin>0</BufferQuantityMin>
   <PODetailsList>
     <PODetail>
-      <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
-      <PONumber>PO-1003</PONumber>
+      <Id>ab0cf669-86fb-4f66-b3b1-146b05424ce3</Id>
+      <PO>
+        <Id>cdbb3e7f-095b-42bb-8f40-66fd9e8ea8b1</Id>
+        <Name>PO-1003</Name>
+      </PO>
       <Customer>
-        <Id>b288c06d-1609-4de8-97b5-823d0f2db1d9</Id>
-        <Name>PSL</Name>
+        <Id>39ccb9ef-d604-4745-acdb-cfbaab74332a</Id>
+        <Name>Tariq Textile</Name>
       </Customer>
-      <Quantity>40000</Quantity>
-      <Rate>0.85</Rate>
+      <Quantity>10000</Quantity>
+      <Rate>500</Rate>
       <CostPerTon>100</CostPerTon>
-      <AllowedWaistage>0.05</AllowedWaistage>
+      <AllowedWaistage>1</AllowedWaistage>
       <TargetDate>2018-01-31T00:00:00</TargetDate>
       <Remarks />
-      <Received>40000</Received>
+      <Received>10000</Received>
       <Remaining>0</Remaining>
-      <DutyCleared>40000</DutyCleared>
-      <DutyRemaining>0</DutyRemaining>
-      <Wastage>20.00</Wastage>
+      <DutyCleared>5000</DutyCleared>
+      <DutyRemaining>5000</DutyRemaining>
+      <Wastage>50</Wastage>
       <GRNsList>
         <GRN>
-          <Id>e3673b11-aafa-4918-8694-39a7e23cb9bc</Id>
+          <Id>00000000-0000-0000-0000-000000000000</Id>
           <Status>Recieved</Status>
-          <CreatedOn>2018-01-01T03:37:21.3931387+05:00</CreatedOn>
+          <CreatedOn>2018-01-22T15:04:08.7890783+05:00</CreatedOn>
           <CreatedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
           </CreatedBy>
-          <ModifiedOn>2018-01-01T03:37:21.3931387+05:00</ModifiedOn>
+          <ModifiedOn>2018-01-22T15:11:42.4210883+05:00</ModifiedOn>
           <ModifiedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
           </ModifiedBy>
-          <CompletedOn>2018-01-01T03:37:21.3931387+05:00</CompletedOn>
-          <GRNNumber>GRN-1013</GRNNumber>
-          <GRNDate>2018-01-01T03:37:21.3931387+05:00</GRNDate>
+          <CompletedOn>2018-01-22T15:04:08.7890783+05:00</CompletedOn>
+          <GRNNumber>GRN-1002</GRNNumber>
+          <GRNDate>2018-01-22T00:00:00</GRNDate>
           <PO>
-            <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
+            <Id>cdbb3e7f-095b-42bb-8f40-66fd9e8ea8b1</Id>
             <Name>PO-1003</Name>
           </PO>
           <PODetail>
-            <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
+            <Id>ab0cf669-86fb-4f66-b3b1-146b05424ce3</Id>
             <Name>PO-1003</Name>
           </PODetail>
           <Store>
             <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
             <Name>KPT</Name>
           </Store>
-          <InvoiceNo>hjk</InvoiceNo>
-          <AdjPrice>50</AdjPrice>
-          <Quantity>20000</Quantity>
-          <Remarks>dfgh</Remarks>
-        </GRN>
-        <GRN>
-          <Id>e760b9e4-ab4e-4b81-8e45-2b3daaa3de8f</Id>
-          <Status>Recieved</Status>
-          <CreatedOn>2018-01-01T03:38:31.9686341+05:00</CreatedOn>
-          <CreatedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </CreatedBy>
-          <ModifiedOn>2018-01-01T03:38:31.9686341+05:00</ModifiedOn>
-          <ModifiedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </ModifiedBy>
-          <CompletedOn>2018-01-01T03:38:31.9686341+05:00</CompletedOn>
-          <GRNNumber>GRN-1013</GRNNumber>
-          <GRNDate>2018-01-01T03:38:31.9686341+05:00</GRNDate>
-          <PO>
-            <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
-            <Name>PO-1003</Name>
-          </PO>
-          <PODetail>
-            <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
-            <Name>PO-1003</Name>
-          </PODetail>
-          <Store>
-            <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
-            <Name>KPT</Name>
-          </Store>
-          <InvoiceNo>fgh</InvoiceNo>
-          <AdjPrice>50</AdjPrice>
+          <InvoiceNo>jjj</InvoiceNo>
+          <AdjPrice>86</AdjPrice>
           <Quantity>10000</Quantity>
-          <Remarks>fgh</Remarks>
-        </GRN>
-        <GRN>
-          <Id>cf973eee-9d68-447a-aac7-55a34647386d</Id>
-          <Status>Recieved</Status>
-          <CreatedOn>2018-01-01T03:39:26.4399541+05:00</CreatedOn>
-          <CreatedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </CreatedBy>
-          <ModifiedOn>2018-01-01T03:39:26.4399541+05:00</ModifiedOn>
-          <ModifiedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </ModifiedBy>
-          <CompletedOn>2018-01-01T03:39:26.4399541+05:00</CompletedOn>
-          <GRNNumber>GRN-1013</GRNNumber>
-          <GRNDate>2018-01-01T03:39:26.4399541+05:00</GRNDate>
-          <PO>
-            <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
-            <Name>PO-1003</Name>
-          </PO>
-          <PODetail>
-            <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
-            <Name>PO-1003</Name>
-          </PODetail>
-          <Store>
-            <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
-            <Name>KPT</Name>
-          </Store>
-          <InvoiceNo>fghj</InvoiceNo>
-          <AdjPrice>50</AdjPrice>
-          <Quantity>10000</Quantity>
-          <Remarks>fdg</Remarks>
+          <Remarks>cvbnm</Remarks>
         </GRN>
       </GRNsList>
       <DutyClearsList>
         <DutyClear>
-          <Id>5fab838d-ec4c-45f6-bdda-c363cf6c8fab</Id>
-          <CreatedOn>2018-01-01T03:39:02.8972667+05:00</CreatedOn>
+          <Id>00000000-0000-0000-0000-000000000000</Id>
+          <CreatedOn>2018-01-22T15:12:34.2198915+05:00</CreatedOn>
           <CreatedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
           </CreatedBy>
-          <ModifiedOn>2018-01-01T03:39:02.8972667+05:00</ModifiedOn>
+          <ModifiedOn>2018-01-22T15:12:34.2198915+05:00</ModifiedOn>
           <ModifiedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
+            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+            <Name>Zeeshan Shafqat</Name>
           </ModifiedBy>
-          <DCLNumber>DCL-1003</DCLNumber>
-          <DCLDate>2018-01-01T03:39:02.8972667+05:00</DCLDate>
+          <DCLNumber>DCL-1002</DCLNumber>
+          <DCLDate>2018-01-22T15:12:34.2198915+05:00</DCLDate>
           <PO>
-            <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
+            <Id>cdbb3e7f-095b-42bb-8f40-66fd9e8ea8b1</Id>
             <Name>PO-1003</Name>
           </PO>
           <PODetail>
-            <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
+            <Id>ab0cf669-86fb-4f66-b3b1-146b05424ce3</Id>
             <Name>PO-1003</Name>
           </PODetail>
           <Store>
             <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
             <Name>KPT</Name>
           </Store>
-          <Quantity>30000</Quantity>
-          <Remarks>jhg</Remarks>
-        </DutyClear>
-        <DutyClear>
-          <Id>240bed43-716e-436f-9fb9-aff3b9e2c9c6</Id>
-          <CreatedOn>2018-01-01T03:40:02.7499187+05:00</CreatedOn>
-          <CreatedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </CreatedBy>
-          <ModifiedOn>2018-01-01T03:40:02.7499187+05:00</ModifiedOn>
-          <ModifiedBy>
-            <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
-            <Name>Faisal Nawaz</Name>
-          </ModifiedBy>
-          <DCLNumber>DCL-1003</DCLNumber>
-          <DCLDate>2018-01-01T03:40:02.7499187+05:00</DCLDate>
-          <PO>
-            <Id>e056a5b9-0a2b-485b-94a7-ece911f17d43</Id>
-            <Name>PO-1003</Name>
-          </PO>
-          <PODetail>
-            <Id>b8448198-c183-4b79-b7e0-a0e37de8eb41</Id>
-            <Name>PO-1003</Name>
-          </PODetail>
-          <Store>
-            <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
-            <Name>KPT</Name>
-          </Store>
-          <Quantity>10000</Quantity>
-          <Remarks>xcvbnm</Remarks>
+          <Quantity>5000</Quantity>
+          <Remarks>xcvb</Remarks>
         </DutyClear>
       </DutyClearsList>
     </PODetail>
+    <PODetail>
+      <Id>00000000-0000-0000-0000-000000000000</Id>
+      <PO>
+        <Id>cdbb3e7f-095b-42bb-8f40-66fd9e8ea8b1</Id>
+        <Name>PO-1003</Name>
+      </PO>
+      <Customer>
+        <Id>85ca4780-0e36-4fa2-8728-901c0e5a40fd</Id>
+        <Name>PSL</Name>
+      </Customer>
+      <Quantity>20000</Quantity>
+      <Rate>85</Rate>
+      <CostPerTon>1350</CostPerTon>
+      <AllowedWaistage>0.05</AllowedWaistage>
+      <TargetDate>2018-01-29T00:00:00</TargetDate>
+      <Remarks />
+      <Received>0</Received>
+      <Remaining>20000</Remaining>
+      <DutyCleared>0</DutyCleared>
+      <DutyRemaining>0</DutyRemaining>
+      <Wastage>0.00</Wastage>
+      <GRNsList />
+      <DutyClearsList />
+    </PODetail>
   </PODetailsList>
-  <TotalQuantity>40000</TotalQuantity>
+  <TotalQuantity>30000</TotalQuantity>
   <Available>0</Available>
-  <Received>40000</Received>
-  <DutyCleared>40000</DutyCleared>
+  <Received>10000</Received>
+  <DutyCleared>5000</DutyCleared>
 </PurchaseOrder>

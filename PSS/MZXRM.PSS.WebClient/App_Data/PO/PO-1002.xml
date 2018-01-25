@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PurchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Id>4d3f6ff4-8682-42be-b853-cab345d8d6bf</Id>
-  <Status>Completed</Status>
-  <CreatedOn>2017-12-30T03:04:47.712204+05:00</CreatedOn>
+<PurchaseOrder xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>00000000-0000-0000-0000-000000000000</Id>
+  <Status>Created</Status>
+  <CreatedOn>2018-01-19T22:10:07.944357+05:00</CreatedOn>
   <CreatedBy>
     <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
     <Name>Zeeshan Shafqat</Name>
   </CreatedBy>
-  <ModifiedOn>2017-12-30T03:04:47.712204+05:00</ModifiedOn>
+  <ModifiedOn>2018-01-19T22:10:07.944357+05:00</ModifiedOn>
   <ModifiedBy>
     <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
     <Name>Zeeshan Shafqat</Name>
@@ -19,135 +19,55 @@
   </Lead>
   <ApprovedDate>0001-01-01T00:00:00</ApprovedDate>
   <PONumber>PO-1002</PONumber>
-  <PODate>2017-12-30T00:00:00</PODate>
+  <PODate>2018-01-19T00:00:00</PODate>
   <Origin>
-    <Index>1</Index>
-    <Value>SA</Value>
+    <Index>3</Index>
+    <Value>Afghan</Value>
   </Origin>
   <Size>
-    <Index>6</Index>
-    <Value>00-50</Value>
+    <Index>2</Index>
+    <Value>00-04</Value>
   </Size>
   <Vessel>
     <Index>3</Index>
     <Value>IVS Pinehurst</Value>
   </Vessel>
-  <TargetDays>24</TargetDays>
+  <TargetDays>1</TargetDays>
   <Supplier>
     <Index>2</Index>
     <Value>MARE TRACER</Value>
   </Supplier>
-  <TermsOfPayment>sdfsdf</TermsOfPayment>
+  <TermsOfPayment>12345hgfds f dsasdf</TermsOfPayment>
+  <BufferQuantityMax>0</BufferQuantityMax>
+  <BufferQuantityMin>0</BufferQuantityMin>
   <PODetailsList>
     <PODetail>
-      <Id>3418ee8d-2e20-4eab-a853-fb8b224998d7</Id>
-      <PONumber>PO-1002</PONumber>
-      <Customer>
-        <Id>b288c06d-1609-4de8-97b5-823d0f2db1d9</Id>
-        <Name>PSL</Name>
-      </Customer>
-      <Quantity>20000</Quantity>
-      <Rate>85</Rate>
-      <CostPerTon>12000</CostPerTon>
-      <AllowedWaistage>0.05</AllowedWaistage>
-      <TargetDate>2017-12-31T00:00:00</TargetDate>
-      <Remarks />
-      <Received>10000</Received>
-      <Remaining>10000</Remaining>
-      <DutyCleared>5000</DutyCleared>
-      <DutyRemaining>5000</DutyRemaining>
-      <Wastage>2.50</Wastage>
-      <GRNsList>
-        <GRN>
-          <Id>10fb0c18-3c73-4641-b353-03ac5ad3d5e3</Id>
-          <Status>Recieved</Status>
-          <CreatedOn>2017-12-30T03:06:10.3146347+05:00</CreatedOn>
-          <CreatedBy>
-            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
-            <Name>Zeeshan Shafqat</Name>
-          </CreatedBy>
-          <ModifiedOn>2017-12-30T03:06:10.3146347+05:00</ModifiedOn>
-          <ModifiedBy>
-            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
-            <Name>Zeeshan Shafqat</Name>
-          </ModifiedBy>
-          <CompletedOn>2017-12-30T03:06:10.3146347+05:00</CompletedOn>
-          <GRNNumber>GRN-1012</GRNNumber>
-          <GRNDate>2017-12-30T03:06:10.3146347+05:00</GRNDate>
-          <PO>
-            <Id>4d3f6ff4-8682-42be-b853-cab345d8d6bf</Id>
-            <Name>PO-1002</Name>
-          </PO>
-          <PODetail>
-            <Id>3418ee8d-2e20-4eab-a853-fb8b224998d7</Id>
-            <Name>PO-1002</Name>
-          </PODetail>
-          <Store>
-            <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
-            <Name>KPT</Name>
-          </Store>
-          <InvoiceNo>fgh</InvoiceNo>
-          <AdjPrice>24</AdjPrice>
-          <Quantity>10000</Quantity>
-          <Remarks>wefsdf</Remarks>
-        </GRN>
-      </GRNsList>
-      <DutyClearsList>
-        <DutyClear>
-          <Id>187a1589-37d8-48be-8249-be33a17f95cc</Id>
-          <CreatedOn>2017-12-30T03:06:29.0131956+05:00</CreatedOn>
-          <CreatedBy>
-            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
-            <Name>Zeeshan Shafqat</Name>
-          </CreatedBy>
-          <ModifiedOn>2017-12-30T03:06:29.0131956+05:00</ModifiedOn>
-          <ModifiedBy>
-            <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
-            <Name>Zeeshan Shafqat</Name>
-          </ModifiedBy>
-          <DCLNumber>DCL-1002</DCLNumber>
-          <DCLDate>2017-12-30T03:06:29.0131956+05:00</DCLDate>
-          <PO>
-            <Id>4d3f6ff4-8682-42be-b853-cab345d8d6bf</Id>
-            <Name>PO-1002</Name>
-          </PO>
-          <PODetail>
-            <Id>3418ee8d-2e20-4eab-a853-fb8b224998d7</Id>
-            <Name>PO-1002</Name>
-          </PODetail>
-          <Store>
-            <Id>3473d11c-43fd-45b2-9cb0-f4a9c0da1610</Id>
-            <Name>KPT</Name>
-          </Store>
-          <Quantity>5000</Quantity>
-          <Remarks>sdfg</Remarks>
-        </DutyClear>
-      </DutyClearsList>
-    </PODetail>
-    <PODetail>
-      <Id>2beab7bf-d9e3-4df2-8121-d5539f87842c</Id>
-      <PONumber>PO-1002</PONumber>
+      <Id>00000000-0000-0000-0000-000000000000</Id>
+      <PO>
+        <Id>00000000-0000-0000-0000-000000000000</Id>
+        <Name>PO-1002</Name>
+      </PO>
       <Customer>
         <Id>b288c06d-1609-4de9-97b5-823d0f2db1d9</Id>
         <Name>Best Way</Name>
       </Customer>
       <Quantity>10000</Quantity>
-      <Rate>85</Rate>
-      <CostPerTon>12000</CostPerTon>
-      <AllowedWaistage>0.05</AllowedWaistage>
-      <TargetDate>2017-12-31T00:00:00</TargetDate>
+      <Rate>0.85</Rate>
+      <CostPerTon>100</CostPerTon>
+      <AllowedWaistage>0.5</AllowedWaistage>
+      <TargetDate>2018-01-31T00:00:00</TargetDate>
       <Remarks />
       <Received>0</Received>
       <Remaining>10000</Remaining>
       <DutyCleared>0</DutyCleared>
       <DutyRemaining>0</DutyRemaining>
-      <Wastage>0.00</Wastage>
+      <Wastage>0.0</Wastage>
       <GRNsList />
       <DutyClearsList />
     </PODetail>
   </PODetailsList>
-  <TotalQuantity>30000</TotalQuantity>
+  <TotalQuantity>10000</TotalQuantity>
   <Available>0</Available>
-  <Received>10000</Received>
-  <DutyCleared>5000</DutyCleared>
+  <Received>0</Received>
+  <DutyCleared>0</DutyCleared>
 </PurchaseOrder>

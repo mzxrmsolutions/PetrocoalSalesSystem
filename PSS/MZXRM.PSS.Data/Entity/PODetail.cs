@@ -9,7 +9,7 @@ namespace MZXRM.PSS.Data
     {
         public Guid Id;
 
-        public string PONumber;
+        public Reference PO;
         public Reference Customer;
         
         public decimal Quantity;
