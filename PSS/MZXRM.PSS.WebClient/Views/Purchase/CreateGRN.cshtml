@@ -1,139 +1,124 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+@{
+    PurchaseOrder ThisPO = ViewBag.ThisPO;
+    PODetail ThisPOD = ViewBag.ThisPOD;
+}
 <section class="content-header">
     <h1>
         Purchases
-        <small>Goods Recieved</small>
+        <small>Create GRN</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="/purchase"><i class="fa fa-dashboard"></i> Purchase</a></li>
-        <li class="active">GRN</li>
+        <li><a href="/Purchase"><i class="fa fa-ship"></i> Purchase</a></li>
+        <li class="active">Create GRN</li>
     </ol>
 </section>
-@{PurchaseOrder ThisPO = ViewBag.ThisPO;}
+
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Purchase Menu</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
+    <form method="post" action="/purchase/creategrn">
+        @if (ExceptionHandler.HasException())
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                @ExceptionHandler.GetExceptionMessage()
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-primary margin">Purchase Orders</a>
+            { ExceptionHandler.CloseException(); }
+        }
+        <div class="box box-default box-solid">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-sm" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    <button type="reset" class="btn btn-sm" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                    @if (ThisPO != null)
+                    {<a class="btn btn-default btn-sm" href="/Purchase/OrderDetail/@ThisPO.PONumber"><i class="fa fa-plus"></i> @ThisPO.PONumber</a> }
                 </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList" class="btn btn-block btn-primary margin">GRNs</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList?type=loan" class="btn btn-block btn-primary margin">Loan</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/DCLList" class="btn btn-block btn-primary margin">Duty Clear</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateOrder" class="btn btn-block btn-primary margin">Create PO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN" class="btn btn-block btn-primary margin">Create GRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN?type=loan" class="btn btn-block btn-primary margin">Create LRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateDCL" class="btn btn-block btn-primary margin">Create DCL</a>
+                <div class="col-lg-6">
+                    <a href="/Purchase" class="btn btn-default btn-sm"> My POs List</a>
+                    <a href="/Purchase/GRNList" class="btn btn-default btn-sm"> My GRNs List</a>
+                    <a href="/Purchase/DCLList" class="btn btn-default btn-sm"> My DCLs List</a>
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-default btn-sm" disabled> My LRNs List</a>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-info margin">Purchase Orders</a>
-                </div>
-
+            <!-- /.box-body -->
+        </div>
+        <div class="box box-warning box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">New GRN</h3>
             </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
-    <div class="box box-warning box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">New GRN</h3>
-        </div>
-        <form method="post" action="/purchase/creategrn">
             <!-- /.box-header -->
             <div class="box-body">
 
-                <div class="row">
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="grnType" value="loan" @( ViewBag.GRNType == "loan" ? "checked" : "" )> Loan
-                            </label>
+                @*<div class="row">
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <label>
+                                    <input type="radio" name="grnType" value="loan" @( ViewBag.GRNType == "loan" ? "checked" : "" )> Loan
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>
+                                    <input type="radio" name="grnType" value="po" @( ViewBag.GRNType == "loan" ? "" : "checked")> Purchase Order
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="grnType" value="po" @( ViewBag.GRNType == "loan" ? "" : "checked")> Purchase Order
-                            </label>
+                    <div class="row" id="rowLoan" hidden>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Source of Loan</label>
+                                <input type="text" class="form-control" name="loanSrc">
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row" id="rowLoan" hidden>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Source of Loan</label>
-                            <input type="text" class="form-control" name="loanSrc">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Origin</label>
+                                <select class="form-control" name="Origin">
+                                    <option value="0">--- Origin ---</option>
+                                    @foreach (Item item in Common.Origin)
+                                    {
+                                        <option value="@item.Index">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Origin</label>
-                            <select class="form-control" name="Origin">
-                                <option value="0">--- Origin ---</option>
-                                @foreach (Item item in Common.Origin)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
-                            </select>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Size</label>
+                                <select class="form-control" name="Size">
+                                    <option value="0">--- Size ---</option>
+                                    @foreach (Item item in Common.Size)
+                                    {
+                                        <option value="@item.Index">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Size</label>
-                            <select class="form-control" name="Size">
-                                <option value="0">--- Size ---</option>
-                                @foreach (Item item in Common.Size)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
-                            </select>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Vessel</label>
+                                <select class="form-control" name="Vessel">
+                                    <option value="0">--- Vessel ---</option>
+                                    @foreach (Item item in Common.Vessel)
+                                    {
+                                        <option value="@item.Index">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Vessel</label>
-                            <select class="form-control" name="Vessel">
-                                <option value="0">--- Vessel ---</option>
-                                @foreach (Item item in Common.Vessel)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
-                            </select>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>TO DO...</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>TO DO...</label>
-                        </div>
-                    </div>
-                </div>
+                    </div>*@
                 <div id="rowPO">
                     <div class="row">
                         <div class="col-sm-2">
@@ -168,8 +153,51 @@
                                 <label>Vessel:</label>
                                 <p>@ThisPO.Vessel.Value</p>
                             </div>
-                            
+                        }
+                    </div>
+                    <div class="row">
+                        @if (ThisPO != null)
+                        {
 
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Customer</label>
+                                    <select class="form-control" name="Customer" id="selectCust">
+                                        <option value="0">--- Customer ---</option>
+                                        @foreach (PODetail pod in ThisPO.PODetailsList)
+                                        {
+                                            <option value="@pod.Customer.Id" @((ThisPOD != null && ThisPOD.Id.ToString() == pod.Id.ToString()) ? "selected" : "")>@pod.Customer.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            if (ThisPOD != null)
+                            {
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Total</label>
+                                        <p>@ThisPOD.Quantity.ToString("#,##,###.000")</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Received</label>
+                                        @if (ThisPOD.Received > 0)
+                                        {
+                                            <p>@ThisPOD.Received.ToString("#,##,###.000")</p>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Remaining</label>
+                                        @if (ThisPOD.Remaining > 0)
+                                        {
+                                            <p>@ThisPOD.Remaining.ToString("#,##,###.000")</p>
+                                        }
+                                    </div>
+                                </div>
+                            }
                         }
                     </div>
                     @if (ThisPO != null)
@@ -189,20 +217,8 @@
                             </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <label>Customer</label>
-                                    <select class="form-control" name="Customer">
-                                        <option value="0">--- Customer ---</option>
-                                        @foreach (PODetail pod in ThisPO.PODetailsList)
-                                        {
-                                            <option value="@pod.Customer.Id">@pod.Customer.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
                                     <label>Store</label>
-                                    <select class="form-control" name="Store">
+                                    <select class="form-control select2" name="Store">
                                         <option value="0">--- Store ---</option>
                                         @foreach (Reference item in Common.Store)
                                         {
@@ -241,15 +257,12 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <div class="col-sm-3">
-                    <button type="submit" class="btn btn-success" name="btn" value="Save">Submit</button>
-                    <button type="reset" class="btn btn-danger" name="btn" value="Reset">Reset</button>
-                    @*<input type="hidden" name="PO" value='@(ThisPO!=null?ThisPO.PONumber:"")' />*@
-                </div>
             </div>
-        </form>
-    </div>
-    <!-- /.box -->
+
+
+        </div>
+        <!-- /.box -->
+    </form>
 </section>
 @section scripts
 {
@@ -270,12 +283,29 @@
                 }
             });
             $('#selectPO').change(function () {
-                if (this.value == "0") {
-                    window.location.href = "/purchase/CreateGRN?type=po";
+                var po = $('#selectPO').val();
+                var cust = $('#selectCust').val();
+                var url = "/purchase/CreateGRN?type=po";
+                if (po != "0" && po != undefined) {
+                    url += "&po=" + po;
+                    if (cust != "0" && cust != undefined) {
+                        url += "&cust=" + cust;
+                    }
                 }
-                else {
-                    window.location.href = "/purchase/CreateGRN?type=po&po=" + this.value;
+                alert(url);
+                window.location.href = url;
+            });
+            $('#selectCust').change(function () {
+                var po = $('#selectPO').val();
+                var cust = $('#selectCust').val();
+                var url = "/purchase/CreateGRN?type=po";
+                if (po != "0") {
+                    url += "&po=" + po;
+                    if (cust != "0") {
+                        url += "&cust=" + cust;
+                    }
                 }
+                window.location.href = url;
             });
         });
     </script>

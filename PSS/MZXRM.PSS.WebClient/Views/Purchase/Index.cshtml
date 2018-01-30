@@ -27,17 +27,17 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="col-lg-6">
-                <a class="btn btn-app" href="/Purchase/CreateOrder"><i class="fa fa-plus"></i> New PO</a>
-                <a class="btn btn-app" href="/Purchase/CreateGRN"><i class="fa fa-plus"></i> New GRN</a>
-                <a class="btn btn-app" href="/Purchase/CreateDCL"><i class="fa fa-plus"></i> New DCL</a>
-                <a class="btn btn-app" href="/Purchase/CreateLRN" disabled><i class="fa fa-plus"></i> New LRN</a>
+                <a class="btn btn-sm btn-default" href="/Purchase/CreateOrder"><i class="fa fa-plus"></i> New PO</a>
+                <a class="btn btn-sm btn-default" href="/Purchase/CreateGRN"><i class="fa fa-plus"></i> New GRN</a>
+                <a class="btn btn-sm btn-default" href="/Purchase/CreateDCL"><i class="fa fa-plus"></i> New DCL</a>
+                <a class="btn btn-sm btn-default" href="/Purchase/CreateLRN" disabled><i class="fa fa-plus"></i> New LRN</a>
             </div>
             <div class="col-lg-6">
-                <a href="/Purchase" class="btn btn-app"><i class="fa fa-list"></i> My POs List</a>
-                <a href="/Purchase/GRNList" class="btn btn-app"><i class="fa fa-list"></i> My GRNs List</a>
-                <a href="/Purchase/DCLList" class="btn btn-app"><i class="fa fa-list"></i> My DCLs List</a>
-                <a href="/Purchase/GRNList?type=loan" class="btn btn-app" disabled><i class="fa fa-list"></i> My LRNs List</a>
-                <a href="/Purchase/DownloadPOs" class="btn btn-app" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
+                <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
+                <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
+                <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
+                <a href="/Purchase/DownloadPOs" class="btn btn-sm btn-default" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
         </div>
         <!-- /.box-body -->
@@ -125,7 +125,7 @@
                     </div>
                 </form>
             </div>
-            <table id="data" class="table table-condensed table-hover">
+            <table @*id="data"*@ class="table table-condensed">
                 <thead>
                     <tr>
                         <th></th>
@@ -153,11 +153,11 @@
                                 <td>
                                     @if (po.Status == POStatus.Created || po.Status == POStatus.PendingApproval)
                                     {
-                                        <a href="/purchase/updateorder/@po.PONumber" class="btn btn-block btn-primary btn-sm">@po.PONumber</a>
+                                        <a href="/purchase/updateorder/@po.PONumber" >@po.PONumber</a>
                                     }
                                     else
                                     {
-                                        <a href="/purchase/orderdetail/@po.PONumber" class="btn btn-block btn-primary btn-sm">@po.PONumber</a>
+                                        <a href="/purchase/orderdetail/@po.PONumber" >@po.PONumber</a>
                                     }
                                 </td>
                                 <td>@po.PODate.ToShortDateString()</td>

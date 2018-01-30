@@ -25,11 +25,21 @@ namespace MZXRM.PSS.Business
             }
         }
 
-        internal static Reference GetCustomerRef(string id)
+        public static Reference GetCustomerRef(string id)
         {
             foreach (Customer c in Customers)
             {
                 if (c.Id == new Guid(id))
+                    return new Reference() { Id = c.Id, Name = c.Name };
+            }
+            ExceptionHandler.Error("Customer Not Found");
+            return null;
+        }
+        public static Reference GetCustomerPSL()
+        {
+            foreach (Customer c in Customers)
+            {
+                if (c.Name == "PSL")
                     return new Reference() { Id = c.Id, Name = c.Name };
             }
             ExceptionHandler.Error("Customer Not Found");

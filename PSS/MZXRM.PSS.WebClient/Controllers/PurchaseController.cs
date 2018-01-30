@@ -225,6 +225,10 @@ namespace PatrocoalSalesSystem.Controllers
                     return RedirectToAction("OrderDetail", new { id = PO.PONumber });
                 }
             }
+            else
+            {
+                ExceptionHandler.Error("Required data is missing");
+            }
             return RedirectToAction("Index");
         }
         public ActionResult CompleteOrder(string id)
@@ -249,12 +253,24 @@ namespace PatrocoalSalesSystem.Controllers
                 Response.Redirect("/Login");
             string grntype = !string.IsNullOrEmpty(Request.QueryString["type"]) ? Request.QueryString["type"] : "po";
             string poNumber = !string.IsNullOrEmpty(Request.QueryString["po"]) ? Request.QueryString["po"] : "";
+            string poDetail = !string.IsNullOrEmpty(Request.QueryString["cust"]) ? Request.QueryString["cust"] : "";
             if (grntype == "po")
             {
                 if (poNumber != "")
                 {
                     PurchaseOrder PO = PurchaseUtil.GetPO(poNumber);
                     ViewBag.ThisPO = PO;
+
+                    if (poDetail != "")
+                    {
+                        foreach (PODetail pod in PO.PODetailsList)
+                        {
+                            if (pod.Customer.Id.ToString() == poDetail)
+                            {
+                                ViewBag.ThisPOD = pod;
+                            }
+                        }
+                    }
                 }
             }
             ViewBag.GRNType = grntype;

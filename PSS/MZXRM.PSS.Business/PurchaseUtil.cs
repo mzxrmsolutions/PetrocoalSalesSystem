@@ -138,6 +138,8 @@ namespace MZXRM.PSS.Business
                 if (key == "Supplier" && string.IsNullOrEmpty(value)) return false;
                 if (key == "Lead" && string.IsNullOrEmpty(value)) return false;
                 if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) return false;
+                if (key == "BufferMin" && string.IsNullOrEmpty(value)) return false;
+                if (key == "BufferMax" && string.IsNullOrEmpty(value)) return false;
             }
             return valid;
         }
