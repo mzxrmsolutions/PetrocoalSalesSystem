@@ -10,7 +10,7 @@ namespace PatrocoalSalesSystem.Controllers
 {
     public class HomeController : Controller
     {
-        
+
         // GET: Home
         public ActionResult Index()
         {
@@ -18,7 +18,7 @@ namespace PatrocoalSalesSystem.Controllers
                 Common.ReloadData();
             Common.MyUrl = Request.RawUrl;
             if (!Common.isAuthorize())
-               return Redirect("/Login");
+                return Redirect("/Login");
 
             //User user = Common.CurrentUser;
             //DBUtil.SaveUser(user);
@@ -28,6 +28,11 @@ namespace PatrocoalSalesSystem.Controllers
 
             // ViewBag.AllPO = Common.AllPO;
             return View();
+        }
+        public ActionResult Reset()
+        {
+            Common.ReloadData();
+            return Redirect("/Home");
         }
     }
 }

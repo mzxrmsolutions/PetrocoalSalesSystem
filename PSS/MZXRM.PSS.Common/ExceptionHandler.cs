@@ -7,14 +7,22 @@ namespace MZXRM.PSS.Common
 {
     public class ExceptionHandler
     {
+        public static ExceptionType ExType;
         public static Exception Ex = null;
         public static void Error(string message)
         {
             Ex = new Exception(message);
+            ExType = ExceptionType.Error;
         }
         public static void Error(string message, Exception ex)
         {
             Ex = new Exception(message, ex);
+            ExType = ExceptionType.Error;
+        }
+        public static void Warning(string message)
+        {
+            Ex = new Exception(message);
+            ExType = ExceptionType.Warning;
         }
         public static void CloseException()
         {
@@ -31,4 +39,14 @@ namespace MZXRM.PSS.Common
            return Ex.Message;
         }
     }
+  public  enum ExceptionType
+    {
+        Trace,
+        Log,
+        Info,
+        Warning,
+        Error
+    }
 }
+
+    

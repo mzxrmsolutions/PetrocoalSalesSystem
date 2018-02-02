@@ -41,7 +41,7 @@
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-
+    <link rel="stylesheet" href="~/Content/Site.css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -62,6 +62,12 @@
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
+                        <li class="dropdown messages-menu">
+                            <a href="/Home/Reset">
+                                <i class="fa fa-refresh"></i>
+                            </a>
+                            
+                        </li>
                         <!-- Messages: style can be found in dropdown.less-->
                         <!-- User Account: style can be found in dropdown.less -->
                         @if (Common.CurrentUser != null && !string.IsNullOrEmpty(Common.CurrentUser.Name))
@@ -72,6 +78,7 @@
                                 <span class="hidden-xs">@Common.CurrentUser.Name</span>
                             </a>
                             <ul class="dropdown-menu">
+
                                 <!-- User image -->
                                 <li class="user-header">
                                     <img src="/pimg/@Common.CurrentUser.ProfileImage" class="img-circle" alt="@Common.CurrentUser.Name">
@@ -342,7 +349,7 @@
                 <!-- /.tab-pane -->
                 <!-- Settings tab content -->
                 <div class="tab-pane" id="control-sidebar-settings-tab">
-                    <a href="/Home?refresh=1"><i class="fa fa-refresh"></i> Refresh Data</a>
+                    <a href="/Home/reset"><i class="fa fa-refresh"></i> Refresh Data</a>
                     <form method="post">
                         <h3 class="control-sidebar-heading">General Settings</h3>
                         <div class="form-group">

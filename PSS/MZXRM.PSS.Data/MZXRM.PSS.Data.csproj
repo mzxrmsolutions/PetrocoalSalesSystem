@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\Constants.cs" />
     <Compile Include="Entity\Customer.cs" />
     <Compile Include="Entity\DutyClear.cs" />
     <Compile Include="Entity\GRN.cs" />

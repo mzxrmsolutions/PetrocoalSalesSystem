@@ -1,5 +1,10 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+@{
+    PurchaseOrder ThisPO = ViewBag.ThisPO;
+    PODetail ThisPOD = ViewBag.ThisPOD;
+}
 <section class="content-header">
     <h1>
         Purchases
@@ -11,165 +16,145 @@
         <li class="active">DCL</li>
     </ol>
 </section>
-@{PurchaseOrder ThisPO = ViewBag.ThisPO;}
+
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Purchase Menu</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
+    <form method="post" action="/purchase/createdcl">
+        @if (ExceptionHandler.HasException())
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                @ExceptionHandler.GetExceptionMessage()
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-primary margin">Purchase Orders</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList" class="btn btn-block btn-primary margin">GRNs</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/GRNList?type=loan" class="btn btn-block btn-primary margin">Loan</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/DCLList" class="btn btn-block btn-primary margin">Duty Clear</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateOrder" class="btn btn-block btn-primary margin">Create PO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN" class="btn btn-block btn-primary margin">Create GRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateGRN?type=loan" class="btn btn-block btn-primary margin">Create LRN</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/Purchase/CreateDCL" class="btn btn-block btn-primary margin">Create DCL</a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Purchase" class="btn btn-block btn-info margin">Purchase Orders</a>
-                </div>
-
-            </div>
-        </div>
-        <!-- /.box-body -->
-    </div>
-    <div class="box box-warning box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">New DCL</h3>
-        </div>
-        <form method="post" action="/purchase/createdcl">
+            { ExceptionHandler.CloseException(); }
+        }
+        <div class="box box-default box-solid">
             <!-- /.box-header -->
             <div class="box-body">
-                    <div class="row">
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                </div>
+                <div class="col-lg-6">
+                    @if (ThisPO != null)
+                    {<a class="btn btn-primary btn-sm" href="/Purchase/OrderDetail/@ThisPO.PONumber"><i class="fa fa-ship"></i> @ThisPO.PONumber</a> }
+                    <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
+                    <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
+                    <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
+        <div class="box box-warning box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">New DCL</h3>
+            </div>
+
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Select PO</label>
+                            <select class="form-control" name="PO" id="selectPO">
+                                <option value="0">--- Approved POs ---</option>
+                                @foreach (PurchaseOrder po in PurchaseUtil.ApprovedPOs)
+                                {
+                                    <option value="@po.PONumber" @((ThisPO != null && ThisPO.PONumber == po.PONumber) ? "selected" : "" )>@po.PONumber</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    @if (ThisPO != null)
+                    {
                         <div class="col-sm-2">
                             <div class="form-group">
-                                <label>Select PO</label>
-                                <select class="form-control" name="PO" id="selectPO">
-                                    <option value="0">--- Approved POs ---</option>
-                                    @foreach (PurchaseOrder po in PurchaseUtil.ApprovedPOs)
-                                    {
-                                        <option value="@po.PONumber" @((ThisPO != null && ThisPO.PONumber == po.PONumber) ? "selected" : "" )>@po.PONumber</option>
-                                    }
-                                </select>
+                                <label>PO Date</label>
+                                <p>@ThisPO.PODate.ToShortDateString()</p>
                             </div>
                         </div>
-                        @if (ThisPO != null)
-                        {
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>PO Date</label>
-                                    <p>@ThisPO.PODate.ToShortDateString()</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <label>Origin:</label>
-                                <p>@ThisPO.Origin.Value</p>
-                            </div>
-                            <div class="col-sm-1">
-                                <label>Size:</label>
-                                <p>@ThisPO.Size.Value</p>
-                            </div>
+                        <div class="col-sm-1">
+                            <label>Origin:</label>
+                            <p>@ThisPO.Origin.Value</p>
+                        </div>
+                        <div class="col-sm-1">
+                            <label>Size:</label>
+                            <p>@ThisPO.Size.Value</p>
+                        </div>
                             <div class="col-sm-2">
                                 <label>Vessel:</label>
                                 <p>@ThisPO.Vessel.Value</p>
                             </div>
-                            
 
-                        }
-                    </div>
-                    @if (ThisPO != null)
-                    {
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>DCL Date:</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input type="text" class="form-control pull-right" data-selector="date" name="DCLDate" value="@DateTime.Now.ToShortDateString()">
+
+                    }
+                </div>
+                @if (ThisPO != null)
+                {
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>DCL Date:</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
                                     </div>
-                                    <!-- /.input group -->
+                                    <input type="text" class="form-control pull-right" data-selector="date" name="DCLDate" value="@DateTime.Now.ToShortDateString()">
                                 </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>Customer</label>
-                                    <select class="form-control" name="Customer">
-                                        <option value="0">--- Customer ---</option>
-                                        @foreach (PODetail pod in ThisPO.PODetailsList)
-                                        {
-                                            <option value="@pod.Customer.Id">@pod.Customer.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>Store</label>
-                                    <select class="form-control" name="Store">
-                                        <option value="0">--- Store ---</option>
-                                        @foreach (Reference item in Common.Store)
-                                        {
-                                            <option value="@item.Id">@item.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>Cleared Quantity (Ton)</label>
-                                    <input type="text" class="form-control" name="Quantity">
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>Remarks</label>
-                                    <input type="text" class="form-control" name="Remarks">
-                                </div>
+                                <!-- /.input group -->
                             </div>
                         </div>
-                    }
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Customer</label>
+                                <select class="form-control" name="Customer">
+                                    <option value="0">--- Customer ---</option>
+                                    @foreach (PODetail pod in ThisPO.PODetailsList)
+                                    {
+                                        <option value="@pod.Customer.Id">@pod.Customer.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Store</label>
+                                <select class="form-control" name="Store">
+                                    <option value="0">--- Store ---</option>
+                                    @foreach (Reference item in Common.Store)
+                                    {
+                                        <option value="@item.Id">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Cleared Quantity (Ton)</label>
+                                <input type="text" class="form-control" name="Quantity">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <input type="text" class="form-control" name="Remarks">
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <div class="col-sm-3">
-                    <button type="submit" class="btn btn-success" name="btn" value="Save">Submit</button>
-                    <button type="reset" class="btn btn-danger" name="btn" value="Reset">Reset</button>
-                    @*<input type="hidden" name="PO" value='@(ThisPO!=null?ThisPO.PONumber:"")' />*@
-                </div>
+                
             </div>
-        </form>
-    </div>
-    <!-- /.box -->
+
+
+        </div>
+        <!-- /.box -->
+    </form>
 </section>
 @section scripts
 {

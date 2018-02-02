@@ -31,23 +31,27 @@
 
                 @if (ThisPO.Status == POStatus.Created || ThisPO.Status == POStatus.PendingApproval)
                 {
-                    <a href="/Purchase/UpdateOrder/@ThisPO.PONumber" class="btn btn-app"><i class="fa fa-pencil"></i> Edit</a>
-                    <a href="/Purchase/UpdateOrder/@ThisPO.PONumber" class="btn btn-app" disabled><i class="fa fa-thumbs-up"></i> Approve</a>
+                    <a href="/Purchase/UpdateOrder/@ThisPO.PONumber" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                    <a href="/Purchase/UpdateOrder/@ThisPO.PONumber" class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Approve</a>
                 }
                 @if (ThisPO.Status == POStatus.InProcess)
                 {
-                    <a href="/Purchase/CompleteOrder/@ThisPO.PONumber" class="btn btn-app"><i class="fa fa-check"></i> Complete</a>
-                    <a href="/Purchase/CreateGRN?po=@ThisPO.PONumber" class="btn btn-app"><i class="fa fa-plus"></i> New GRN</a>
-                    <a href="/Purchase/CreateDCL?po=@ThisPO.PONumber" class="btn btn-app"><i class="fa fa-plus"></i> New DCL</a>
+                    <a href="/Purchase/CompleteOrder/@ThisPO.PONumber" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Complete</a>
+                    <a href="/Purchase/CreateGRN?po=@ThisPO.PONumber" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> New GRN</a>
+                    <a href="/Purchase/CreateDCL?po=@ThisPO.PONumber" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> New DCL</a>
                 }
-                <a class="btn btn-app" href="/Purchase/UpdateOrder/@ThisPO.PONumber" disabled><i class="fa fa-remove"></i> Cancel</a>
+                @if (ThisPO.Status != POStatus.Cancelled)
+                {
+                    <a class="btn btn-sm btn-danger" href="/Purchase/CancelPO/@ThisPO.PONumber"><i class="fa fa-ban"></i> Cancel</a>
+                }
+
             </div>
             <div class="col-lg-6">
-                <a href="/Purchase" class="btn btn-app"><i class="fa fa-list"></i> My POs List</a>
-                <a href="/Purchase/GRNList" class="btn btn-app"><i class="fa fa-list"></i> My GRNs List</a>
-                <a href="/Purchase/DCLList" class="btn btn-app"><i class="fa fa-list"></i> My DCLs List</a>
-                <a href="/Purchase/GRNList?type=loan" class="btn btn-app" disabled><i class="fa fa-list"></i> My LRNs List</a>
-                <a href="/Purchase/DownloadPOs" class="btn btn-app" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
+                <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
+                <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
+                <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
+                <a href="/Purchase/DownloadPOs" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
         </div>
         <!-- /.box-body -->
@@ -64,6 +68,7 @@
                 <div class="col-sm-1">
                     <label>PO No:</label>
                     <p>@ThisPO.PONumber</p>
+                    <p>@ThisPO.isValid</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Date:</label>

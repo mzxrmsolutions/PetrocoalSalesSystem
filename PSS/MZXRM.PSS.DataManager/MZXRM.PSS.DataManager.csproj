@@ -46,7 +46,7 @@
     <Compile Include="Common\CommandBuilder.cs" />
     <Compile Include="Common\CommonDataManager.cs" />
     <Compile Include="Common\DataMap.cs" />
-    <Compile Include="Common\StoreDataManager.cs" />
+    <Compile Include="StoreDataManager.cs" />
     <Compile Include="CustomerDataManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PurchaseDataManager.cs" />

@@ -34,6 +34,8 @@ namespace MZXRM.PSS.Data
         public decimal BufferQuantityMax;
         public decimal BufferQuantityMin;
 
+        public string Remarks;
+
         public List<PODetail> PODetailsList;
         public decimal TotalQuantity;
 
@@ -41,6 +43,8 @@ namespace MZXRM.PSS.Data
         public decimal Received;
         
         public decimal DutyCleared;
+
+        public bool isValid;
         public bool isPSL=true;
     }
     public enum POStatus

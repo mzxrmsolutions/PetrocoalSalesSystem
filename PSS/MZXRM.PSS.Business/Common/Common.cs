@@ -19,9 +19,9 @@ namespace MZXRM.PSS.Business
 
         public static void ReloadData()
         {
-            PurchaseUtil.AllPOs = PurchaseDataManager.ReadAllPO();
-            UserUtil.Users = UserDataManager.GetAllUsers();
-            //CurrentUser = null;
+            PurchaseDataManager.ResetCache();
+            
+            CurrentUser = null;
         }
 
         public static List<Role> AllRole;

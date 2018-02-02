@@ -32,22 +32,24 @@
                 <div class="col-lg-6">
                     <input type="hidden" name="ponumber" value="@ThisPO.PONumber" />
                     <input type="hidden" name="poid" value="@ThisPO.Id" />
-                    <button type="submit" class="btn btn-app" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
-                    <button type="reset" class="btn btn-app" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
 
                     @if (ThisPO.Status == POStatus.Created)
-                    {<button type="submit" class="btn btn-app" name="btn" value="ApprovalSubmit"><i class="fa fa-arrow-right"></i>Submit for Approval</button>}
+                    {<button type="submit" class="btn btn-sm btn-success" name="btn" value="ApprovalSubmit"><i class="fa fa-arrow-right"></i>Submit for Approval</button>}
                     @if (ThisPO.Status == POStatus.PendingApproval)
-                    {<button type="submit" class="btn btn-app" name="btn" value="Approve"><i class="fa fa-thumbs-up"></i> Approve</button>                    }
+                    {<button type="submit" class="btn btn-sm btn-success" name="btn" value="Approve"><i class="fa fa-thumbs-up"></i> Approve</button>                    }
 
-                    <a class="btn btn-app" href="/Purchase/UpdateOrder/@ThisPO.PONumber" disabled><i class="fa fa-remove"></i> Cancel</a>
+                    <a class="btn btn-sm btn-danger" href="/Purchase/CancelPO/@ThisPO.PONumber"><i class="fa fa-ban"></i> Cancel</a>
                 </div>
                 <div class="col-lg-6">
-                    <a href="/Purchase" class="btn btn-app"><i class="fa fa-list"></i> My POs List</a>
-                    <a href="/Purchase/GRNList" class="btn btn-app"><i class="fa fa-list"></i> My GRNs List</a>
-                    <a href="/Purchase/DCLList" class="btn btn-app"><i class="fa fa-list"></i> My DCLs List</a>
-                    <a href="/Purchase/GRNList?type=loan" class="btn btn-app" disabled><i class="fa fa-list"></i> My LRNs List</a>
-                    <a href="/Purchase/DownloadPOs" class="btn btn-app" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                    @if (ThisPO != null)
+                    {<a class="btn btn-primary btn-sm" href="/Purchase/OrderDetail/@ThisPO.PONumber"><i class="fa fa-ship"></i> @ThisPO.PONumber</a> }
+                    <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
+                    <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
+                    <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
+                    <a href="/Purchase/DownloadPOs" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -62,6 +64,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Origin</label>
+                            <label class="required">*</label>
                             <select class="form-control" name="Origin">
                                 <option value="0">--- Origin ---</option>
                                 @foreach (Item item in Common.Origin)
@@ -74,6 +77,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Size</label>
+                            <label class="required">*</label>
                             <select class="form-control" name="Size">
                                 <option value="0">--- Size ---</option>
                                 @foreach (Item item in Common.Size)
@@ -86,6 +90,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Vessel</label>
+                            <label class="required">*</label>
                             <select class="form-control" name="Vessel">
                                 <option value="0">--- Vessel ---</option>
                                 @foreach (Item item in Common.Vessel)
@@ -98,6 +103,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>PO Date:</label>
+                            <label class="required">*</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
@@ -110,12 +116,14 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Target Days</label>
+                            <label class="required">*</label>
                             <input type="text" class="form-control" name="TargetDays" value="@ThisPO.TargetDays">
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Supplier</label>
+                            <label class="required">*</label>
                             <select class="form-control" name="Supplier">
                                 <option>--- Supplier ---</option>
                                 @foreach (Item item in Common.Supplier)
@@ -128,6 +136,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Lead</label>
+                            <label class="required">*</label>
                             <select class="form-control" name="Lead">
                                 <option>--- Lead ---</option>
                                 @foreach (User item in UserUtil.Users)
@@ -146,12 +155,14 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Min Quantity Buffer (%)</label>
+                            <label class="required">*</label>
                             <input type="text" class="form-control" name="BufferMin" value="@ThisPO.BufferQuantityMin">
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Max Quantity Buffer (%)</label>
+                            <label class="required">*</label>
                             <input type="text" class="form-control" name="BufferMax" value="@ThisPO.BufferQuantityMax">
                         </div>
                     </div>

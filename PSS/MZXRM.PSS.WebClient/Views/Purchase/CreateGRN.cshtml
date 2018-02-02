@@ -33,16 +33,17 @@
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="col-lg-6">
-                    <button type="submit" class="btn btn-sm" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
-                    <button type="reset" class="btn btn-sm" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
-                    @if (ThisPO != null)
-                    {<a class="btn btn-default btn-sm" href="/Purchase/OrderDetail/@ThisPO.PONumber"><i class="fa fa-plus"></i> @ThisPO.PONumber</a> }
+                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                    
                 </div>
                 <div class="col-lg-6">
-                    <a href="/Purchase" class="btn btn-default btn-sm"> My POs List</a>
-                    <a href="/Purchase/GRNList" class="btn btn-default btn-sm"> My GRNs List</a>
-                    <a href="/Purchase/DCLList" class="btn btn-default btn-sm"> My DCLs List</a>
-                    <a href="/Purchase/GRNList?type=loan" class="btn btn-default btn-sm" disabled> My LRNs List</a>
+                    @if (ThisPO != null)
+                    {<a class="btn btn-primary btn-sm" href="/Purchase/OrderDetail/@ThisPO.PONumber"><i class="fa fa-ship"></i> @ThisPO.PONumber</a> }
+                    <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
+                    <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
+                    <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
+                    <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
                 </div>
             </div>
             <!-- /.box-body -->

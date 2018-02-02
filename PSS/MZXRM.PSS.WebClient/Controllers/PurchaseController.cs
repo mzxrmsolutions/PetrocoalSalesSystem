@@ -13,6 +13,7 @@ namespace PatrocoalSalesSystem.Controllers
 {
     public class PurchaseController : Controller
     {
+        #region /Purchase/Index
         // GET: Purchase
         //[AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Index()
@@ -121,6 +122,9 @@ namespace PatrocoalSalesSystem.Controllers
             }
             return View();
         }
+        #endregion
+
+        #region /Purchase/OrderDetail
         public ActionResult OrderDetail(string id)
         {
             Common.MyUrl = Request.RawUrl;
@@ -134,9 +138,13 @@ namespace PatrocoalSalesSystem.Controllers
             ViewBag.CanEdit = false;
             if (PO.Status == POStatus.Created || PO.Status == POStatus.PendingApproval)
                 ViewBag.CanEdit = true;
+            if (!PO.isValid)
+                ExceptionHandler.Warning("Quantity limit exceed");
             return View();
         }
-        #region CreateOrder
+        #endregion
+
+        #region /Purchase/CreateOrder
         public ActionResult CreateOrder()
         {
             Common.MyUrl = Request.RawUrl;
@@ -162,21 +170,25 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                if (PurchaseUtil.ValidateCreatePOForm(values))
+                string formErrors = PurchaseUtil.ValidateCreatePOForm(values);
+                if (formErrors == "")
                 {
                     PurchaseOrder PO = PurchaseUtil.CreatePO(values);
                     if (PO != null)
                         Response.Redirect("/Purchase/UpdateOrder/" + PO.PONumber);
                 }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
             }
             catch (Exception ex)
             {
                 ExceptionHandler.Error("Error! " + ex.Message, ex);
             }
-            return View();
+            return View(form);
         }
         #endregion
-        #region UpdateOrder
+     
+        #region /Purchase/UpdateOrder
         public ActionResult UpdateOrder(string id)
         {
             Common.MyUrl = Request.RawUrl;
@@ -207,7 +219,8 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 values.Add(Key, form[Key]);
             }
-            if (PurchaseUtil.ValidateCreatePOForm(values))
+            string formErrors = PurchaseUtil.ValidateCreatePOForm(values);
+            if (formErrors == "")
             {
                 if (form["btn"] != null && form["btn"] == "Save")
                 {
@@ -227,25 +240,35 @@ namespace PatrocoalSalesSystem.Controllers
             }
             else
             {
-                ExceptionHandler.Error("Required data is missing");
+                ExceptionHandler.Error("Validation! " + formErrors);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("UpdateOrder", new { id = values["ponumber"] });
         }
         public ActionResult CompleteOrder(string id)
         {
-            Common.MyUrl = Request.RawUrl;
-            if (!Common.isAuthorize())
-                Response.Redirect("/Login");
-            if (string.IsNullOrEmpty(id))
-                Response.Redirect("/Purchase");
-            PurchaseOrder PO = PurchaseUtil.GetPO(id);
-            if (PO == null)
-                return Redirect("/Purchase");
-            PurchaseUtil.CompleteOrder(PO);
-            return RedirectToAction("OrderDetail", new { id = PO.PONumber });
+            
+                Common.MyUrl = Request.RawUrl;
+                if (!Common.isAuthorize())
+                    Response.Redirect("/Login");
+                if (string.IsNullOrEmpty(id))
+                    Response.Redirect("/Purchase");
+            try
+            {
+                PurchaseOrder PO = PurchaseUtil.GetPO(id);
+                if (PO == null)
+                    return Redirect("/Purchase");
+                PurchaseUtil.CompleteOrder(PO);
+                return RedirectToAction("OrderDetail", new { id = PO.PONumber });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
         }
         #endregion
-        #region CreateGRN
+
+        #region /Purchase/CreateGRN
         public ActionResult CreateGRN()
         {
             Common.MyUrl = Request.RawUrl;
@@ -276,7 +299,6 @@ namespace PatrocoalSalesSystem.Controllers
             ViewBag.GRNType = grntype;
             return View();
         }
-
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateGRN(FormCollection form)
         {
@@ -300,6 +322,9 @@ namespace PatrocoalSalesSystem.Controllers
             }
             return View();
         }
+        #endregion
+        
+        #region /Purchase/UpdateGRN
         public ActionResult UpdateGRN(string id)
         {
             Common.MyUrl = Request.RawUrl;
@@ -338,7 +363,8 @@ namespace PatrocoalSalesSystem.Controllers
             return RedirectToAction("Index");
         }
         #endregion
-        #region CreateDutyClear
+
+        #region /Purchase/CreateDCL
         public ActionResult CreateDCL()
         {
             Common.MyUrl = Request.RawUrl;
@@ -390,6 +416,7 @@ namespace PatrocoalSalesSystem.Controllers
         }
         #endregion
 
+        #region /Purchase/UpdateDCL
         public ActionResult UpdateDCL(string id)
         {
             Common.MyUrl = Request.RawUrl;
@@ -427,6 +454,8 @@ namespace PatrocoalSalesSystem.Controllers
             }
             return RedirectToAction("Index");
         }
+        #endregion
+
         public ActionResult GRNList()
         {
             Common.MyUrl = Request.RawUrl;
@@ -476,10 +505,6 @@ namespace PatrocoalSalesSystem.Controllers
             ViewBag.GRNs = filteredGRN;
             return View();
         }
-
-
-
-
 
         public ActionResult Index2()
         {

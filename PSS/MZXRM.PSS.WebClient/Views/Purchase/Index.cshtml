@@ -37,7 +37,7 @@
                 <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
                 <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
                 <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
-                <a href="/Purchase/DownloadPOs" class="btn btn-sm btn-default" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a href="/Purchase/DownloadPOs" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
         </div>
         <!-- /.box-body -->
@@ -166,26 +166,26 @@
                                 <td>@po.Size.Value</td>
                                 <td>@po.Vessel.Value</td>
                                 <td><a href="/Customer/@pod.Customer.Id">@pod.Customer.Name</a></td>
-                                <td align="right">@pod.Quantity.ToString("#,##,###.000")</td>
+                                <td align="right">@pod.Quantity.ToString(Constants.QuantityFormat)</td>
                                 <td align="right">
                                     @if (pod.Received > 0)
                                     {
                                         <span class="badge bg-green">
-                                            @pod.Received.ToString("#,##,###.000")
+                                            @pod.Received.ToString(Constants.QuantityFormat)
                                         </span>
                                     }
                                 </td>
                                 <td align="right">
                                     @if (pod.Remaining > 0)
                                     {
-                                        @pod.Remaining.ToString("#,##,###.000");
+                                        @pod.Remaining.ToString(Constants.QuantityFormat);
                                     }
                                 </td>
                                 <td align="right">
                                     @if (pod.DutyCleared > 0)
                                     {
                                         <span class="badge bg-green">
-                                            @pod.DutyCleared.ToString("#,##,###.000")
+                                            @pod.DutyCleared.ToString(Constants.QuantityFormat)
                                         </span>
                                     }
                                 </td>
@@ -193,7 +193,7 @@
                                     @if (pod.DutyRemaining > 0)
                                     {
                                         <span class="badge bg-red">
-                                            @pod.DutyRemaining.ToString("#,##,###.000")
+                                            @pod.DutyRemaining.ToString(Constants.QuantityFormat)
                                         </span>}
                                 </td>
 

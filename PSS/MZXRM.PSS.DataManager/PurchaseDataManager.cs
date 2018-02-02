@@ -18,6 +18,8 @@ namespace MZXRM.PSS.DataManager
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         static bool readFromDB = true;
         static string sessionName = "AllPurchaseOrders";
+       
+        #region Business need
         public static List<PurchaseOrder> ReadAllPO()
         {
             List<PurchaseOrder> AllPOs = new List<PurchaseOrder>();
@@ -25,10 +27,10 @@ namespace MZXRM.PSS.DataManager
                 readFromDB = true;
             if (readFromDB)
             {
-                DataTable DTpo = DB_ReadAllPO();
-                DataTable DTpod = DB_ReadAllPODetail();
-                DataTable DTgrn = DB_ReadAllGRN();
-                DataTable DTdcl = DB_ReadAllDCL();
+                DataTable DTpo = GetAllPOs();
+                DataTable DTpod = GetAllPODs();
+                DataTable DTgrn = GetAllGRNs();
+                DataTable DTdcl = GetAllDCLs();
              List<PurchaseOrder>   allPOs = DataMap.MapPOData(DTpo, DTpod, DTgrn, DTdcl);
                 foreach (PurchaseOrder PO in allPOs)
                 {
@@ -42,8 +44,11 @@ namespace MZXRM.PSS.DataManager
             AllPOs = HttpContext.Current.Session[sessionName] as List<PurchaseOrder>;
             return AllPOs;
         }
-
-        private static PurchaseOrder CalculatePO(PurchaseOrder PO)
+        public static void ResetCache()
+        {
+            readFromDB = true;
+        }
+        public static PurchaseOrder CalculatePO(PurchaseOrder PO)
         {
             if (PO == null)
                 return null;
@@ -51,8 +56,11 @@ namespace MZXRM.PSS.DataManager
             PO.TotalQuantity = 0;
             PO.Received = 0;
             PO.DutyCleared = 0;
+            PO.isPSL = false;
             foreach (PODetail pod in PO.PODetailsList)
             {
+                if (pod.Customer.Id == CustomerDataManager.GetDefaultRef().Id)
+                    PO.isPSL = true;
                 pod.Received = 0;
                 pod.DutyCleared = 0;
                 pod.Wastage = 0;
@@ -65,6 +73,8 @@ namespace MZXRM.PSS.DataManager
                 {
                     pod.DutyCleared += dc.Quantity;
                 }
+
+
                 pod.Wastage = pod.DutyCleared * pod.AllowedWaistage / 100;
                 pod.Remaining = pod.Quantity - pod.Received;
                 pod.DutyRemaining = pod.Received - pod.DutyCleared;
@@ -73,29 +83,34 @@ namespace MZXRM.PSS.DataManager
                 PO.Received += pod.Received;
                 PO.DutyCleared += pod.DutyCleared;
             }
+            PO.isValid = false;
+            decimal maxAllowed = PO.TotalQuantity * PO.BufferQuantityMax / 100;
+            decimal minAllowed = PO.TotalQuantity * PO.BufferQuantityMin / 100;
+            if (PO.Received <= (PO.TotalQuantity + maxAllowed))
+                PO.isValid = true;
+
             return PO;
         }
-
         public static bool SavePO(PurchaseOrder PO)
         {
             if (PO.Id == Guid.Empty)
             {
-                Guid newPOId = DB_CreatePO(PO);
+                Guid newPOId = CreatePO(PO);
                 PO.Id = newPOId;
             }
             else
-                DB_UpdatePO(PO);
+                UpdatePO(PO);
             foreach (PODetail pod in PO.PODetailsList)
             {
                 if (pod.Id == Guid.Empty)
                 {
                     pod.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
-                    Guid newPODId = DB_CreatePODetail(pod);
+                    Guid newPODId = CreatePODetail(pod);
                     pod.Id = newPODId;
                 }
                 else
                 {
-                    DB_UpdatePODetail(pod);
+                    UpdatePODetail(pod);
                 }
                 foreach (GRN grn in pod.GRNsList)
                 {
@@ -103,12 +118,12 @@ namespace MZXRM.PSS.DataManager
                     {
                         grn.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                         grn.PODetail = new Reference() { Id = pod.Id, Name = PO.PONumber };
-                        Guid newGrnId = DB_CreateGRN(grn);
+                        Guid newGrnId = CreateGRN(grn);
                         grn.Id = newGrnId;
                     }
                     else
                     {
-                        DB_UpdateGRN(grn);
+                        UpdateGRN(grn);
                     }
                 }
                 foreach (DutyClear dcl in pod.DutyClearsList)
@@ -117,12 +132,12 @@ namespace MZXRM.PSS.DataManager
                     {
                         dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                         dcl.PODetail = new Reference() { Id = pod.Id, Name = PO.PONumber };
-                        Guid newDclId = DB_CreateDCL(dcl);
+                        Guid newDclId = CreateDCL(dcl);
                         dcl.Id = newDclId;
                     }
                     else
                     {
-                        DB_UpdateDCL(dcl);
+                        UpdateDCL(dcl);
                     }
                 }
             }
@@ -137,8 +152,10 @@ namespace MZXRM.PSS.DataManager
             ReadAllPO();*/
             return true;
         }
-
-        public static void DB_UpdatePO(PurchaseOrder PO)
+        #endregion
+       
+        #region DB Update functions
+        public static void UpdatePO(PurchaseOrder PO)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -153,7 +170,7 @@ namespace MZXRM.PSS.DataManager
                 command.ExecuteNonQuery(); //execute query
             }
         }
-        public static void DB_UpdatePODetail(PODetail POD)
+        public static void UpdatePODetail(PODetail POD)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -168,7 +185,7 @@ namespace MZXRM.PSS.DataManager
                 command.ExecuteNonQuery(); //execute query
             }
         }
-        public static void DB_UpdateGRN(GRN Grn)
+        public static void UpdateGRN(GRN Grn)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -183,7 +200,7 @@ namespace MZXRM.PSS.DataManager
                 command.ExecuteNonQuery(); //execute query
             }
         }
-        public static void DB_UpdateDCL(DutyClear Dcl)
+        public static void UpdateDCL(DutyClear Dcl)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -198,8 +215,10 @@ namespace MZXRM.PSS.DataManager
                 command.ExecuteNonQuery(); //execute query
             }
         }
-
-        public static Guid DB_CreatePO(PurchaseOrder PO)
+        #endregion
+        
+        #region DB Create functions
+        public static Guid CreatePO(PurchaseOrder PO)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -216,7 +235,7 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
-        public static Guid DB_CreatePODetail(PODetail PODetail)
+        public static Guid CreatePODetail(PODetail PODetail)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -233,7 +252,7 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
-        public static Guid DB_CreateGRN(GRN GRN)
+        public static Guid CreateGRN(GRN GRN)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -250,7 +269,7 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
-        public static Guid DB_CreateDCL(DutyClear DCL)
+        public static Guid CreateDCL(DutyClear DCL)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -267,7 +286,10 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
-        private static DataTable DB_ReadAllPO()
+        #endregion
+       
+        #region DB Get all functions
+        private static DataTable GetAllPOs()
         {
             try
             {
@@ -292,7 +314,7 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all PO from DataBase", ex);
             }
         }
-        private static DataTable DB_ReadAllPODetail()
+        private static DataTable GetAllPODs()
         {
             try
             {
@@ -314,10 +336,10 @@ namespace MZXRM.PSS.DataManager
             }
             catch (Exception ex)
             {
-                throw new Exception("Error! Get all PO from DataBase", ex);
+                throw new Exception("Error! Get all POD from DataBase", ex);
             }
         }
-        private static DataTable DB_ReadAllGRN()
+        private static DataTable GetAllGRNs()
         {
             try
             {
@@ -339,10 +361,10 @@ namespace MZXRM.PSS.DataManager
             }
             catch (Exception ex)
             {
-                throw new Exception("Error! Get all PO from DataBase", ex);
+                throw new Exception("Error! Get all GRN from DataBase", ex);
             }
         }
-        private static DataTable DB_ReadAllDCL()
+        private static DataTable GetAllDCLs()
         {
             try
             {
@@ -364,9 +386,14 @@ namespace MZXRM.PSS.DataManager
             }
             catch (Exception ex)
             {
-                throw new Exception("Error! Get all PO from DataBase", ex);
+                throw new Exception("Error! Get all DCL from DataBase", ex);
             }
         }
+        #endregion
+        
+        #region DB Get by ID functions
+        #endregion
+        
 
 
 
