@@ -68,7 +68,7 @@
                             <select class="form-control select2" name="Customer">
                                 <option value="0">All Customer</option>
                                 <option value="PSL" @(ViewBag.SelectedCustomer == "PSL" ? " selected " : " ")>PSL</option>
-                                @foreach (Customer cust in CustomerUtil.Customers)
+                                @foreach (Customer cust in CustomerManager.AllCustomers)
                                 {
                                     <option value="@cust.Id" @(cust.Id.ToString() == ViewBag.SelectedCustomer ? " selected " : " ")>@cust.Name</option>
                                 }

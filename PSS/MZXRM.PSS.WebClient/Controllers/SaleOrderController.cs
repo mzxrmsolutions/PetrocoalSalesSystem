@@ -25,7 +25,7 @@ namespace PatrocoalSalesSystem.Controllers
             //string SelectedVessel = ViewBag.SelectedVessel = !string.IsNullOrEmpty(Request.Form["Vessel"]) ? Request.Form["Vessel"] : "0";
             //string SelectedCustomer = ViewBag.SelectedCustomer = !string.IsNullOrEmpty(Request.Form["Customer"]) ? Request.Form["Customer"] : "0";
 
-            List<SaleOrder> allSO = SaleUtil.AllSOs;
+            List<SaleOrder> allSO = SaleManager.AllSOs;
             List<SaleOrder> filteredSO = new List<SaleOrder>();
 
             foreach (SaleOrder so in allSO)
@@ -114,7 +114,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                SaleOrder SO = SaleUtil.CreateSO(values);
+                SaleOrder SO = SaleManager.CreateSO(values);
                 if (SO != null)
                     Response.Redirect("/SaleOrder/UpdateOrder" + SO.SONumber);
             }

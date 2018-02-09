@@ -61,7 +61,7 @@
                             <label>Select PO</label>
                             <select class="form-control" name="PO" id="selectPO">
                                 <option value="0">--- Approved POs ---</option>
-                                @foreach (PurchaseOrder po in PurchaseUtil.ApprovedPOs)
+                                @foreach (PurchaseOrder po in PurchaseManager.ApprovedPOs)
                                 {
                                     <option value="@po.PONumber" @((ThisPO != null && ThisPO.PONumber == po.PONumber) ? "selected" : "" )>@po.PONumber</option>
                                 }

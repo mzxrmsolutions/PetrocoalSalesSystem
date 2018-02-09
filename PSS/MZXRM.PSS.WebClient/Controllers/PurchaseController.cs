@@ -31,7 +31,7 @@ namespace PatrocoalSalesSystem.Controllers
                 string SelectedCustomer = ViewBag.SelectedCustomer = !string.IsNullOrEmpty(Request.Form["Customer"]) ? Request.Form["Customer"] : "0";
                 string PODate = ViewBag.PODate = !string.IsNullOrEmpty(Request.Form["PODate"]) ? Request.Form["PODate"] : "";
 
-                List<PurchaseOrder> allPO = PurchaseUtil.AllPOs;
+                List<PurchaseOrder> allPO = PurchaseManager.AllPOs;
                 List<PurchaseOrder> filteredPO = new List<PurchaseOrder>();
 
                 foreach (PurchaseOrder po in allPO)
@@ -131,7 +131,7 @@ namespace PatrocoalSalesSystem.Controllers
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
 
-            PurchaseOrder PO = PurchaseUtil.GetPO(id);
+            PurchaseOrder PO = PurchaseManager.GetPO(id);
             if (PO == null)
                 return Redirect("/Purchase");
             ViewBag.ThisPO = PO;
@@ -170,10 +170,10 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = PurchaseUtil.ValidateCreatePOForm(values);
+                string formErrors = PurchaseManager.ValidateCreatePOForm(values);
                 if (formErrors == "")
                 {
-                    PurchaseOrder PO = PurchaseUtil.CreatePO(values);
+                    PurchaseOrder PO = PurchaseManager.CreatePO(values);
                     if (PO != null)
                         Response.Redirect("/Purchase/UpdateOrder/" + PO.PONumber);
                 }
@@ -196,7 +196,7 @@ namespace PatrocoalSalesSystem.Controllers
                 Response.Redirect("/Login");
             if (string.IsNullOrEmpty(id))
                 Response.Redirect("/Purchase/CreateOrder");
-            PurchaseOrder PO = PurchaseUtil.GetPO(id);
+            PurchaseOrder PO = PurchaseManager.GetPO(id);
             if (PO == null)
                 return Redirect("/Purchase/CreateOrder");
             ViewBag.ThisPO = PO;
@@ -219,22 +219,22 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 values.Add(Key, form[Key]);
             }
-            string formErrors = PurchaseUtil.ValidateCreatePOForm(values);
+            string formErrors = PurchaseManager.ValidateCreatePOForm(values);
             if (formErrors == "")
             {
                 if (form["btn"] != null && form["btn"] == "Save")
                 {
-                    PurchaseOrder PO = PurchaseUtil.UpdatePO(values);
+                    PurchaseOrder PO = PurchaseManager.UpdatePO(values);
                     return RedirectToAction("UpdateOrder", new { id = PO.PONumber });
                 }
                 if (form["btn"] != null && form["btn"] == "ApprovalSubmit")
                 {
-                    PurchaseOrder PO = PurchaseUtil.SubmitPO(values);
+                    PurchaseOrder PO = PurchaseManager.SubmitPO(values);
                     return RedirectToAction("OrderDetail", new { id = PO.PONumber });
                 }
                 if (form["btn"] != null && form["btn"] == "Approve")
                 {
-                    PurchaseOrder PO = PurchaseUtil.ApprovePO(values);
+                    PurchaseOrder PO = PurchaseManager.ApprovePO(values);
                     return RedirectToAction("OrderDetail", new { id = PO.PONumber });
                 }
             }
@@ -254,10 +254,10 @@ namespace PatrocoalSalesSystem.Controllers
                     Response.Redirect("/Purchase");
             try
             {
-                PurchaseOrder PO = PurchaseUtil.GetPO(id);
+                PurchaseOrder PO = PurchaseManager.GetPO(id);
                 if (PO == null)
                     return Redirect("/Purchase");
-                PurchaseUtil.CompleteOrder(PO);
+                PurchaseManager.CompleteOrder(PO);
                 return RedirectToAction("OrderDetail", new { id = PO.PONumber });
             }
             catch (Exception ex)
@@ -281,7 +281,7 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 if (poNumber != "")
                 {
-                    PurchaseOrder PO = PurchaseUtil.GetPO(poNumber);
+                    PurchaseOrder PO = PurchaseManager.GetPO(poNumber);
                     ViewBag.ThisPO = PO;
 
                     if (poDetail != "")
@@ -316,7 +316,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                GRN GRN = PurchaseUtil.CreateGRN(values);
+                GRN GRN = PurchaseManager.CreateGRN(values);
                 if (GRN != null)
                     Response.Redirect("/Purchase/OrderDetail/" + GRN.PO.Name);
             }
@@ -332,11 +332,11 @@ namespace PatrocoalSalesSystem.Controllers
                 return Redirect("/Login");
             if (string.IsNullOrEmpty(id))
                 return Redirect("/Purchase");
-            GRN Grn = PurchaseUtil.GetGRN(id);
+            GRN Grn = PurchaseManager.GetGRN(id);
             if (Grn == null)
                 return Redirect("/Purchase");
             ViewBag.ThisGRN = Grn;
-            ViewBag.ThisPO = PurchaseUtil.GetPO(Grn.PO.Name);
+            ViewBag.ThisPO = PurchaseManager.GetPO(Grn.PO.Name);
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
@@ -356,7 +356,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                GRN GRN = PurchaseUtil.UpdateGRN(values);
+                GRN GRN = PurchaseManager.UpdateGRN(values);
                 if (GRN != null)
                     Response.Redirect("/Purchase/OrderDetail/" + GRN.PO.Name);
             }
@@ -374,7 +374,7 @@ namespace PatrocoalSalesSystem.Controllers
             string pod = !string.IsNullOrEmpty(Request.QueryString["cust"]) ? Request.QueryString["cust"] : "";
             if (poNumber != "")
             {
-                PurchaseOrder PO = PurchaseUtil.GetPO(poNumber);
+                PurchaseOrder PO = PurchaseManager.GetPO(poNumber);
                 ViewBag.ThisPO = PO;
                 if (pod != "")
                 {
@@ -402,7 +402,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                DutyClear DClear = PurchaseUtil.CreateDutyClear(values);
+                DutyClear DClear = PurchaseManager.CreateDutyClear(values);
                 if (DClear != null)
                     Response.Redirect("/Purchase/OrderDetail/" + DClear.PO.Name);
             }
@@ -424,11 +424,11 @@ namespace PatrocoalSalesSystem.Controllers
                 return Redirect("/Login");
             if (string.IsNullOrEmpty(id))
                 return Redirect("/Purchase");
-            DutyClear Dcl = PurchaseUtil.GetDCL(id);
+            DutyClear Dcl = PurchaseManager.GetDCL(id);
             if (Dcl == null)
                 return Redirect("/Purchase");
             ViewBag.ThisDCL = Dcl;
-            ViewBag.ThisPO = PurchaseUtil.GetPO(Dcl.PO.Name);
+            ViewBag.ThisPO = PurchaseManager.GetPO(Dcl.PO.Name);
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
@@ -448,7 +448,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                DutyClear DCL = PurchaseUtil.UpdateDCL(values);
+                DutyClear DCL = PurchaseManager.UpdateDCL(values);
                 if (DCL != null)
                     Response.Redirect("/Purchase/OrderDetail/" + DCL.PO.Name);
             }
@@ -466,12 +466,12 @@ namespace PatrocoalSalesSystem.Controllers
             string SelectedPO = ViewBag.SelectedPO = !string.IsNullOrEmpty(Request.Form["PO"]) ? Request.Form["PO"] : "0";
             string SelectedStore = ViewBag.SelectedStore = !string.IsNullOrEmpty(Request.Form["Store"]) ? Request.Form["Store"] : "0";
 
-            List<GRN> allGRN = PurchaseUtil.AllGRNs;
+            List<GRN> allGRN = PurchaseManager.AllGRNs;
             List<GRN> filteredGRN = new List<GRN>();
 
             foreach (GRN grn in allGRN)
             {
-                PurchaseOrder thisPO = PurchaseUtil.GetPO(grn.PO.Name);
+                PurchaseOrder thisPO = PurchaseManager.GetPO(grn.PO.Name);
                 bool include = false;
                 switch (SelectedGRN)
                 {
@@ -508,7 +508,7 @@ namespace PatrocoalSalesSystem.Controllers
 
         public ActionResult Index2()
         {
-            ViewBag.AllPO = PurchaseUtil.AllPOs;
+            ViewBag.AllPO = PurchaseManager.AllPOs;
             //PurchaseUtil.WriteToXmlFile<PurchaseOrder>("E:/temp/po1001.txt", PurchaseUtil.GetPO("PO-1001"));
 
             return View();

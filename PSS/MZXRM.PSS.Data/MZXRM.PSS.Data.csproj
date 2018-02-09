@@ -42,14 +42,17 @@
   <ItemGroup>
     <Compile Include="Entity\Constants.cs" />
     <Compile Include="Entity\Customer.cs" />
+    <Compile Include="Entity\CustomerStock.cs" />
     <Compile Include="Entity\DutyClear.cs" />
+    <Compile Include="Entity\ExceptionLogs.cs" />
     <Compile Include="Entity\GRN.cs" />
     <Compile Include="Entity\PODetail.cs" />
     <Compile Include="Entity\PurchaseOrder.cs" />
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
+    <Compile Include="Entity\Team.cs" />
+    <Compile Include="Entity\Users.cs" />
     <Compile Include="Supporting.cs" />
-    <Compile Include="Entity\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

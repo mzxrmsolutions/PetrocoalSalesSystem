@@ -7,7 +7,7 @@ using System.Web;
 
 namespace MZXRM.PSS.Business
 {
-    public class SaleUtil
+    public class SaleManager
     {
         private static List<SaleOrder> _AllSOs;
         public static List<SaleOrder> AllSOs

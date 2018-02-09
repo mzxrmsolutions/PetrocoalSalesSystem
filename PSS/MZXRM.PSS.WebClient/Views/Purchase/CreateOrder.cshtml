@@ -130,7 +130,7 @@
                             <label class="required">*</label>
                             <select class="form-control select2" name="Lead">
                                 <option value="0">--- Lead ---</option>
-                                @foreach (User item in UserUtil.Users)
+                                @foreach (User item in UserManager.Users)
                                 {
                                     <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
                                 }
@@ -177,7 +177,7 @@
                                         <td>
                                             <select class="form-control select2" style="width:250px;" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
                                                 <option value="0">--- Customer ---</option>
-                                                @foreach (Customer item in CustomerUtil.Customers)
+                                                @foreach (Customer item in CustomerManager.AllCustomers)
                                                 {
                                                     <option value="@item.Id">@item.Name</option>
                                                 }

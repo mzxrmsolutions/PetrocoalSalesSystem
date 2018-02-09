@@ -8,7 +8,7 @@ using System.Web;
 
 namespace MZXRM.PSS.Business
 {
-    public class UserUtil
+    public class UserManager
     {
         private static List<User> _allUsers;
         public static List<User> Users
@@ -16,7 +16,7 @@ namespace MZXRM.PSS.Business
             get
             {
                 if (_allUsers == null || _allUsers.Count == 0)
-                    _allUsers = UserDataManager.GetAllUsers();
+                    _allUsers = UserDataManager.ReadAllUsers();
                 return _allUsers;
             }
             set
@@ -24,6 +24,22 @@ namespace MZXRM.PSS.Business
                 _allUsers = value;
             }
         }
+        #region " AuthenticateUser Function "
+        public static User AuthenticateUser(String LoginName, String Password)
+        {
+            User objUser = UserDataManager.AuthenticateUser(LoginName, Password);
+            HttpContext.Current.Session.Add("User", objUser);
+            if (String.IsNullOrEmpty(objUser.Remarks))
+            {
+                Common.CurrentUser = objUser;
+            }
+            else
+            {
+                Common.CurrentUser = null;
+            }
+            return objUser;
+        }
+        #endregion
         public static Reference FindRole(string roleName)
         {
             foreach (Role role in Common.AllRole)
@@ -66,5 +82,6 @@ namespace MZXRM.PSS.Business
             ExceptionHandler.Error("User Not Found");
             return null;
         }
+        
     }
 }

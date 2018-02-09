@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\Common.cs" />
+    <Compile Include="Common\ExceptionLogManager.cs" />
     <Compile Include="CustomerUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PurchaseUtil.cs" />
+    <Compile Include="RoleManager.cs" />
     <Compile Include="SaleUtil.cs" />
     <Compile Include="UserUtil.cs" />
   </ItemGroup>
@@ -60,6 +63,9 @@
       <Project>{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}</Project>
       <Name>MZXRM.PSS.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Users\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

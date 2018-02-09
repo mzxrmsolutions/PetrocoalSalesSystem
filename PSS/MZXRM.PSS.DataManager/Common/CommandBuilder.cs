@@ -9,6 +9,26 @@ namespace MZXRM.PSS.DataManager
 {
     public class CommandBuilder
     {
+        #region " CommandAuthenticateUser Function "
+        public static IDbCommand CommandAuthenticateUser(IDbConnection dbc, string LoginName, string Password)
+        {
+            IDbCommand command = dbc.CreateCommand();
+            command.CommandText = "sp_AuthenticateUser";
+            command.CommandType = CommandType.StoredProcedure;
+
+            var param = command.CreateParameter();
+            param.ParameterName = "@LoginName";
+            param.Value = LoginName;
+            command.Parameters.Add(param);
+
+            param = command.CreateParameter();
+            param.ParameterName = "@Password";
+            param.Value = Password;
+            command.Parameters.Add(param);
+
+            return command;
+        }
+        #endregion
         public static IDbCommand CommandGetAll(IDbConnection dbc, string DB_StoredProcedure)
         {
             IDbCommand command = dbc.CreateCommand();

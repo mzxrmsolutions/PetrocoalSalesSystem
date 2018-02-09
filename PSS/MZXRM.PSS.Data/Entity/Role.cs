@@ -7,8 +7,11 @@ namespace MZXRM.PSS.Data
 {
     public class Role
     {
-        public Guid Id;
-        public string Name;
+        /* UPDATED BY KASHIF ABBAS */
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+
+        //TO ASK: Purpose of Reference class
         public Reference Ref()
         {
             return new Reference() {

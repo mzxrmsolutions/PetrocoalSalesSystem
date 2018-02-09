@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <select class="form-control" name="PO">
                                 <option value="0">--- PO ---</option>
-                                @foreach (PurchaseOrder item in PurchaseUtil.AllPOs)
+                                @foreach (PurchaseOrder item in PurchaseManager.AllPOs)
                                 {
                                     <option value="@item.PONumber" @(item.PONumber == ViewBag.SelectedPO ? " selected " : " ")>@item.PONumber</option>
                                 }

@@ -8,15 +8,15 @@ using System.Web;
 
 namespace MZXRM.PSS.Business
 {
-    public class CustomerUtil
+    public class CustomerManager
     {
         private static List<Customer> _allCustomers;
-        public static List<Customer> Customers
+        public static List<Customer> AllCustomers
         {
             get
             {
-                if (_allCustomers == null || _allCustomers.Count == 0)
-                    _allCustomers = CustomerDataManager.GetAllCustomers();
+                //if (_allCustomers == null || _allCustomers.Count == 0)
+                    _allCustomers = CustomerDataManager.ReadAllCustomers();
                 return _allCustomers;
             }
             set
@@ -27,7 +27,7 @@ namespace MZXRM.PSS.Business
 
         public static Reference GetCustomerRef(string id)
         {
-            foreach (Customer c in Customers)
+            foreach (Customer c in AllCustomers)
             {
                 if (c.Id == new Guid(id))
                     return new Reference() { Id = c.Id, Name = c.Name };
@@ -37,7 +37,7 @@ namespace MZXRM.PSS.Business
         }
         public static Reference GetCustomerPSL()
         {
-            foreach (Customer c in Customers)
+            foreach (Customer c in AllCustomers)
             {
                 if (c.Name == "PSL")
                     return new Reference() { Id = c.Id, Name = c.Name };

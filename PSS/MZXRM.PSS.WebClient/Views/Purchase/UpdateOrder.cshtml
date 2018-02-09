@@ -139,7 +139,7 @@
                             <label class="required">*</label>
                             <select class="form-control" name="Lead">
                                 <option>--- Lead ---</option>
-                                @foreach (User item in UserUtil.Users)
+                                @foreach (User item in UserManager.Users)
                                 {
                                     <option value="@item.Id" @(item.Id == ThisPO.Lead.Id ? " selected " : " ")>@item.Name</option>
                                 }
@@ -187,7 +187,7 @@
                                         <td>
                                             <select class="form-control" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
                                                 <option value="0">--- Customer ---</option>
-                                                @foreach (Customer item in CustomerUtil.Customers)
+                                                @foreach (Customer item in CustomerManager.AllCustomers)
                                                 {
                                                     <option value="@item.Id" @(item.Id == pod.Customer.Id ? " selected " : " ")>@item.Name</option>
                                                 }
@@ -217,7 +217,7 @@
                                         <td>
                                             <select class="form-control" name='Customer_@i.ToString()' id='Customer_@i.ToString()' onchange="showRow(@i.ToString())">
                                                 <option value="0">--- Customer ---</option>
-                                                @foreach (Customer item in CustomerUtil.Customers)
+                                                @foreach (Customer item in CustomerManager.AllCustomers)
                                                 {
                                                     <option value="@item.Id">@item.Name</option>
                                                 }

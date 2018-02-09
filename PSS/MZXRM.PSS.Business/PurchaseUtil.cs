@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace MZXRM.PSS.Business
 {
-    public static class PurchaseUtil
+    public static class PurchaseManager
     {
         #region Common Lists
         private static List<PurchaseOrder> _AllPOs;
@@ -150,7 +150,7 @@ namespace MZXRM.PSS.Business
             try
             {
                 PurchaseOrder PO = NewPO();
-                PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
+                PO.Lead = UserManager.GetUserRef(keyvalues["Lead"]);
                 PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
                 PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
                 PO.Size = Common.GetSize(keyvalues["Size"]);
@@ -166,7 +166,7 @@ namespace MZXRM.PSS.Business
                         if (keyvalues["Customer_" + i.ToString()] != "0")
                         {
                             PODetail pod = NewPODetail(PO);
-                            pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
+                            pod.Customer = CustomerManager.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
                             pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
                             pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
                             pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
@@ -263,7 +263,7 @@ namespace MZXRM.PSS.Business
             {
                 string PONumber = keyvalues["ponumber"];
                 PurchaseOrder PO = GetPO(PONumber);
-                PO.Lead = UserUtil.GetUserRef(keyvalues["Lead"]);
+                PO.Lead = UserManager.GetUserRef(keyvalues["Lead"]);
                 PO.PODate = keyvalues.ContainsKey("PODate") ? DateTime.Parse(keyvalues["PODate"]) : DateTime.Now;
                 PO.Origin = Common.GetOrigin(keyvalues["Origin"]);
                 PO.Size = Common.GetSize(keyvalues["Size"]);
@@ -290,7 +290,7 @@ namespace MZXRM.PSS.Business
                                 }
                             if (pod == null)
                                 pod = NewPODetail(PO);
-                            pod.Customer = CustomerUtil.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
+                            pod.Customer = CustomerManager.GetCustomerRef(keyvalues["Customer_" + i.ToString()]);
                             pod.Quantity = keyvalues.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(keyvalues["Quantity_" + i.ToString()]) : 0;
                             pod.Rate = keyvalues.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(keyvalues["Rate_" + i.ToString()]) : 0;
                             pod.AllowedWaistage = keyvalues.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(keyvalues["AllowedWastage_" + i.ToString()]) : 0;
@@ -301,7 +301,7 @@ namespace MZXRM.PSS.Business
                 }
                 PO.PODetailsList = updatedPOD;
                 PO.ModifiedOn = DateTime.Now;
-                PO.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
+                PO.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
                 PurchaseDataManager.SavePO(PO);
                 return PO;
             }
@@ -329,7 +329,7 @@ namespace MZXRM.PSS.Business
                 Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
                 Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                 Grn.ModifiedOn = DateTime.Now;
-                Grn.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
+                Grn.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
                 foreach (PODetail pod in PO.PODetailsList)
                 {
                     foreach (GRN grn in pod.GRNsList)
@@ -365,7 +365,7 @@ namespace MZXRM.PSS.Business
                 Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                 Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                 Dcl.ModifiedOn = DateTime.Now;
-                Dcl.ModifiedBy = UserUtil.GetUserRef(Common.CurrentUser.Id.ToString());
+                Dcl.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
                 foreach (PODetail pod in PO.PODetailsList)
                 {
                     foreach (DutyClear dcl in pod.DutyClearsList)

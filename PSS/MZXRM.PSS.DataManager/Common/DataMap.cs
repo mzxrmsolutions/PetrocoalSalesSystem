@@ -121,32 +121,108 @@ namespace MZXRM.PSS.DataManager
             return AllPOs;
         }
 
-        public static List<Customer> MapCustomerDataTable(DataTable dt)
+        public static List<User> MapUserData(DataTable DTuser, DataTable DTrole, DataTable DTteam)
+        {
+            List<User> AllUsers = new List<User>();
+            foreach (DataRow DRuser in DTuser.Rows)
+            {
+                User user = new User();
+
+                user.Id = DRuser["Id"] != null ? new Guid(DRuser["Id"].ToString()) : Guid.Empty;
+                user.Status = DRuser["Status"] != null ? MapUserStatus(DRuser["Status"].ToString()) : UserStatus.InActive;
+                user.Name = Convert.ToString(DRuser["Name"]);
+                user.Login = Convert.ToString(DRuser["LoginName"]);
+                user.Designation = Convert.ToString(DRuser["Designation"]);
+                user.Email = Convert.ToString(DRuser["Email"]);
+                user.Mobile = Convert.ToString(DRuser["Mobile"]);
+                user.Office = Convert.ToString(DRuser["Office"]);
+                user.Home = Convert.ToString(DRuser["Home"]);
+                user.Address = Convert.ToString(DRuser["Address"]);
+
+                user.Roles = new List<Role>();
+                foreach (DataRow DRrole in DTrole.Rows)
+                {
+                    Guid userid = DRrole["UserId"] != null ? new Guid(DRrole["UserId"].ToString()) : Guid.Empty;
+                    if (userid != Guid.Empty && userid == user.Id)
+                    {
+                        Role userRole = new Role();
+                        userRole.Id = DRrole["RoleId"] != null ? new Guid(DRrole["RoleId"].ToString()) : Guid.Empty;
+                        userRole.Name = DRrole["Name"] != null ? DRrole["Name"].ToString() : "";
+                        user.Roles.Add(userRole);
+                    }
+                }
+
+                user.Teams = new List<Team>();
+                foreach (DataRow DRteam in DTteam.Rows)
+                {
+                    Guid userid = DRteam["UserId"] != null ? new Guid(DRteam["UserId"].ToString()) : Guid.Empty;
+                    if (userid != Guid.Empty && userid == user.Id)
+                    {
+                        Team userTeam = new Team();
+                        userTeam.Id = DRteam["TeamId"] != null ? new Guid(DRteam["TeamId"].ToString()) : Guid.Empty;
+                        userTeam.Name = DRteam["Name"] != null ? DRteam["Name"].ToString() : "";
+                        user.Teams.Add(userTeam);
+                    }
+                }
+                AllUsers.Add(user);
+            }
+            return AllUsers;
+        }
+
+        public static UserStatus MapUserStatus(string status)
+        {
+            switch (status)
+            {
+                case "1":
+                    return UserStatus.Active;
+                default:
+                    return UserStatus.InActive;
+            }
+    }
+
+        public static List<Customer> MapCustomerDataTable(DataTable dtCust,DataTable dtCustStock)
         {
             List<Customer> AllCustomers = new List<Customer>();
-            foreach (DataRow dr in dt.Rows)
+            foreach (DataRow drCust in dtCust.Rows)
             {
                 Customer Cust = new Customer();
 
-                Cust.Id = dr["Id"] != null ? new Guid(dr["Id"].ToString()) : Guid.Empty;
-                Cust.Status = dr["Status"] != null ? CustStatus.Active : CustStatus.InActive;
-                Cust.CreatedOn = dr["CreatedOn"] != DBNull.Value ? DateTime.Parse(dr["CreatedOn"].ToString()) : DateTime.MinValue;
-                Cust.CreatedBy = dr["CreatedBy"] != null ? UserDataManager.GetUserRef(dr["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
-                Cust.ModifiedOn = dr["ModifiedOn"] != DBNull.Value ? DateTime.Parse(dr["ModifiedOn"].ToString()) : DateTime.MinValue;
-                Cust.ModifiedBy = dr["ModifiedBy"] != null ? UserDataManager.GetUserRef(dr["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
-                Cust.Lead = dr["Lead"] != null ? UserDataManager.GetUserRef(dr["Lead"].ToString()) : UserDataManager.GetDefaultRef();
-                Cust.Name = dr["FullName"] != null ? dr["FullName"].ToString() : "";
-                Cust.ShortName = dr["ShortName"] != null ? dr["ShortName"].ToString() : "";
-                Cust.NTN = dr["NTN"] != null ? dr["NTN"].ToString() : "";
-                Cust.STRN = dr["STRN"] != null ? dr["STRN"].ToString() : "";
-                Cust.Address = dr["Address"] != null ? dr["Address"].ToString() : "";
-                Cust.InvoiceAddress = dr["InvoiceAddress"] != null ? dr["InvoiceAddress"].ToString() : "";
-                Cust.Email = dr["Email"] != null ? dr["Email"].ToString() : "";
-                Cust.Phone = dr["Phone"] != null ? dr["Phone"].ToString() : "";
-                Cust.ContactPerson = dr["ContactPerson"] != null ? dr["ContactPerson"].ToString() : "";
-                Cust.ContactPerson = dr["HeadOffice"] != null ? dr["HeadOffice"].ToString() : "";
-                Cust.ContactPerson = dr["Remarks"] != null ? dr["Remarks"].ToString() : "";
+                Cust.Id = drCust["Id"] != null ? new Guid(drCust["Id"].ToString()) : Guid.Empty;
+                Cust.Status = drCust["Status"] != null ? CustStatus.Active : CustStatus.InActive;
+                Cust.CreatedOn = drCust["CreatedOn"] != DBNull.Value ? DateTime.Parse(drCust["CreatedOn"].ToString()) : DateTime.MinValue;
+                Cust.CreatedBy = drCust["CreatedBy"] != null ? UserDataManager.GetUserRef(drCust["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                Cust.ModifiedOn = drCust["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drCust["ModifiedOn"].ToString()) : DateTime.MinValue;
+                Cust.ModifiedBy = drCust["ModifiedBy"] != null ? UserDataManager.GetUserRef(drCust["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                Cust.Lead = drCust["Lead"] != null ? UserDataManager.GetUserRef(drCust["Lead"].ToString()) : UserDataManager.GetDefaultRef();
+                Cust.Name = drCust["FullName"] != null ? drCust["FullName"].ToString() : "";
+                Cust.ShortName = drCust["ShortName"] != null ? drCust["ShortName"].ToString() : "";
+                Cust.NTN = drCust["NTN"] != null ? drCust["NTN"].ToString() : "";
+                Cust.STRN = drCust["STRN"] != null ? drCust["STRN"].ToString() : "";
+                Cust.Address = drCust["Address"] != null ? drCust["Address"].ToString() : "";
+                Cust.InvoiceAddress = drCust["InvoiceAddress"] != null ? drCust["InvoiceAddress"].ToString() : "";
+                Cust.Email = drCust["Email"] != null ? drCust["Email"].ToString() : "";
+                Cust.Phone = drCust["Phone"] != null ? drCust["Phone"].ToString() : "";
+                Cust.ContactPerson = drCust["ContactPerson"] != null ? drCust["ContactPerson"].ToString() : "";
+                //Cust.HeadOffice = dr["HeadOffice"] != null ? dr["HeadOffice"].ToString() : "";
+                //Cust.Remarks = dr["Remarks"] != null ? dr["Remarks"].ToString() : "";
+                Cust.Stock = new List<CustomerStock>();
+                foreach (DataRow drCustStock in dtCustStock.Rows)
+                {
+                    Guid custId = drCustStock["CustomerId"] != null ? new Guid(drCustStock["CustomerId"].ToString()) : Guid.Empty;
+                    if (custId != Guid.Empty && custId == Cust.Id)
+                    {
+                        CustomerStock CustStock = new CustomerStock();
+                        CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
+                        CustStock.Customer = new Reference() {Id= Cust.Id,Name= Cust.Name };
+                        CustStock.Store = drCustStock["StoreId"] != null ? StoreDataManager.GetStoreRef(drCustStock["StoreId"].ToString()) :StoreDataManager.GetDefaultRef();
+                        CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Origin = drCustStock["Origin"] != null ? CommonDataManager.GetVessel(drCustStock["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Size = drCustStock["Size"] != null ? CommonDataManager.GetVessel(drCustStock["Size"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Quantity = drCustStock["Quantity"] != null ? decimal.Parse(drCustStock["Quantity"].ToString()) : 0;
+                        Cust.Stock.Add(CustStock);
+                    }
 
+                }
                 AllCustomers.Add(Cust);
             }
             return AllCustomers;
@@ -291,7 +367,6 @@ namespace MZXRM.PSS.DataManager
                     return GRNStatus.Loan;
             }
         }
-
         private static POStatus MapPOStatus(string status)
         {
             switch (status)

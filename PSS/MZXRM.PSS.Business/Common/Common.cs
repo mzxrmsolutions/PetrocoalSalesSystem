@@ -198,31 +198,7 @@ namespace MZXRM.PSS.Business
         }
 
 
-        private static void GetDemoRoles()
-        {
-            AllRole = new List<Role>() {
-                new Role() {
-                    Id=Guid.NewGuid(),
-                    Name="Admin"
-                }
-            };
-        }
-        private static void GetDemoUsers()
-        {
-            User user = new User()
-            {
-                Id = Guid.NewGuid(),
-                Status = UserStatus.Active,
-                CreatedOn = new DateTime(2017, 12, 1),
-                ModifiedOn = new DateTime(2017, 12, 1),
-                Name = "Faisal Nawaz",
-                Login = "admin",
-                Password = "admin"
-                //Role = AllRole.FirstOrDefault().Ref()
-            };
-            XMLUtil.WriteToXmlFile("E:/MZ XRM Solutions/Patrocol/Patrocoal/PatrocoalSalesSystem/App_Data/User/" + user.Name + ".xml", user);
-
-        }
+        
 
 
 
