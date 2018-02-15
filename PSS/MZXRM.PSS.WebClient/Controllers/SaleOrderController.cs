@@ -95,36 +95,48 @@ namespace PatrocoalSalesSystem.Controllers
             Common.MyUrl = Request.RawUrl;
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
+
+             ViewBag.ThisCust = !string.IsNullOrEmpty(Request.QueryString["cust"]) ?CustomerManager.GetCustomer(Guid.Parse( Request.QueryString["cust"])) : null;
+             ViewBag.Ordertype = !string.IsNullOrEmpty(Request.QueryString["type"]) ? int.Parse(Request.QueryString["type"]) : 0;
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateOrder(FormCollection form)
         {
-            if (!Common.isAuthorize())
+            try
             {
-                ExceptionHandler.Error("Session Timeout");
-                return View();
-            }
-            if (form["btn"] != null && form["btn"] == "Reset")
-                return View();
-            if (ValidateCreateSOForm(form))
-            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
                 Dictionary<string, string> values = new Dictionary<string, string>();
                 foreach (string Key in form.Keys)
                 {
                     values.Add(Key, form[Key]);
                 }
-                SaleOrder SO = SaleManager.CreateSO(values);
-                if (SO != null)
-                    Response.Redirect("/SaleOrder/UpdateOrder" + SO.SONumber);
+                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                if (formErrors == "")
+                {
+                    SaleOrder SO = SaleManager.CreateSO(values);
+                    if (SO != null)
+                        Response.Redirect("/SaleOrder/UpdateOrder/" + SO.SONumber);
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
             }
-            return View();
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            ViewBag.ThisCust = !string.IsNullOrEmpty(Request.Form["Customer"]) ? CustomerManager.GetCustomer(Guid.Parse(Request.Form["Customer"])) : null;
+            ViewBag.Ordertype = !string.IsNullOrEmpty(Request.Form["ordertype"]) ? int.Parse(Request.Form["ordertype"]) : 0;
+            return View(form);
         }
 
-        private bool ValidateCreateSOForm(FormCollection form)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
         public ActionResult DODetail()
         {

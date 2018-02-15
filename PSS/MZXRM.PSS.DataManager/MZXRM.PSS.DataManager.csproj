@@ -57,6 +57,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\MZXRM.PSS.Common\MZXRM.PSS.Common.csproj">
+      <Project>{1D34BD7D-555C-41D8-B893-A111E40D0D47}</Project>
+      <Name>MZXRM.PSS.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MZXRM.PSS.Connector\MZXRM.PSS.Connector.csproj">
       <Project>{3276137A-3F67-454C-AE75-5568B05D71BF}</Project>
       <Name>MZXRM.PSS.Connector</Name>

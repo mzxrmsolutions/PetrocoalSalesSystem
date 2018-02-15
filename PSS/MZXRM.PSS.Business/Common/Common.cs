@@ -92,6 +92,22 @@ namespace MZXRM.PSS.Business
             }
         }
 
+        public static Item GetTaxRate(string id)
+        {
+            foreach (Item rate in TaxRate)
+                if (rate.Index.ToString() == id)
+                    return rate;
+            return new Item() { Index = 0, Value = "" };
+        }
+
+        public static Item GetTrader(string id)
+        {
+            foreach (Item trader in Trader)
+                if (trader.Index.ToString() == id)
+                    return trader;
+            return new Item() { Index = 0, Value = "" };
+        }
+
         public static int GenerateIndex(List<Item> items)
         {
             throw new NotImplementedException();

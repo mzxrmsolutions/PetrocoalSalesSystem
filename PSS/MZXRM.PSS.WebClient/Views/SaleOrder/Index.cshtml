@@ -1,65 +1,45 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
-
+@using MZXRM.PSS.Common
 <section class="content-header">
     <h1>
-        Purchase
-        <small>Manage your POs here</small>
+        Sales
+        <small>Manage your SOs here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Purchase</li>
+        <li class="active">Sales</li>
     </ol>
 </section>
 @{List<SaleOrder> FilteredSOs = ViewBag.SOs;}
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Sales Menu</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
+    @if (ExceptionHandler.HasException())
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+            @ExceptionHandler.GetExceptionMessage()
         </div>
+        { ExceptionHandler.CloseException(); }
+    }
+    <div class="box box-default box-solid">
         <!-- /.box-header -->
         <div class="box-body">
             <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/SaleOrder" class="btn btn-block btn-primary margin">Sale Orders</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/DOList" class="btn btn-block btn-primary margin">Deliery Orders</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/LoanList" class="btn btn-block btn-primary margin">Loan Orders</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/DCList" class="btn btn-block btn-primary margin">Delivery Chalans</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/CreateOrder" class="btn btn-block btn-primary margin">Create SO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/CreateDO" class="btn btn-block btn-primary margin">Create DO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/CreateLO" class="btn btn-block btn-primary margin">Create LO</a>
-                </div>
-                <div class="col-sm-3">
-                    <a href="/SaleOrder/CreateDC" class="btn btn-block btn-primary margin">Create DC</a>
-                </div>
+                <a class="btn btn-sm btn-default" href="/SaleOrder/CreateOrder"><i class="fa fa-plus"></i> New SO</a>
+                <a class="btn btn-sm btn-default" href="/SaleOrder/CreateDO"><i class="fa fa-plus"></i> New DO</a>
+                <a class="btn btn-sm btn-default" href="/SaleOrder/CreateDC"><i class="fa fa-plus"></i> New DC</a>
+                <a class="btn btn-sm btn-default" href="/SaleOrder/CreateDCR"><i class="fa fa-plus"></i> New DC Return</a>
             </div>
             <div class="col-lg-6">
-                <div class="col-sm-3">
-                    <a href="/Sales" class="btn btn-block btn-info margin">Sale Orders Report</a>
-                </div>
+                <a href="/SaleOrder" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My SOs List</a>
+                <a href="/SaleOrder/DOList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DOs List</a>
+                <a href="/SaleOrder/DCList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCs List</a>
+                <a href="/SaleOrder/DCRList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DC Returns</a>
 
             </div>
         </div>
-        <!-- /.box-body -->
     </div>
     <!-- /.box -->
     <div class="box box-primary box-solid">
@@ -132,7 +112,7 @@
                         <th>Vessel</th>
                         <th>Size</th>
                         <th>Quantity</th>
-                        <th>Sales Station</th>
+                        <th>Order Type</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -158,29 +138,29 @@
                             <td>@so.Size.Value</td>
                             <td align="right">@so.Quantity.ToString("#,##,###.000")</td>
 
-                            <td>@so.SaleStation.Value</td>
-                                <td>
-                                    @switch (so.Status)
-                                    {
-                                        case SOStatus.Created:
-                                            <span class="badge bg-yellow">New PO</span>
-                                            break;
-                                        case SOStatus.PendingApproval:
-                                            <span class="badge bg-yellow">Waiting Approval</span>
-                                            break;
-                                        case SOStatus.InProcess:
-                                            <span class="badge bg-blue">In Process</span>
-                                            break;
-                                        case SOStatus.Completed:
-                                            <span class="badge bg-green">Complete</span>
-                                            break;
-                                        case SOStatus.Cancelled:
-                                            <span class="badge bg-red">Cancelled</span>
-                                            break;
-                                    }
+                            <td></td>
+                            <td>
+                                @switch (so.Status)
+                                {
+                                    case SOStatus.Created:
+                                        <span class="badge bg-yellow">New PO</span>
+                                        break;
+                                    case SOStatus.PendingApproval:
+                                        <span class="badge bg-yellow">Waiting Approval</span>
+                                        break;
+                                    case SOStatus.InProcess:
+                                        <span class="badge bg-blue">In Process</span>
+                                        break;
+                                    case SOStatus.Completed:
+                                        <span class="badge bg-green">Complete</span>
+                                        break;
+                                    case SOStatus.Cancelled:
+                                        <span class="badge bg-red">Cancelled</span>
+                                        break;
+                                }
 
-                                </td>
-                            </tr>
+                            </td>
+                        </tr>
                     }
 
                 </tbody>

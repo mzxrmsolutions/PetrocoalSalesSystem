@@ -44,8 +44,14 @@
     <Compile Include="EncryptDecrypt.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionManager.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MZXRM.PSS.Data\MZXRM.PSS.Data.csproj">
+      <Project>{A5FE1F3A-0F43-4D85-8360-EB2CC9C4066E}</Project>
+      <Name>MZXRM.PSS.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

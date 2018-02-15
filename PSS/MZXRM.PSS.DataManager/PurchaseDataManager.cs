@@ -1,4 +1,5 @@
-﻿using MZXRM.PSS.Connector.Database;
+﻿using MZXRM.PSS.Common;
+using MZXRM.PSS.Connector.Database;
 using MZXRM.PSS.Data;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,13 @@ namespace MZXRM.PSS.DataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         static bool readFromDB = true;
-        static string sessionName = "AllPurchaseOrders";
-       
+
+
         #region Business need
         public static List<PurchaseOrder> ReadAllPO()
         {
             List<PurchaseOrder> AllPOs = new List<PurchaseOrder>();
-            if (HttpContext.Current.Session[sessionName] == null)
+            if (HttpContext.Current.Session[SessionManager.POSession] == null)
                 readFromDB = true;
             if (readFromDB)
             {
@@ -31,17 +32,17 @@ namespace MZXRM.PSS.DataManager
                 DataTable DTpod = GetAllPODs();
                 DataTable DTgrn = GetAllGRNs();
                 DataTable DTdcl = GetAllDCLs();
-             List<PurchaseOrder>   allPOs = DataMap.MapPOData(DTpo, DTpod, DTgrn, DTdcl);
+                List<PurchaseOrder> allPOs = DataMap.MapPOData(DTpo, DTpod, DTgrn, DTdcl);
                 foreach (PurchaseOrder PO in allPOs)
                 {
                     PurchaseOrder po = CalculatePO(PO);
                     AllPOs.Add(po);
                 }
-                HttpContext.Current.Session.Add(sessionName, AllPOs);
+                HttpContext.Current.Session.Add(SessionManager.POSession, AllPOs);
                 readFromDB = false;
                 return AllPOs;
             }
-            AllPOs = HttpContext.Current.Session[sessionName] as List<PurchaseOrder>;
+            AllPOs = HttpContext.Current.Session[SessionManager.POSession] as List<PurchaseOrder>;
             return AllPOs;
         }
         public static void ResetCache()
@@ -153,7 +154,7 @@ namespace MZXRM.PSS.DataManager
             return true;
         }
         #endregion
-       
+
         #region DB Update functions
         public static void UpdatePO(PurchaseOrder PO)
         {
@@ -216,7 +217,7 @@ namespace MZXRM.PSS.DataManager
             }
         }
         #endregion
-        
+
         #region DB Create functions
         public static Guid CreatePO(PurchaseOrder PO)
         {
@@ -287,7 +288,7 @@ namespace MZXRM.PSS.DataManager
             }
         }
         #endregion
-       
+
         #region DB Get all functions
         private static DataTable GetAllPOs()
         {
@@ -390,10 +391,10 @@ namespace MZXRM.PSS.DataManager
             }
         }
         #endregion
-        
+
         #region DB Get by ID functions
         #endregion
-        
+
 
 
 

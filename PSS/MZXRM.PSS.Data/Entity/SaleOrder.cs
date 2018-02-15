@@ -7,8 +7,9 @@ namespace MZXRM.PSS.Data
 {
     public class SaleOrder
     {
-        public Guid Id;
+        public int Id;
         public SOStatus Status;
+        public SOType OrderType;
         public DateTime CreatedOn;
         public Reference CreatedBy;
         public DateTime ModifiedOn;
@@ -30,7 +31,7 @@ namespace MZXRM.PSS.Data
         public DateTime PODate;
         public DateTime POExpiry;
 
-        public string CreditPeriod;
+        public int CreditPeriod;
 
         public Item Origin;
         public Item Size;
@@ -41,7 +42,7 @@ namespace MZXRM.PSS.Data
         public bool Tax; // false=customer
 
         public decimal AgreedRate;
-        public decimal AgreedTaxRate;
+        public Item AgreedTaxRate;
 
         public decimal TaxAmount;
         public decimal RateIncTax;
@@ -54,6 +55,8 @@ namespace MZXRM.PSS.Data
 
         public Item SaleStation;
         public string Remarks;
+
+        public string PartyPOImage;
     }
     public enum SOStatus
     {
@@ -63,4 +66,13 @@ namespace MZXRM.PSS.Data
         Completed,
         Cancelled
     }
+   public enum SOType
+    {
+        Commercial=1,
+        LC=2,
+        Loan=3
+    }
+
 }
+
+

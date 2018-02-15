@@ -45,5 +45,15 @@ namespace MZXRM.PSS.Business
             ExceptionHandler.Error("Customer Not Found");
             return null;
         }
+        public static Customer GetCustomer(Guid CustomerId)
+        {
+            foreach (Customer c in AllCustomers)
+            {
+                if (c.Id == CustomerId)
+                    return c;
+            }
+            ExceptionHandler.Error("Customer Not Found");
+            return null;
+        }
     }
 }
