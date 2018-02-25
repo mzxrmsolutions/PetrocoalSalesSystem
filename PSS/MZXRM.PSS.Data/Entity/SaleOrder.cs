@@ -57,6 +57,10 @@ namespace MZXRM.PSS.Data
         public string Remarks;
 
         public string PartyPOImage;
+
+
+
+
     }
     public enum SOStatus
     {

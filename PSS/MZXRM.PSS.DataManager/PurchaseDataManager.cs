@@ -87,7 +87,7 @@ namespace MZXRM.PSS.DataManager
             PO.isValid = false;
             decimal maxAllowed = PO.TotalQuantity * PO.BufferQuantityMax / 100;
             decimal minAllowed = PO.TotalQuantity * PO.BufferQuantityMin / 100;
-            if (PO.Received <= (PO.TotalQuantity + maxAllowed))
+            if (PO.Received <= (PO.TotalQuantity + maxAllowed) && PO.DutyCleared <= PO.Received)
                 PO.isValid = true;
 
             return PO;
@@ -250,6 +250,7 @@ namespace MZXRM.PSS.DataManager
 
                 object obj = command.ExecuteScalar(); //execute query
                 Guid retId = new Guid(obj.ToString());
+                readFromDB = true;
                 return retId;
             }
         }
@@ -315,6 +316,7 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all PO from DataBase", ex);
             }
         }
+
         private static DataTable GetAllPODs()
         {
             try

@@ -124,7 +124,7 @@ namespace MZXRM.PSS.DataManager
                         objUser.Office = Convert.ToString(result["Office"]);
                         objUser.Home = Convert.ToString(result["Home"]);
                         objUser.Address = Convert.ToString(result["Address"]);
-
+                        objUser.ProfileImage= Convert.ToString(result["Picture"]);
                         /* Role population goes here */
                         if (objUser.Roles.Count(x => x.Id == Guid.Parse(result["RoleId"].ToString())) <= 0)
                         {

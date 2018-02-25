@@ -90,5 +90,49 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
+
+
+
+
+
+        #region TODO
+        // K:TODO
+        /* private static DataTable GetAllSO()
+         {
+             try
+             {
+                 using (var dbc = DataFactory.GetConnection())
+                 {
+
+                     IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllSO");
+
+                     if (command.Connection.State != ConnectionState.Open)
+                     {
+                         command.Connection.Open();
+                     }
+
+                     IDataReader datareader = command.ExecuteReader();
+                     DataTable dt = new DataTable();
+                     dt.Load(datareader);
+                     return dt;
+                 }
+             }
+             catch (Exception ex)
+             {
+                 throw new Exception("Error! Get all SO from DataBase", ex);
+             }
+         }
+         private static DataTable GetAllDO();
+         private static DataTable GetAllDC();
+         private static DataTable GetAllDCR();
+         private static int CreateSO(SaleOrder SO);
+         private static int CreateDO(DeliveryOrder DO);
+         private static int CreateDC(DeliveryChallan DC);
+         private static int CreateDCR(DCReturn DCR);
+         private static void UpdateSO(SaleOrder SO);
+         private static void UpdateDO(DeliveryOrder DO);
+         private static void UpdateDC(DeliveryChallan DC);
+         private static void UpdateDCR(DCReturn DCR);*/
+        #endregion
     }
 }
