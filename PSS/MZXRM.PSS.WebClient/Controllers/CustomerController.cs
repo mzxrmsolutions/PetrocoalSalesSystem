@@ -27,7 +27,29 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 ExceptionHandler.Error("Error! " + ex.Message, ex);
             }
-                return View();
+            return View();
+        }
+        public ActionResult CustomerDetail(string id)
+        {
+            try
+            {
+                Common.MyUrl = Request.RawUrl;
+                if (!Common.isAuthorize())
+                    Response.Redirect("/Login");
+                if (string.IsNullOrEmpty(id))
+                    ExceptionHandler.Error("Error! No Customer Found");
+                Guid CustId = Guid.Empty;
+                if (Guid.TryParse(id, out CustId))
+                {
+                    Customer ThisCustomer = CustomerManager.GetCustomer(CustId);
+                    ViewBag.ThisCustomer = ThisCustomer;
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View();
         }
     }
 }

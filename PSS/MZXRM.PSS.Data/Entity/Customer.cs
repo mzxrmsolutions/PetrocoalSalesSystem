@@ -25,6 +25,8 @@ namespace MZXRM.PSS.Data
         public string Email;
         public string Phone;
         public string ContactPerson;
+        public string HeadOffice;
+        public string Remarks;
 
         public List<CustomerStock> Stock;
         public decimal TotalStock;
@@ -32,7 +34,7 @@ namespace MZXRM.PSS.Data
     }
     public enum CustStatus
     {
-        Active,
-        InActive
+       Active=1,
+       InActive=0
     }
 }

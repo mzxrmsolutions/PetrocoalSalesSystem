@@ -1,4 +1,5 @@
-﻿using MZXRM.PSS.Connector.Database;
+﻿using MZXRM.PSS.Common;
+using MZXRM.PSS.Connector.Database;
 using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
@@ -17,11 +18,10 @@ namespace MZXRM.PSS.DataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         static bool readFromDB = true;
-        static string sessionName = "AllCustomers";
         public static List<Customer> ReadAllCustomers()
         {
             List<Customer> AllCustomers = new List<Customer>();
-            if (HttpContext.Current.Session[sessionName] == null)
+            if (HttpContext.Current.Session[SessionManager.CustomerSession] == null)
                 readFromDB = true;
             if (readFromDB)
             {
@@ -33,15 +33,14 @@ namespace MZXRM.PSS.DataManager
                     Customer cust = CalculateCustomer(Cust);
                     AllCustomers.Add(cust);
                 }
-                HttpContext.Current.Session.Add(sessionName, AllCustomers);
+                HttpContext.Current.Session.Add(SessionManager.CustomerSession, AllCustomers);
                 readFromDB = false;
                 return AllCustomers;
             }
-            AllCustomers = HttpContext.Current.Session[sessionName] as List<Customer>;
+            AllCustomers = HttpContext.Current.Session[SessionManager.CustomerSession] as List<Customer>;
             return AllCustomers;
 
         }
-
         private static Customer CalculateCustomer(Customer Customer)
         {
             if (Customer != null)
@@ -60,7 +59,6 @@ namespace MZXRM.PSS.DataManager
             }
             return null;
         }
-
         private static DataTable GetAllCustomer()
         {
             try
@@ -118,7 +116,6 @@ namespace MZXRM.PSS.DataManager
             XMLUtil.WriteToXmlFile<Customer>(fileName, cust);
             return true;
         }
-
         public static Reference GetCustRef(string id)
         {
             Guid custId = new Guid(id);
@@ -131,7 +128,6 @@ namespace MZXRM.PSS.DataManager
             }
             return new Reference() { Id = Guid.Empty, Name = "" };
         }
-
         public static Reference GetDefaultRef()
         {
             return new Reference() { Id = Guid.Empty, Name = "" };

@@ -285,6 +285,9 @@ namespace MZXRM.PSS.DataManager
 
                 object obj = command.ExecuteScalar(); //execute query, no result
                 Guid retId = new Guid(obj.ToString());
+                DCL.Id = retId;
+              //  StoreDataManager.CreateStockMovement( DCL); //TODO
+
                 return retId;
             }
         }

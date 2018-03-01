@@ -3,6 +3,8 @@ using MZXRM.PSS.Data;
 using System.Collections.Generic;
 using System.Data;
 using MZXRM.PSS.Connector.Database;
+using System.Web;
+using MZXRM.PSS.Common;
 
 namespace MZXRM.PSS.DataManager
 {
@@ -77,10 +79,26 @@ namespace MZXRM.PSS.DataManager
         public static List<Store> ReadAllStore()
         {
             // Z:TODO
-            //GetAllStore();
-            //GetAllCustomerStock();
-            //GetAllStockMovement();
-            return new List<Store>();
+            List<Store> AllStores = new List<Store>();
+            if (HttpContext.Current.Session[SessionManager.StoreSession] == null)
+                readFromDB = true;
+            if (readFromDB)
+            {
+                DataTable DTstore = GetAllStore();
+                //GetAllCustomerStock();
+                //GetAllStockMovement();
+                List<Store> allStores = DataMap.MapStoreData(DTstore);
+                foreach (Store store in allStores)
+                {
+                    Store CalculatedStore = CalculateStoreQuantity(store);
+                    AllStores.Add(CalculatedStore);
+                }
+                HttpContext.Current.Session.Add(SessionManager.StoreSession, AllStores);
+                readFromDB = false;
+                return AllStores;
+            }
+            AllStores = HttpContext.Current.Session[SessionManager.StoreSession] as List<Store>;
+            return AllStores;
         }
         public static Store CalculateStoreQuantity(Store Store)
         {
@@ -98,13 +116,48 @@ namespace MZXRM.PSS.DataManager
         #region Get Reference
         public static Reference GetStoreRef(string id)
         {
-            // Z:TODO
-            return new Reference() { Id = Guid.Empty, Name = "" };
+            Guid storeId = !string.IsNullOrEmpty(id) ? new Guid(id) : Guid.Empty;
+            Store store = GetStore(storeId);
+            if (store != null)
+                return new Reference() { Id = store.Id, Name = store.Name };
+            return GetDefaultRef();
+        }
+
+        public static Store GetStore(Guid storeId)
+        {
+            if (storeId != Guid.Empty)
+            {
+                List<Store> Stores = ReadAllStore();
+                foreach (Store store in Stores)
+                {
+                    if (store.Id == storeId)
+                        return store;
+                }
+            }
+            return null;
         }
 
         public static Reference GetDefaultRef()
         {
             return new Reference() { Id = Guid.Empty, Name = "" };
+        }
+
+        public static Guid CreateStockMovement(DutyClear DCL)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapStockMovementData(DCL); //map dcl to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStockMovement", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query, no result
+                Guid retId = new Guid(obj.ToString());
+                return retId;
+            }
         }
         #endregion
 

@@ -163,8 +163,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PurchaseController.cs" />
     <Compile Include="Controllers\SaleOrderController.cs" />
-    <Compile Include="Controllers\SeivingController.cs" />
-    <Compile Include="Controllers\StockController.cs" />
+    <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -14614,10 +14613,11 @@
     <Content Include="Views\SaleOrder\UpdateDO.cshtml" />
     <Content Include="Views\SaleOrder\UpdateOrder.cshtml" />
     <Content Include="Views\SaleOrder\_Index.cshtml" />
-    <Content Include="Views\Seiving\Index.cshtml" />
+    <Content Include="Views\Store\Seiving.cshtml" />
     <Content Include="Views\Shared\_LayoutMain.cshtml" />
-    <Content Include="Views\Stock\Index.cshtml" />
-    <Content Include="Views\Stock\StoreInOut.cshtml" />
+    <Content Include="Views\Store\Index.cshtml" />
+    <Content Include="Views\Store\StoreInOut.cshtml" />
+    <Content Include="Views\Customer\CustomerDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\SO\" />

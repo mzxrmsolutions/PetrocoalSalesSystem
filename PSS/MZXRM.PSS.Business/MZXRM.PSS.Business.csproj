@@ -48,6 +48,7 @@
     <Compile Include="PurchaseManager.cs" />
     <Compile Include="RoleManager.cs" />
     <Compile Include="SaleManager.cs" />
+    <Compile Include="StoreManager.cs" />
     <Compile Include="UserManager.cs" />
   </ItemGroup>
   <ItemGroup>

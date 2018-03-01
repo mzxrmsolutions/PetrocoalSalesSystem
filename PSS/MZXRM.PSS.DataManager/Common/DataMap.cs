@@ -121,6 +121,36 @@ namespace MZXRM.PSS.DataManager
             return AllPOs;
         }
 
+        internal static Dictionary<string, object> reMapStockMovementData(DutyClear dCL)
+        {
+            //TODO
+            return null;
+        }
+
+        public static List<Store> MapStoreData(DataTable dTstore)
+        {
+            List<Store> ListStores = new List<Store>();
+            foreach (DataRow dr in dTstore.Rows)
+            {
+                Store mapData = new Store();
+                mapData.Id = new Guid(dr["id"].ToString());
+                mapData.Status = (StoreStatus)Enum.Parse(typeof(StoreStatus), dr["status"].ToString());
+
+                mapData.CreatedOn = dr["CreatedOn"] != DBNull.Value ? DateTime.Parse(dr["CreatedOn"].ToString()) : DateTime.MinValue;
+                mapData.CreatedBy = dr["CreatedBy"] != null ? UserDataManager.GetUserRef(dr["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                mapData.ModifiedOn = dr["ModifiedOn"] != DBNull.Value ? DateTime.Parse(dr["ModifiedOn"].ToString()) : DateTime.MinValue;
+                mapData.ModifiedBy = dr["ModifiedBy"] != null ? UserDataManager.GetUserRef(dr["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+
+                mapData.Name = dr["Name"].ToString();
+                mapData.Location = dr["Location"].ToString();
+                mapData.Capacity = decimal.Parse(dr["Capacity"].ToString());
+                
+                ListStores.Add(mapData);
+                mapData = null;
+            }
+            return ListStores;
+        }
+
         public static List<SaleOrder> MapSOData(DataTable dTso)
         {
             List<SaleOrder> ListSO = new List<SaleOrder>();
@@ -175,7 +205,7 @@ namespace MZXRM.PSS.DataManager
             return ListSO;
         }
 
-        internal static Dictionary<string, object> reMapSOData(SaleOrder SO)
+        public static Dictionary<string, object> reMapSOData(SaleOrder SO)
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
 
@@ -293,8 +323,8 @@ namespace MZXRM.PSS.DataManager
                 Cust.Email = drCust["Email"] != null ? drCust["Email"].ToString() : "";
                 Cust.Phone = drCust["Phone"] != null ? drCust["Phone"].ToString() : "";
                 Cust.ContactPerson = drCust["ContactPerson"] != null ? drCust["ContactPerson"].ToString() : "";
-                //Cust.HeadOffice = dr["HeadOffice"] != null ? dr["HeadOffice"].ToString() : "";
-                //Cust.Remarks = dr["Remarks"] != null ? dr["Remarks"].ToString() : "";
+                Cust.HeadOffice = drCust["HeadOffice"] != null ? drCust["HeadOffice"].ToString() : "";
+                Cust.Remarks = drCust["Remarks"] != null ? drCust["Remarks"].ToString() : "";
                 Cust.Stock = new List<CustomerStock>();
                 foreach (DataRow drCustStock in dtCustStock.Rows)
                 {
@@ -306,8 +336,8 @@ namespace MZXRM.PSS.DataManager
                         CustStock.Customer = new Reference() { Id = Cust.Id, Name = Cust.Name };
                         CustStock.Store = drCustStock["StoreId"] != null ? StoreDataManager.GetStoreRef(drCustStock["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
                         CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();
-                        CustStock.Origin = drCustStock["Origin"] != null ? CommonDataManager.GetVessel(drCustStock["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
-                        CustStock.Size = drCustStock["Size"] != null ? CommonDataManager.GetVessel(drCustStock["Size"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Origin = drCustStock["Origin"] != null ? CommonDataManager.GetOrigin(drCustStock["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Size = drCustStock["Size"] != null ? CommonDataManager.GetSize(drCustStock["Size"].ToString()) : CommonDataManager.GetDefaultRef();
                         CustStock.Quantity = drCustStock["Quantity"] != null ? decimal.Parse(drCustStock["Quantity"].ToString()) : 0;
                         Cust.Stock.Add(CustStock);
                     }

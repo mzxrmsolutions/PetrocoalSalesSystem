@@ -43,14 +43,19 @@
                     @foreach (Customer cust in FilteredCustomers)
                     {
                         <tr>
-                            <td><a href="/customer">@cust.Name</a></td>
+                            <td><a href="/customer/CustomerDetail/@cust.Id">@cust.Name</a></td>
                             <td>@cust.ShortName</td>
                             <td>@cust.Address</td>
                             <td>@cust.InvoiceAddress</td>
                             <td>@cust.Email</td>
                             <td>@cust.Phone</td>
                             <td>@cust.ContactPerson</td>
-                            <td><span class="badge bg-green">100,000.000</span></td>
+                            <td>
+                            @if(cust.TotalStock >0 )
+                            {<span class="badge bg-green">@cust.TotalStock.ToString(Constants.QuantityFormat)</span>}
+                            @if (cust.TotalStock < 0)
+                            {<span class="badge bg-red">@cust.TotalStock.ToString(Constants.QuantityFormat)</span>}
+                            </td>
                             <td>
                                 <span class="badge bg-green">@cust.Status</span>
                         </td>

@@ -4,16 +4,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace PatrocoalSalesSystem.Controllers
+namespace MZXRM.PSS.WebClient.Controllers
 {
-    public class StockController : Controller
+    public class StoreController : Controller
     {
-        // GET: Stock
+        // GET: Store
         public ActionResult Index()
         {
             return View();
         }
         public ActionResult StoreInOut()
+        {
+            return View();
+        }
+        public ActionResult Seiving()
         {
             return View();
         }

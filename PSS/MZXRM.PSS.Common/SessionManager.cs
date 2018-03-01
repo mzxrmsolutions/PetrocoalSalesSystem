@@ -16,6 +16,8 @@ namespace MZXRM.PSS.Common
         public static string TaxRateSessionName = "AllTaxRate";
        public static string POSession = "AllPurchaseOrders";
         public static string SOSession = "AllSaleOrders";
+        public static string CustomerSession = "AllCustomers";
+        public static string StoreSession = "AllStores";
         public static void ClearSession()
         {
             HttpContext.Current.Session.Clear();

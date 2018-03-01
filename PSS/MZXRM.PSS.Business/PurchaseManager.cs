@@ -530,7 +530,7 @@ namespace MZXRM.PSS.Business
         }
         #endregion
 
-        #region Move to Purchase Manager
+        #region Move to Purchase DataManager
         private static PurchaseOrder NewPO()
         {
             PurchaseOrder PO = new PurchaseOrder();
@@ -564,7 +564,6 @@ namespace MZXRM.PSS.Business
             pod.DutyClearsList = new List<DutyClear>();
             return pod;
         }
-
         private static GRN NewGRN()
         {
             GRN Grn = new GRN();
