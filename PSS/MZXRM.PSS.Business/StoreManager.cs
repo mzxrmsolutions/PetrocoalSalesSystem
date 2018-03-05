@@ -23,5 +23,29 @@ namespace MZXRM.PSS.Business
                 _allStores = value;
             }
         }
+
+        private static List<StoreInOut> _allStoreInOuts;
+        public static List<StoreInOut> AllStoreInOut
+        {
+            get
+            {
+                _allStoreInOuts = StoreDataManager.ReadAllStoreIO();
+                return _allStoreInOuts;
+            }
+            set
+            {
+                _allStoreInOuts = value;
+            }
+        }
+
+        public static Store GetStore(Guid storeId)
+        {
+            foreach (Store store in AllStore)
+            {
+                if (store.Id == storeId)
+                    return store;
+            }
+            return null;
+        }
     }
 }

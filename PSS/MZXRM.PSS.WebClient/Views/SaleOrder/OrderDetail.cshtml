@@ -1,5 +1,11 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+@{
+    SaleOrder ThisSO = ViewBag.ThisSO;
+    Customer ThisCust = ViewBag.ThisCust;
+    int Ordertype = ViewBag.OrderType;
+}
 <section class="content-header">
     <h1>
         Sales
@@ -8,169 +14,160 @@
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="/home"><i class="fa fa-dashboard"></i> Sale</a></li>
-        <li class="active">SO-1001</li>
+        <li class="active">@ThisSO.SONumber</li>
     </ol>
 </section>
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Quick Links</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-            <!-- /.box-tools -->
+    @if (ExceptionHandler.HasException())
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+            @ExceptionHandler.GetExceptionMessage()
         </div>
+        { ExceptionHandler.CloseException(); }
+    }
+    <div class="box box-default box-solid">
         <!-- /.box-header -->
         <div class="box-body">
-            <div class="col-md-6">
-                <div class="col-sm-4">
-                    <a href="/SaleOrder" class="btn btn-block btn-primary margin">My SOs</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder/CreateOrder" class="btn btn-block btn-primary margin">Create SO</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder/CreateDO" class="btn btn-block btn-primary margin">Create DO</a>
-                </div>
-                <div class="col-sm-4">
-                    <button type="button" class="btn btn-block btn-primary margin">...</button>
-                </div>
+            <div class="col-lg-6">
+                @if (ThisSO.Status == SOStatus.Created || ThisSO.Status == SOStatus.PendingApproval)
+                {
+                    <a href="/SaleOrder/UpdateOrder/@ThisSO.SONumber" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                    <a href="/SaleOrder/UpdateOrder/@ThisSO.SONumber" class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Approve</a>
+                }
+                @if (ThisSO.Status == SOStatus.InProcess)
+                {
+                    <a href="/SaleOrder/CompleteOrder/@ThisSO.SONumber" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Complete</a>
+                    <a href="/SaleOrder/CreateDO?so=@ThisSO.SONumber" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> New DO</a>
+                    <a href="/SaleOrder/CreateDC?so=@ThisSO.SONumber" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> New DC</a>
+                }
+                @if (ThisSO.Status != SOStatus.Cancelled)
+                {
+                    <a class="btn btn-sm btn-danger" href="/SaleOrder/CancelSO/@ThisSO.SONumber"><i class="fa fa-ban"></i> Cancel</a>
+                }
             </div>
-            <div class="col-md-6">
-                <div class="col-sm-4">
-                    <a href="/Stock" class="btn btn-block btn-info margin ">Stock Report</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/Purchase" class="btn btn-block btn-info margin ">Purchase Orders</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder" class="btn btn-block btn-info margin ">Sale Orders</a>
-                </div>
+            <div class="col-lg-6">
+                <a href="/SaleOrder" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My SOs List</a>
+                <a href="/SaleOrder/DOList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DOs List</a>
+                <a href="/SaleOrder/DOList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCs List</a>
+                <a href="/SaleOrder/DownloadPOs" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
         </div>
         <!-- /.box-body -->
     </div>
+
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title">Sale Order: SO-1001</h3>
-            <p class="pull-right">Created: Zeeshan Shafqat on 12/15/2017</p>
+            <h3 class="box-title">Sale Order: @ThisSO.SONumber</h3>
+            <p class="pull-right">Created: @ThisSO.CreatedBy.Name on @ThisSO.CreatedOn.ToShortDateString()</p>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-
                 <div class="col-sm-1">
                     <label>SO No:</label>
-                    <p>SO-1001</p>
+                    <p>@ThisSO.SONumber</p>
                 </div>
                 <div class="col-sm-1">
                     <label>SO Date:</label>
-                    <p>15/12/2017</p>
+                    <p>@ThisSO.SODate.ToShortDateString()</p>
                 </div>
                 <div class="col-sm-1">
                     <label>SO Expiry:</label>
-                    <p>31/12/2017</p>
+                    <p>@ThisSO.SOExpiry.ToShortDateString()</p>
                 </div>
                 <div class="col-sm-1">
                     <label>SO Type:</label>
-                    <p>LC</p>
+                    <p>@ThisSO.OrderType</p>
                 </div>
                 <div class="col-sm-1">
                     <label>PO Number:</label>
-                    <p>ABC1234xyz</p>
+                    <p>@ThisSO.PartyPONumber</p>
                 </div>
                 <div class="col-sm-1">
                     <label>PO Date:</label>
-                    <p>15/12/2017</p>
+                    <p>@ThisSO.PODate.ToShortDateString()</p>
                 </div>
                 <div class="col-sm-1">
                     <label>PO Expiry:</label>
-                    <p>16/12/2017</p>
+                    <p>@ThisSO.POExpiry.ToShortDateString()</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Origin:</label>
-                    <p>Indo</p>
+                    <p>@ThisSO.Origin.Value</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Vessel:</label>
-                    <p>ARIETTA</p>
+                    <p>@ThisSO.Vessel.Value</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Size:</label>
-                    <p>0-50</p>
+                    <p>@ThisSO.Size.Value</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Trader:</label>
-                    <p>KS Traders</p>
+                    <p>@ThisSO.Trader.Value</p>
                 </div>
                 <div class="col-sm-1 pull-right">
-                    <span class="badge bg-blue pull-right">In Process</span>
+                    @ThisSO.Status
                 </div>
             </div>
+
+
             <div class="row">
                 <div class="col-sm-2">
                     <label>Customer:</label>
-                    <p>Orient Coating Company</p>
+                    <p>@ThisCust.Name</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Quantity:</label>
-                    <span class="badge bg-green">10,000.000</span>
+                    <p><span class="badge bg-green">@ThisSO.Quantity.ToString(Constants.QuantityFormat)</span></p>
                 </div>
-
                 <div class="col-sm-1">
                     <label>Agreed Rate:</label>
-                    <p>PKR 10,000</p>
+                    <p>@ThisSO.AgreedRate.Value.ToString(Constants.PriceFormat)</p>
                 </div>
                 <div class="col-sm-2">
                     <label>Agreed Tax Rate:</label>
-                    <p>17%</p>
+                    <p>@ThisSO.AgreedTaxRate.Value</p>
                 </div>
                 <div class="col-sm-2">
                     <label>Rate inc. Tax:</label>
-                    <p>PKR <span class="badge bg-green">11,700.000</span></p>
+                    <p><span class="badge bg-green">@ThisSO.RateIncTax</span></p>
                 </div>
                 <div class="col-sm-1">
                     <label>Sale Station:</label>
-                    <p>Islamabad</p>
+                    <p>@ThisSO.SaleStation.Value</p>
                 </div>
                 <div class="col-sm-2">
                     <label>Trader Commission:</label>
-                    <p>PKR 200</p>
+                    <p>@ThisSO.TraderCommission.ToString(Constants.PriceFormat)</p>
                 </div>
-
             </div>
             <div class="row">
                 <div class="col-sm-2">
                     <label>Credit Period:</label>
-                    <p>15</p>
+                    <p>@ThisSO.CreditPeriod</p>
                 </div>
                 <div class="col-sm-4">
                     <label>Remarks:</label>
-                    <p>SO is in process and approved</p>
+                    <p>@ThisSO.Remarks</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Lead:</label>
-                    <p>Waqar</p>
+                    <p>@ThisSO.Lead.Name</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Approved:</label>
-                    <p>Faisal</p>
+                    <p>@(ThisSO.ApprovedBy == null ? "" : ThisSO.ApprovedBy.Name)</p>
                 </div>
             </div>
-
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <div class="col-sm-6">
-                <a href="/SaleOrder/UpdateOrder" class="btn btn-primary">Edit</a>
-                <a href="/SaleOrder" class="btn btn-primary">Complete</a>
-                <label>&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                <a href="/SaleOrder/CreateDO" class="btn btn-success">Add DO</a>
 
-            </div>
         </div>
     </div>
     <!-- /.box -->
@@ -190,74 +187,47 @@
                     <tr>
                         <th>#</th>
                         <th>Date</th>
-                        <th>Loading Point</th>
-                        <th>Quantity</th>
                         <th>Lifting Start</th>
-                        <th>Lifting End</th>
-                        <th>Delivery Destination</th>
-                        <th>Transporter</th>
+                        <th>Delivery Desitnation</th>
                         <th>Dumper Rate</th>
                         <th>Freight</th>
-                        <th>Freight Commission</th>
-                        <th>Freight Commission of Agent</th>
+                        <th>Quantity</th>
                         <th>Status</th>
                     </tr>
+                    @foreach (DeliveryOrder dos in ThisSO.DOList)
+                    {
+                        <tr>
+                            <td><a href="/SaleOrder/DODetail" class="btn btn-block btn-primary btn-sm">@dos.DONumber</a></td>
+                            <td>@dos.DODate.ToShortDateString()</td>
+                            <td>@dos.LiftingStartDate.ToShortDateString()</td>
+                            <td><span class="badge bg-green">@dos.DumperRate</span></td>
+                            <td>@dos.FreightPerTon</td>
+                            <td>@dos.Quantity.ToString(Constants.QuantityFormat)</td>
+                            <td>
+                                @switch (dos.Status)
+                                {
+                                    case DOStatus.Created:
+                                        <span class="badge bg-yellow">New DO</span>
+                                        break;
+                                    case DOStatus.Completed:
+                                        <span class="badge bg-green">Complete</span>
+                                        break;
+                                    case DOStatus.Cancelled:
+                                        <span class="badge bg-red">Cancelled</span>
+                                        break;
+                                    case DOStatus.InProcess:
+                                        <span class="badge bg-blue">In Process</span>
+                                        break;
+                                }
+                            </td>
+                        </tr>
+                    }
                     <tr>
-                        <td><a href="/SaleOrder/DODetail" class="btn btn-block btn-primary btn-sm">DO-1001</a></td>
-                        <td>10/01/2017</td>
-                        <td>Karachi</td>
-                        <td><span class="badge bg-green">3,000.000</span></td>
-                        <td>15/12/2017</td>
-                        <td>31/12/2017</td>
-                        <td>Faisalabad</td>
-                        <td>Al-Hafiz Goods</td>
-                        <td>2000.000</td>
-                        <td>2500.000</td>
-                        <td>400.000</td>
-                        <td>100.000</td>
-                        <td>
-                            <span class="badge bg-yellow">Completed</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a href="/SaleOrder/DODetail" class="btn btn-block btn-primary btn-sm">DO-1002</a></td>
-                        <td>15/12/2017</td>
-                        <td>Karachi</td>
-                        <td><span class="badge bg-green">5,000.000</span></td>
-                        <td>15/12/2017</td>
-                        <td>31/12/2017</td>
-                        <td>Faisalabad</td>
-                        <td>Al-Hafiz Goods</td>
-                        <td>2000.000</td>
-                        <td>2500.000</td>
-                        <td>400.000</td>
-                        <td>100.000</td>
-                        <td>
-                            <span class="badge bg-red">On Hold</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a href="/SaleOrder/DODetail" class="btn btn-block btn-primary btn-sm">DO-1003</a></td>
-                        <td>15/12/2017</td>
-                        <td>Karachi</td>
-                        <td><span class="badge bg-green">15,000.000</span></td>
-                        <td>15/12/2017</td>
-                        <td>31/12/2017</td>
-                        <td>Faisalabad</td>
-                        <td>Al-Hafiz Goods</td>
-                        <td>2000.000</td>
-                        <td>2500.000</td>
-                        <td>400.000</td>
-                        <td>100.000</td>
-                        <td>
-                            <span class="badge bg-blue">In Process</span>
-                        </td>
-                    </tr>
+
+
                 </tbody>
             </table>
-
             <!-- /.box-body -->
         </div>
-
     </div>
 </section>

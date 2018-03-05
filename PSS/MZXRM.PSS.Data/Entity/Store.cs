@@ -29,7 +29,7 @@ namespace MZXRM.PSS.Data
     }
     public enum StoreStatus
     {
-        Active,
-        InActive
+        Active=1,
+        InActive=0
     }
 }

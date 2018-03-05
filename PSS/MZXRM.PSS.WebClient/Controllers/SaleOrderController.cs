@@ -78,16 +78,82 @@ namespace PatrocoalSalesSystem.Controllers
             }
 
             ViewBag.SOs = filteredSO;
+            ViewBag.ThisCust = !string.IsNullOrEmpty(Request.Form["Customer"]) ? CustomerManager.GetCustomer(Guid.Parse(Request.Form["Customer"])) : null;
+            ViewBag.Ordertype = !string.IsNullOrEmpty(Request.Form["ordertype"]) ? int.Parse(Request.Form["ordertype"]) : 0;
+            return View();
+        }
+        public ActionResult OrderDetail(String id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            SaleOrder SO = SaleManager.GetSOBySONumber(id);
+            if (SO == null)
+                return Redirect("/SaleOrder/CreateOrder");
+            ViewBag.ThisSO = SO;
+            ViewBag.ThisCust = CustomerManager.GetCustomer(SO.Customer.Id);
+            ViewBag.Ordertype = !string.IsNullOrEmpty(Request.Form["ordertype"]) ? int.Parse(Request.Form["ordertype"]) : 0;
+            return View();
+        }
+        public ActionResult UpdateOrder(string id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            SaleOrder SO = SaleManager.GetSOBySONumber(id);
+            if (SO == null)
+                return Redirect("/SaleOrder/CreateOrder");
+            ViewBag.ThisSO = SO;
+            ViewBag.ThisCust = CustomerManager.GetCustomer(SO.Customer.Id);
+            ViewBag.Ordertype = !string.IsNullOrEmpty(Request.Form["ordertype"]) ? int.Parse(Request.Form["ordertype"]) : (int)SO.OrderType;
+            return View();
+        }
 
-            return View();
-        }
-        public ActionResult OrderDetail()
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateOrder(FormCollection form)
         {
-            return View();
-        }
-        public ActionResult UpdateOrder()
-        {
-            return View();
+            if (!Common.isAuthorize())
+            {
+                ExceptionHandler.Error("Session Timeout");
+                return View();
+            }
+            if (form["btn"] != null && form["btn"] == "Reset")
+                return View();
+
+            Dictionary<string, string> values = new Dictionary<string, string>();
+
+            foreach (string Key in form.Keys)
+            {
+                values.Add(Key, form[Key]);
+            }
+            string formErrors = SaleManager.ValidateCreateSOForm(values);
+            if (formErrors == "")
+            {
+                if (form["btn"] != null && form["btn"] == "Update")
+                {
+                    SaleOrder SO = SaleManager.UpdateSO(values);
+                    return RedirectToAction("OrderDetail", new { id = SO.SONumber });
+                }
+                //if (form["btn"] != null && form["btn"] == "ApprovalSubmit")
+                //{
+                //    SaleOrder SO = SaleManager.UpdateSO(values);
+                //    return RedirectToAction("OrderDetail", new { id = SO.SONumber });
+                //}
+                //if (form["btn"] != null && form["btn"] == "Approve")
+                //{
+                //    PurchaseOrder PO = PurchaseManager.ApprovePO(values);
+                //    return RedirectToAction("OrderDetail", new { id = PO.PONumber });
+                //}
+            }
+            else
+            {
+                ExceptionHandler.Error("Validation! " + formErrors);
+            }
+            return RedirectToAction("SaleOrder/OrderDetail", new { id = values["ponumber"] });
         }
         #region CreateOrder
         public ActionResult CreateOrder()
@@ -136,6 +202,8 @@ namespace PatrocoalSalesSystem.Controllers
             ViewBag.Ordertype = !string.IsNullOrEmpty(Request.Form["ordertype"]) ? int.Parse(Request.Form["ordertype"]) : 0;
             return View(form);
         }
+
+
 
         #endregion
         public ActionResult DODetail()

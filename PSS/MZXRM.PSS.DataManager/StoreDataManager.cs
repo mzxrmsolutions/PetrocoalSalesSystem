@@ -39,8 +39,31 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all from DataBase", ex);
             }
         }
-        /*private static DataTable GetAllCustomerStock();
-        private static DataTable GetAllStockMovement();
+        private static DataTable GetAllCustomerStock() {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllCustomerStock");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader(); // execute select query
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all from DataBase", ex);
+            }
+        }
+        /*private static DataTable GetAllStockMovement();
         private static Guid CreateStore(Store Store)
         {
             try
@@ -73,6 +96,31 @@ namespace MZXRM.PSS.DataManager
         private static void UpdateStore(Store Store);
         private static void UpdateStockMovement(StockMovement StockMovement);
         private static void UpdateCustomerStock(CustomerStock CustomerStock);*/
+        private static DataTable GetAllStoreInOut()
+        {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllStoreInOut");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader(); // execute select query
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all from DataBase", ex);
+            }
+        }
         #endregion
 
         #region Business Need
@@ -85,9 +133,9 @@ namespace MZXRM.PSS.DataManager
             if (readFromDB)
             {
                 DataTable DTstore = GetAllStore();
-                //GetAllCustomerStock();
+                DataTable DTcustStock = GetAllCustomerStock();
                 //GetAllStockMovement();
-                List<Store> allStores = DataMap.MapStoreData(DTstore);
+                List<Store> allStores = DataMap.MapStoreData(DTstore,DTcustStock);
                 foreach (Store store in allStores)
                 {
                     Store CalculatedStore = CalculateStoreQuantity(store);
@@ -100,6 +148,7 @@ namespace MZXRM.PSS.DataManager
             AllStores = HttpContext.Current.Session[SessionManager.StoreSession] as List<Store>;
             return AllStores;
         }
+
         public static Store CalculateStoreQuantity(Store Store)
         {
             // Z:TODO
@@ -109,6 +158,29 @@ namespace MZXRM.PSS.DataManager
         {
             readFromDB = true;
         }
+        public static List<StoreInOut> ReadAllStoreIO()
+        {
+            List<StoreInOut> AllStores = new List<StoreInOut>();
+            if (HttpContext.Current.Session[SessionManager.StoreIOSession] == null)
+                readFromDB = true;
+            if (readFromDB)
+            {
+                DataTable DTstoreIO = GetAllStoreInOut();
+                List<StoreInOut> allStoreIOs = DataMap.MapStoreIOData(DTstoreIO);
+                //foreach (StoreInOut storeIO in allStoreIOs)
+                //{
+                //    StoreInOut CalculatedStore = CalculateStoreQuantity(storeIO);
+                //    AllStores.Add(CalculatedStore);
+                //}
+                HttpContext.Current.Session.Add(SessionManager.StoreSession, AllStores);
+                readFromDB = false;
+                return AllStores;
+            }
+            AllStores = HttpContext.Current.Session[SessionManager.StoreSession] as List<StoreInOut>;
+            return AllStores;
+        }
+
+        
         #endregion
 
 

@@ -18,6 +18,8 @@ namespace MZXRM.PSS.DataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         static bool readFromDB = true;
+       
+        #region " ReadAllSO Function "
         public static List<SaleOrder> ReadAllSO()
         {
             List<SaleOrder> AllSOs = new List<SaleOrder>();
@@ -26,8 +28,9 @@ namespace MZXRM.PSS.DataManager
             if (readFromDB)
             {
                 DataTable DTso = GetAllSOs();
+                DataTable DTdo = GetAllDOs();
 
-                List<SaleOrder> allSOs = DataMap.MapSOData(DTso);
+                List<SaleOrder> allSOs = DataMap.MapSOData(DTso, DTdo);
                 foreach (SaleOrder SO in allSOs)
                 {
                     SaleOrder so = CalculateSO(SO);
@@ -40,13 +43,17 @@ namespace MZXRM.PSS.DataManager
             AllSOs = HttpContext.Current.Session[SessionManager.SOSession] as List<SaleOrder>;
             return AllSOs;
         }
+        #endregion
 
+        #region " CalculateSO Function "
         private static SaleOrder CalculateSO(SaleOrder SO)
         {
             //TODO
             return SO;
         }
+        #endregion
 
+        #region " GetAllSOs Function "
         private static DataTable GetAllSOs()
         {
             try
@@ -72,7 +79,41 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all SO from DataBase", ex);
             }
         }
+        #endregion
 
+        #region " GetAllDOs Function "
+        private static DataTable GetAllDOs()
+        {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllDO");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader();
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all SO from DataBase", ex);
+            }
+        }
+        #endregion
+
+        #region " GetAllDOs Function "
+
+        #endregion
+
+        #region " SaveSO Function "
         public static int SaveSO(SaleOrder SO)
         {
             using (var dbc = DataFactory.GetConnection())
@@ -90,49 +131,24 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
+        #endregion
 
+        //ADDED BY KASHIF ABBAS TO UDPATE SO
+        #region " UpdateSO Function "
+        public static void UpdateSO(SaleOrder SO)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapSOData(SO); //map podetail to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_UpdateSO", keyValues);
 
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
 
-
-
-        #region TODO
-        // K:TODO
-        /* private static DataTable GetAllSO()
-         {
-             try
-             {
-                 using (var dbc = DataFactory.GetConnection())
-                 {
-
-                     IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllSO");
-
-                     if (command.Connection.State != ConnectionState.Open)
-                     {
-                         command.Connection.Open();
-                     }
-
-                     IDataReader datareader = command.ExecuteReader();
-                     DataTable dt = new DataTable();
-                     dt.Load(datareader);
-                     return dt;
-                 }
-             }
-             catch (Exception ex)
-             {
-                 throw new Exception("Error! Get all SO from DataBase", ex);
-             }
-         }
-         private static DataTable GetAllDO();
-         private static DataTable GetAllDC();
-         private static DataTable GetAllDCR();
-         private static int CreateSO(SaleOrder SO);
-         private static int CreateDO(DeliveryOrder DO);
-         private static int CreateDC(DeliveryChallan DC);
-         private static int CreateDCR(DCReturn DCR);
-         private static void UpdateSO(SaleOrder SO);
-         private static void UpdateDO(DeliveryOrder DO);
-         private static void UpdateDC(DeliveryChallan DC);
-         private static void UpdateDCR(DCReturn DCR);*/
+            }
+        } 
         #endregion
     }
 }

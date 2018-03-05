@@ -1,7 +1,13 @@
-﻿<section class="content-header">
+﻿@using MZXRM.PSS.Data
+@using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+
+@{List<Store> FilteredStores = ViewBag.Stores;}
+
+<section class="content-header">
     <h1>
         Stock
-        <small>Master Status Report</small>
+        <small>Master Stock Status</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -11,12 +17,21 @@
 
 <!-- Main content -->
 <section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
+    @if (ExceptionHandler.HasException())
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+            @ExceptionHandler.GetExceptionMessage()
+        </div>
+        { ExceptionHandler.CloseException(); }
+    }
+    <div class="box box-default box-solid">
         <div class="box-header with-border">
             <h3 class="box-title">Stores</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-minus"></i>
                 </button>
             </div>
             <!-- /.box-tools -->
@@ -28,221 +43,36 @@
                     <table class="table table-condensed">
                         <tbody>
                             <tr>
-                                <th></th>
-                                <th colspan="3" class="text-center">
-                                    Indonesian
-                                </th>
-                                <th colspan="3" class="text-center">
-                                    South African
-                                </th>
-                                <th colspan="3" class="text-center">
-                                    Afghani
-                                </th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <th>0-0</th>
-                                <th>0-25</th>
-                                <th>0-50</th>
-                                <th>0-0</th>
-                                <th>0-25</th>
-                                <th>0-50</th>
-                                <th>0-0</th>
-                                <th>0-25</th>
-                                <th>0-50</th>
+                                <th>Store</th>
+                                <th>Origin</th>
+                                <th>Vessel</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
                                 <th>Total</th>
                             </tr>
-                            <tr>
-                                <th colspan="11">
-                                    <h3>Karachi</h3>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Hawks bay</th>
-                                <td>
-                                    10,196.05
-                                </td>
-                                <td>
-                                    1,649.00
-                                </td>
-                                <td>
-                                    3,409.12
-                                </td>
-                                <td>
-                                    16,620.72
-                                </td>
-                                <td>
-                                    355.42
-                                </td>
-                                <td>
-                                    865.79
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">33,096.10</span>
-                                </td>
+                            @foreach (Store store in FilteredStores)
+                            {
+                                <tr>
+                                    <td><a href="/Store/StoreDetail/@store.Id">@store.Name</a></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><span class="badge bg-green">@store.TotalStock.ToString(Constants.QuantityFormat)</span></td>
+                                </tr>
+                                foreach (CustomerStock stock in store.Stock)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>@stock.Origin.Value</td>
+                                        <td>@stock.Vessel.Value</td>
+                                        <td>@stock.Size.Value</td>
+                                        <td>@stock.Quantity.ToString(Constants.QuantityFormat)</td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
 
-                            </tr>
-                            <tr>
-                                <th>New Godown</th>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    325.75
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">325.75</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>New Godown 2</th>
-                                <td>
-                                    8,210.01
-                                </td>
-                                <td>
-                                    558.78
-                                </td>
-                                <td>
-                                    4,454.25
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">13,223.04</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>Groney Yard</th>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    10,999.41
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    68,377.86
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">79,377.26</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>Port Qasim</th>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    31,125.29
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td>148.84</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">31,274.12</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>Wazir Mention</th>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    1,532.61
-                                </td>
-                                <td>23.09</td>
-                                <td></td>
-                                <td>382.76 </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">1,938.47</span>
-                                </td>
-
-                            </tr>
-                           <tr>
-                                <th colspan="11">
-                                    <h3 class="box-title">Lahore</h3>
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Train/transit</th>
-                                <td>
-                                    113.20
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <span class="badge bg-green">113.20</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th>CCM</th>
-                                <td>9,921.41</td>
-                                <td>586.24</td>
-                                <td>
-                                    331.61
-                                </td>
-                                <td>1,735.79</td>
-                                <td>847.31</td>
-                                <td></td>
-                                <td>186.04</td>
-                                <td></td>
-                                <td>382.50</td>
-                                <td>
-                                    <span class="badge bg-green">13,990.90</span>
-                                </td>
-
-                            </tr>
-                            <tr>
-                                <th colspan="11">
-                                    <h3>Total</h3>
-                                </th>
-                            </tr>
-                            <tr class="bg-success">
-                                <th>Total</th>
-                                <td>28,327.47</td>
-                                <td>2,794.02</td>
-                                <td>52,291.23</td>
-                                <td>18,379.60</td>
-                                <td>1,202.73</td>
-                                <td>69,775.25</td>
-                                <td>186.04</td>
-                                <td></td>
-                                <td>382.50</td>
-                                <td>
-                                    <span class="badge bg-green">173,338.83</span>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -253,7 +83,7 @@
     </div>
 
     <!-- /.box -->
-    <div class="box box-default box-solid collapsed-box">
+    @*<div class="box box-default box-solid collapsed-box">
         <div class="box-header with-border">
             <h3 class="box-title">LC</h3>
             <div class="box-tools pull-right">
@@ -568,5 +398,5 @@
             <!-- /.box-body -->
         </div>
 
-    </div>
+    </div>*@
 </section>

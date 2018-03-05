@@ -293,7 +293,8 @@ namespace MZXRM.PSS.DataManager
             return GetDefaultRef();
         }
         #endregion
-public static Item SaveOrigin(Item data)
+
+        public static Item SaveOrigin(Item data)
         {
             // TODO
             return GetDefaultRef();

@@ -43,6 +43,7 @@
     <Compile Include="Entity\Constants.cs" />
     <Compile Include="Entity\Customer.cs" />
     <Compile Include="Entity\CustomerStock.cs" />
+    <Compile Include="Entity\DeliveryOrder.cs" />
     <Compile Include="Entity\DutyClear.cs" />
     <Compile Include="Entity\ExceptionLogs.cs" />
     <Compile Include="Entity\GRN.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
     <Compile Include="Entity\StockMovement.cs" />
+    <Compile Include="Entity\StoreInOut.cs" />
     <Compile Include="Entity\Store.cs" />
     <Compile Include="Entity\Team.cs" />
     <Compile Include="Entity\Users.cs" />

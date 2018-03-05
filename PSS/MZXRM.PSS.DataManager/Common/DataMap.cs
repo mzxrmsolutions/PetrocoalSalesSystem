@@ -121,13 +121,85 @@ namespace MZXRM.PSS.DataManager
             return AllPOs;
         }
 
-        internal static Dictionary<string, object> reMapStockMovementData(DutyClear dCL)
+        public static List<StoreInOut> MapStoreIOData(DataTable dTstore)
+        {
+            List<StoreInOut> ListStores = new List<StoreInOut>();
+            foreach (DataRow dr in dTstore.Rows)
+            {
+                StoreInOut mapData = new StoreInOut();
+                mapData.Id = int.Parse(dr["id"].ToString());
+                mapData.InOut = (StoreMovementType)Enum.Parse(typeof(StoreMovementType), dr["Type"].ToString());
+                mapData.Status = (StoreInOutStatus)Enum.Parse(typeof(StoreInOutStatus), dr["Status"].ToString());
+                /*mapData.Id = int.Parse(dr["id"].ToString());
+
+
+        public StoreMovementType InOut;
+        public StoreMovementType Status;
+        public DateTime CreatedOn;
+        public Reference CreatedBy;
+        public DateTime ModifiedOn;
+        public Reference ModifiedBy;
+        public DateTime CompletedOn;
+        public Reference LeadId;
+        public string SMNumber;
+        public DateTime SMDate;
+        public Item Origin;
+        public Item Size;
+        public int Vessel;
+        public decimal Quantity;
+        public Reference FromStoreId;
+        public Reference ToStoreId;
+        public string VehicleNo;
+        public string BiltyNo;
+        public DateTime BiltyDate;
+        public string RRInvoice;
+        public string CCMNumber;
+        public Item Transporter;
+        public DateTime StoreInDate;
+        public decimal StoreInQuantity;
+        public Reference StoreMovementId;
+
+        //                Type    int Unchecked
+        //Status  int Unchecked
+        //CreatedOn datetime    Unchecked
+        //CreatedBy   uniqueidentifier Unchecked
+        //ModifiedOn datetime    Unchecked
+        //ModifiedBy  uniqueidentifier Unchecked
+        //CompletedOn datetime    Checked
+        //LeadId  uniqueidentifier Unchecked
+        //SMNumber nvarchar(50)    Unchecked
+        //SMDate  datetime    Unchecked
+        //Origin  int Unchecked
+        //Size    int Unchecked
+        //Vessel  int Unchecked
+        //Quantity    decimal(18, 3)  Checked
+        //FromStoreId uniqueidentifier    Unchecked
+        //ToStoreId   uniqueidentifier    Unchecked
+        //VehicleNo   nvarchar(50)    Unchecked
+        //BiltyNo nvarchar(50)    Unchecked
+        //BiltyDate   datetime    Unchecked
+        //RRInvoice   nvarchar(50)    Unchecked
+        //CCMNumber   nvarchar(50)    Unchecked
+        //Transporter int Unchecked
+        //StoreInDate datetime    Checked
+        //StoreInQuantity decimal(18, 3)  Checked
+        //StoreMovementId uniqueidentifier    Unchecked
+
+
+    */
+                ListStores.Add(mapData);
+                mapData = null;
+            }
+            return ListStores;
+        }
+
+        public static Dictionary<string, object> reMapStockMovementData(DutyClear dCL)
         {
             //TODO
             return null;
         }
 
-        public static List<Store> MapStoreData(DataTable dTstore)
+        public static List<Store> MapStoreData(DataTable dTstore, DataTable dtCustStock)
         {
             List<Store> ListStores = new List<Store>();
             foreach (DataRow dr in dTstore.Rows)
@@ -144,23 +216,42 @@ namespace MZXRM.PSS.DataManager
                 mapData.Name = dr["Name"].ToString();
                 mapData.Location = dr["Location"].ToString();
                 mapData.Capacity = decimal.Parse(dr["Capacity"].ToString());
-                
+
+                mapData.Stock = new List<CustomerStock>();
+
+                foreach (DataRow drCustStock in dtCustStock.Rows)
+                {
+                    Guid StoreId = drCustStock["StoreId"] != null ? new Guid(drCustStock["StoreId"].ToString()) : Guid.Empty;
+                    if (StoreId != Guid.Empty && StoreId == mapData.Id)
+                    {
+                        CustomerStock CustStock = new CustomerStock();
+                        CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
+                        CustStock.Customer = drCustStock["CustomerId"] != null ? new Reference() { Id = new Guid(drCustStock["CustomerId"].ToString()), Name = "" } : CustomerDataManager.GetDefaultRef();
+                        CustStock.Store = new Reference() { Id = mapData.Id, Name = mapData.Name };
+                        CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Origin = drCustStock["Origin"] != null ? CommonDataManager.GetOrigin(drCustStock["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Size = drCustStock["Size"] != null ? CommonDataManager.GetSize(drCustStock["Size"].ToString()) : CommonDataManager.GetDefaultRef();
+                        CustStock.Quantity = drCustStock["Quantity"] != null ? decimal.Parse(drCustStock["Quantity"].ToString()) : 0;
+                        mapData.Stock.Add(CustStock);
+                    }
+                }
+
                 ListStores.Add(mapData);
                 mapData = null;
             }
             return ListStores;
         }
 
-        public static List<SaleOrder> MapSOData(DataTable dTso)
+        public static List<SaleOrder> MapSOData(DataTable dTso, DataTable dTdo)
         {
             List<SaleOrder> ListSO = new List<SaleOrder>();
             foreach (DataRow dr in dTso.Rows)
             {
                 SaleOrder SO = new SaleOrder();
 
-                SO.Id =(int) dr["id"];
-                SO.Status =(SOStatus) Enum.Parse(typeof(SOStatus), dr["status"].ToString());
-                SO.OrderType =(SOType)Enum.Parse(typeof(SOType), dr["ordertype"].ToString());
+                SO.Id = (int)dr["id"];
+                SO.Status = (SOStatus)Enum.Parse(typeof(SOStatus), dr["status"].ToString());
+                SO.OrderType = (SOType)Enum.Parse(typeof(SOType), dr["ordertype"].ToString());
 
                 SO.CreatedOn = dr["CreatedOn"] != DBNull.Value ? DateTime.Parse(dr["CreatedOn"].ToString()) : DateTime.MinValue;
                 SO.CreatedBy = dr["CreatedBy"] != null ? UserDataManager.GetUserRef(dr["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
@@ -172,33 +263,83 @@ namespace MZXRM.PSS.DataManager
                 SO.ApprovedDate = dr["ApprovedDate"] != DBNull.Value ? DateTime.Parse(dr["ApprovedDate"].ToString()) : DateTime.MinValue;
                 SO.ApprovedBy = dr["ApprovedBy"] != null ? UserDataManager.GetUserRef(dr["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
 
-                
+
                 SO.SONumber = dr["SONumber"].ToString();
                 SO.SODate = DateTime.Parse(dr["SODate"].ToString());
                 SO.SOExpiry = DateTime.Parse(dr["SOExpiryDate"].ToString());
                 SO.Customer = dr["CustomerId"] != null ? CustomerDataManager.GetCustRef(dr["CustomerId"].ToString()) : CustomerDataManager.GetDefaultRef();
                 SO.PartyPONumber = dr["PartyPONumber"].ToString();
-                SO.PODate =DateTime.Parse( dr["PartyPODate"].ToString());
-                SO.POExpiry =DateTime.Parse( dr["PartyPOExpiryDate"].ToString());
-                SO.CreditPeriod =int.Parse( dr["CreditPeriod"].ToString());
+                SO.PODate = DateTime.Parse(dr["PartyPODate"].ToString());
+                SO.POExpiry = DateTime.Parse(dr["PartyPOExpiryDate"].ToString());
+                SO.CreditPeriod = int.Parse(dr["CreditPeriod"].ToString());
                 SO.Origin = dr["OriginId"] != null ? CommonDataManager.GetOrigin(dr["OriginId"].ToString()) : CommonDataManager.GetDefaultRef();
-                SO.Size =  dr["SizeId"] != null ? CommonDataManager.GetOrigin(dr["SizeId"].ToString()) : CommonDataManager.GetDefaultRef();
-                SO.Vessel =  dr["VesselId"] != null ? CommonDataManager.GetOrigin(dr["VesselId"].ToString()) : CommonDataManager.GetDefaultRef();
-                SO.Quantity  =decimal.Parse( dr["Quantity"].ToString());
+                SO.Size = dr["SizeId"] != null ? CommonDataManager.GetSize(dr["SizeId"].ToString()) : CommonDataManager.GetDefaultRef();
+                SO.Vessel = dr["VesselId"] != null ? CommonDataManager.GetVessel(dr["VesselId"].ToString()) : CommonDataManager.GetDefaultRef();
+                SO.Quantity = decimal.Parse(dr["Quantity"].ToString());
 
-                SO.LC = SO.OrderType==SOType.LC;
-                SO.Tax = !(SO.AgreedTaxRate==null || SO.AgreedTaxRate.Index==0);
-                SO.AgreedRate =decimal.Parse( dr["AgreedRate"].ToString());
-                SO.AgreedTaxRate = dr["TaxRateId"]!=null?CommonDataManager.GetTaxRate( dr["TaxRateId"].ToString()): CommonDataManager.GetDefaultRef();
+                SO.LC = SO.OrderType == SOType.LC;
+                SO.Tax = !(SO.AgreedTaxRate == null || SO.AgreedTaxRate.Index == 0);
+                SO.AgreedRate = decimal.Parse(dr["AgreedRate"].ToString());
+                SO.AgreedTaxRate = dr["TaxRateId"] != null ? CommonDataManager.GetTaxRate(dr["TaxRateId"].ToString()) : CommonDataManager.GetDefaultRef();
                 //SO.TaxAmount = dr["id"];
                 //SO.RateIncTax = dr["id"];
                 //SO.RateExcTax = dr["id"];
                 //SO.FinalPrice = dr["id"];
                 SO.Trader = dr["TraderId"] != null ? CommonDataManager.GetTrader(dr["TraderId"].ToString()) : CommonDataManager.GetDefaultRef();
-                SO.TraderCommission = decimal.Parse( dr["TraderCommision"].ToString());
-                //SO.SaleStation = dr["id"];
-                SO.Remarks = dr["Remarks"] != null ? dr["Remarks"].ToString():"";
+                SO.TraderCommission = dr["TraderId"] != null ? decimal.Parse(dr["TraderCommision"].ToString()):0;
+                SO.SaleStation = /*dr["SaleStationId"] != null ? CommonDataManager.GetOrigin(dr["SaleStationId"].ToString()) : */CommonDataManager.GetDefaultRef(); //TODO: have to add salestatdion id
+                SO.Remarks = dr["Remarks"] != null ? dr["Remarks"].ToString() : "";
                 SO.PartyPOImage = dr["POScannedImage"] != null ? dr["POScannedImage"].ToString() : "";
+
+                //POPULATING DOS
+                SO.DOList = new List<DeliveryOrder>();
+
+                foreach (DataRow drDo in dTdo.Rows)
+                {
+                    DeliveryOrder DO = new DeliveryOrder();
+
+                    DO.Id = (int)drDo["Id"];
+                    DO.Store = drDo["StoreId"] != null ? StoreDataManager.GetStoreRef(drDo["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
+                    DO.Lead = drDo["LeadId"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
+                    DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
+
+                    DO.CompletedOn = drDo["CompletedOn"] != DBNull.Value ? DateTime.Parse(drDo["CompletedOn"].ToString()) : DateTime.MinValue;
+                    DO.ApprovedDate = drDo["ApprovedDate"] != DBNull.Value ? DateTime.Parse(drDo["ApprovedDate"].ToString()) : DateTime.MinValue;
+                    DO.ApprovedBy = drDo["ApprovedBy"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
+
+
+                    //TODO: Get sale order reference here
+                    DO.SaleOrder = new Item() { Index = SO.Id, Value = SO.SONumber };
+
+                    DO.DONumber = drDo["DONumber"].ToString();
+                    DO.DODate = DateTime.Parse(drDo["DODate"].ToString());
+                    DO.Quantity = Decimal.Parse(drDo["Quantity"].ToString());
+                    DO.LiftingStartDate = DateTime.Parse(drDo["LiftingStartDate"].ToString());
+                    DO.LiftingEndDate = DateTime.Parse(drDo["LiftingEndDate"].ToString());
+                    DO.DeliveryDestination = drDo["DeliveryDestination"].ToString();
+                    //TODO: trader and transporter are different
+                    DO.Transportor = drDo["TransportorId"] != null ? CommonDataManager.GetTrader(drDo["TransportorId"].ToString()) : CommonDataManager.GetDefaultRef();
+                    DO.DumperRate = Decimal.Parse(drDo["DumperRate"].ToString());
+                    DO.FreightPaymentTerms = Decimal.Parse(drDo["FreightPaymentTerms"].ToString());
+                    DO.FreightPerTon = Decimal.Parse(drDo["FreightPerTon"].ToString());
+                    DO.FreightTaxPerTon = Decimal.Parse(drDo["FreightTaxPerTon"].ToString());
+                    DO.FreightComissionPSL = Decimal.Parse(drDo["FreightComissionPSL"].ToString());
+                    DO.FreightComissionAgent = Decimal.Parse(drDo["FreightComissionAgent"].ToString());
+                    DO.Remarks = drDo["Remarks"] != null ? drDo["Remarks"].ToString() : "";
+
+
+
+                    DO.CreatedOn = drDo["CreatedOn"] != DBNull.Value ? DateTime.Parse(drDo["CreatedOn"].ToString()) : DateTime.MinValue;
+                    DO.CreatedBy = drDo["CreatedBy"] != null ? UserDataManager.GetUserRef(drDo["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                    DO.ModifiedOn = drDo["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drDo["ModifiedOn"].ToString()) : DateTime.MinValue;
+                    DO.ModifiedBy = drDo["ModifiedBy"] != null ? UserDataManager.GetUserRef(drDo["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+
+
+
+
+                    SO.DOList.Add(DO);
+                    DO = null;
+                }
                 ListSO.Add(SO);
                 SO = null;
             }
@@ -332,7 +473,7 @@ namespace MZXRM.PSS.DataManager
                     if (custId != Guid.Empty && custId == Cust.Id)
                     {
                         CustomerStock CustStock = new CustomerStock();
-                        CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
+                        //CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
                         CustStock.Customer = new Reference() { Id = Cust.Id, Name = Cust.Name };
                         CustStock.Store = drCustStock["StoreId"] != null ? StoreDataManager.GetStoreRef(drCustStock["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
                         CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();

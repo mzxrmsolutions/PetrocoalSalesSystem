@@ -41,7 +41,7 @@ namespace MZXRM.PSS.Data
         public bool LC; // LC false = commercial
         public bool Tax; // false=customer
 
-        public decimal AgreedRate;
+        public decimal? AgreedRate;
         public Item AgreedTaxRate;
 
         public decimal TaxAmount;
@@ -57,10 +57,7 @@ namespace MZXRM.PSS.Data
         public string Remarks;
 
         public string PartyPOImage;
-
-
-
-
+        public List<DeliveryOrder> DOList { get; set; }
     }
     public enum SOStatus
     {

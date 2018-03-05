@@ -24,6 +24,57 @@ namespace MZXRM.PSS.Business
             }
         }
 
+        //ADDED BY KASHIF ABBAS TO UDPATE SO: 
+        public static SaleOrder UpdateSO(Dictionary<string, string> values)
+        {
+            try
+            {
+                string soNumber = values["SONumber"];
+
+                SaleOrder SO = SaleManager.GetSOBySONumber(soNumber);
+                SO.ModifiedOn = DateTime.Now;
+                SO.ModifiedBy = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+                SO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
+                SO.SODate = DateTime.Parse(values["SODate"].ToString());
+                SO.SOExpiry = DateTime.Parse(values["SOExpiry"].ToString());
+                SO.PartyPONumber = values["PONumber"].ToString();
+                SO.PODate = DateTime.Parse(values["PODate"].ToString());
+                SO.POExpiry = DateTime.Parse(values["POExpiry"].ToString());
+                SO.CreditPeriod = int.Parse(values["CreditPeriod"].ToString());
+                SO.Origin = Common.GetOrigin(values["Origin"].ToString());
+                SO.Size = Common.GetSize(values["Size"].ToString());
+                SO.Vessel = Common.GetVessel(values["Vessel"].ToString());
+                SO.Quantity = decimal.Parse(values["Quantity"].ToString());
+                SO.AgreedTaxRate = values.ContainsKey("TaxRate")?Common.GetTaxRate(values["TaxRate"].ToString()): null;
+                SO.Tax = !((SO.AgreedTaxRate == null) || (SO.AgreedTaxRate.Index == 0));
+                SO.AgreedRate = decimal.Parse(values["Rate"].ToString())  ;
+                if (SO.Tax)
+                {
+                    //SO.TaxAmount = decimal.Parse(values[""].ToString());
+                    //SO.RateIncTax = decimal.Parse(values[""].ToString());
+                    //SO.RateExcTax = decimal.Parse(values[""].ToString());
+                }
+                if (!SO.LC)
+                {
+                    SO.Trader = Common.GetTrader(values["Trader"].ToString());
+                    SO.TraderCommission = decimal.Parse(values["TraderCommission"].ToString());
+                }
+                SO.Remarks = values["Remarks"].ToString();
+                //SO.PartyPOImage = values["POScanImage"].ToString();
+                //todo: temp work
+                SO.PartyPOImage = String.Empty;
+                SaleDataManager.UpdateSO(SO);
+                return SO;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+                ExceptionLogManager.Log(ex, null, "Creating SO");
+            }
+            return null;
+        }
+
+
         public static SaleOrder CreateSO(Dictionary<string, string> values)
         {
             try
@@ -63,6 +114,14 @@ namespace MZXRM.PSS.Business
                     SO.Trader = Common.GetTrader(values["Trader"].ToString());
                     SO.TraderCommission = decimal.Parse(values["TraderCommission"].ToString());
                 }
+                else
+                {
+                    SO.AgreedRate = null;
+                    SO.AgreedTaxRate = null;
+                    SO.Trader = null;
+                    SO.TraderCommission = 0;
+
+                }
                 SO.Remarks = values["Remarks"].ToString();
                 //SO.PartyPOImage = values["POScanImage"].ToString();
                 //todo: temp work
@@ -76,6 +135,14 @@ namespace MZXRM.PSS.Business
                 ExceptionLogManager.Log(ex, null,"Creating SO");
             }
             return null;
+        }
+
+        //ADDED BY KASHIF ABBAS FOR UPDATING SO
+        public static SaleOrder GetSOBySONumber(String SONumber)
+        {
+            var SO = AllSOs.SingleOrDefault(x => x.SONumber == SONumber);
+            return SO;
+           //return AllSOs.Where(x => x.SONumber == SONumber) as SaleOrder;
         }
 
         private static string GenerateNextSONumber()
