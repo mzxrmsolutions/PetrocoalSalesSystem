@@ -74,7 +74,7 @@ namespace PatrocoalSalesSystem.Controllers
                         include = false;
                 }
                 if (include)*/
-                    filteredSO.Add(so);
+                filteredSO.Add(so);
             }
 
             ViewBag.SOs = filteredSO;
@@ -162,8 +162,8 @@ namespace PatrocoalSalesSystem.Controllers
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
 
-             ViewBag.ThisCust = !string.IsNullOrEmpty(Request.QueryString["cust"]) ?CustomerManager.GetCustomer(Guid.Parse( Request.QueryString["cust"])) : null;
-             ViewBag.Ordertype = !string.IsNullOrEmpty(Request.QueryString["type"]) ? int.Parse(Request.QueryString["type"]) : 0;
+            ViewBag.ThisCust = !string.IsNullOrEmpty(Request.QueryString["cust"]) ? CustomerManager.GetCustomer(Guid.Parse(Request.QueryString["cust"])) : null;
+            ViewBag.Ordertype = !string.IsNullOrEmpty(Request.QueryString["type"]) ? int.Parse(Request.QueryString["type"]) : 0;
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
@@ -224,8 +224,59 @@ namespace PatrocoalSalesSystem.Controllers
         }
         public ActionResult CreateDO()
         {
+            //ViewBag.ThisSO
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            string soNumber = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : "";
+            if (soNumber != "")
+            {
+                SaleOrder SO = SaleManager.GetSOBySONumber(soNumber);
+                ViewBag.ThisSO = SO;
+
+            }
             return View();
         }
+
+
+
+
+        #region " CreateDO ActionResult " [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateDO(FormCollection form)
+
+        {
+            try
+            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                if (formErrors == "")
+                {
+                    DeliveryOrder DO = SaleManager.CreateDO(values);
+                    if (DO != null)
+                        Response.Redirect("/SaleOrder/UpdateDO/" + DO.DONumber);
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(form);
+        }
+        #endregion
         public ActionResult CreateDC()
         {
             return View();

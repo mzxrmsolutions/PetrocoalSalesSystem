@@ -154,5 +154,35 @@ namespace MZXRM.PSS.DataManager
         {
             readFromDB = true;
         }
+        public static SaleOrder GetSO(string SONumber)
+        {
+            foreach (SaleOrder so in ReadAllSO())
+            {
+                if (so.SONumber == SONumber)
+                    return so;
+            }
+            return null;
+        }
+
+
+
+        #region " SaveDO Function " public static int SaveDO(DeliveryOrder DO)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapDOData(DO); //map podetail to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertDO", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                int retId = int.Parse(obj.ToString());
+                return retId;
+            }
+        }
+        #endregion
     }
 }

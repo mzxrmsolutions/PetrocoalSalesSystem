@@ -23,7 +23,53 @@ namespace MZXRM.PSS.Business
                 _AllSOs = value;
             }
         }
+        //UDPATED BY KASHIF ABBAS ON 13TH MARCH TO ADD DO
+        public static DeliveryOrder CreateDO(Dictionary<string, string> values)
+        {
+            try
+            {
+                DeliveryOrder DO = new DeliveryOrder();
 
+                SaleOrder SO = SaleDataManager.GetSO(values["SONubmer"]);
+
+                DO.Store = StoreDataManager.GetStoreRef(values["StoreID"]);
+                DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
+                DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
+                DO.Status = DOStatus.Created;
+                DO.CompletedOn = DO.ApprovedDate = DateTime.MinValue;
+                DO.ApprovedBy = null;
+                DO.DONumber = values["DONumber"];
+                DO.DODate = DateTime.Parse(values["DODate"].ToString());
+                DO.Quantity = decimal.Parse(values["Quantity"].ToString());
+
+                DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
+                DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
+                DO.DeliveryDestination = values["DeliveryDestination"].ToString();
+                //TODO: trader and transporter are different
+                DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
+                DO.FreightPaymentTerms = Decimal.Parse(values["FreightPaymentTerms"].ToString());
+                DO.FreightPerTon = Decimal.Parse(values["FreightPerTon"].ToString());
+                DO.FreightTaxPerTon = Decimal.Parse(values["FreightTaxPerTon"].ToString());
+                DO.FreightComissionPSL = Decimal.Parse(values["FreightComissionPSL"].ToString());
+                DO.FreightComissionAgent = Decimal.Parse(values["FreightComissionAgent"].ToString());
+                DO.Remarks = values["Remarks"] != null ? values["Remarks"].ToString() : "";
+
+                DO.CreatedOn = DateTime.Now;
+                DO.CreatedBy = values["CreatedBy"] != null ? UserDataManager.GetUserRef(values["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                DO.ModifiedOn = DateTime.Now;
+                DO.ModifiedBy = values["ModifiedBy"] != null ? UserDataManager.GetUserRef(values["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                //todo: temp work
+                SaleDataManager.SaveDO(DO);
+                return DO;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+                ExceptionLogManager.Log(ex, null, "Creating SO");
+            }
+            return null;
+        }
         //ADDED BY KASHIF ABBAS TO UDPATE SO: 
         public static SaleOrder UpdateSO(Dictionary<string, string> values)
         {

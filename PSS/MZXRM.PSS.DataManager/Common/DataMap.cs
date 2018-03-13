@@ -10,6 +10,43 @@ namespace MZXRM.PSS.DataManager
 {
     public class DataMap
     {
+        //ADDED BY KASHIF ABBAS ON 13TH MARCH 2018 TO REMAPDO
+        internal static Dictionary<string, object> reMapDOData(DeliveryOrder DO)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+
+            keyValues.Add("@ID", DO.Id);
+            keyValues.Add("@StoreId", DO.Store.Id);
+            keyValues.Add("@SOId", DO.SaleOrder.Index);
+            keyValues.Add("@LeadId", DO.Lead.Id);
+            keyValues.Add("@Status", DO.Status);
+            keyValues.Add("@CompletedOn", DO.CompletedOn);
+            keyValues.Add("@ApprovedDate", DO.ApprovedDate);
+            keyValues.Add("@ApprovedBy", DO.ApprovedBy);
+            keyValues.Add("@DONumber", DO.DONumber);
+            keyValues.Add("@DODate", DO.DODate);
+            keyValues.Add("@Quantity", DO.Quantity);
+            keyValues.Add("@LiftingStartDate", DO.LiftingStartDate);
+            keyValues.Add("@LiftingEndDate", DO.LiftingEndDate);
+            keyValues.Add("@DeliveryDestination", DO.DeliveryDestination);
+            keyValues.Add("@TransporterId", DO.Transportor.Index);
+            keyValues.Add("@DumperRat", DO.DumperRate);
+            keyValues.Add("@FreightPaymentTerms", DO.FreightPaymentTerms);
+            keyValues.Add("@FreightPerTon", DO.FreightPerTon);
+            keyValues.Add("@FreightTaxPerTon", DO.FreightTaxPerTon);
+            keyValues.Add("@FreightComissionPSL", DO.FreightComissionPSL);
+            keyValues.Add("@FreightComissionAgent", DO.FreightComissionAgent);
+
+            keyValues.Add("@CreatedOn", DO.CreatedOn);
+            keyValues.Add("@CreatedBy", DO.CreatedBy.Id);
+
+            keyValues.Add("@ModifiedBy", DO.ModifiedBy.Id);
+            keyValues.Add("@Remarks", DO.Remarks);
+            return keyValues;
+        }
+
+
+
         public static List<PurchaseOrder> MapPOData(DataTable DTpo, DataTable dTpod, DataTable dTgrn, DataTable dTdcl)
         {
             List<PurchaseOrder> AllPOs = new List<PurchaseOrder>();
@@ -338,7 +375,7 @@ namespace MZXRM.PSS.DataManager
                     DO.LiftingEndDate = DateTime.Parse(drDo["LiftingEndDate"].ToString());
                     DO.DeliveryDestination = drDo["DeliveryDestination"].ToString();
                     //TODO: trader and transporter are different
-                    DO.Transportor = drDo["TransportorId"] != null ? CommonDataManager.GetTrader(drDo["TransportorId"].ToString()) : CommonDataManager.GetDefaultRef();
+                    DO.Transportor = drDo["TransporterId"] != null ? CommonDataManager.GetTrader(drDo["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                     DO.DumperRate = Decimal.Parse(drDo["DumperRate"].ToString());
                     DO.FreightPaymentTerms = Decimal.Parse(drDo["FreightPaymentTerms"].ToString());
                     DO.FreightPerTon = Decimal.Parse(drDo["FreightPerTon"].ToString());

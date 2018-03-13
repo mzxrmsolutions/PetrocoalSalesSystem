@@ -60,7 +60,7 @@ namespace PatrocoalSalesSystem.Controllers
                 if (!Common.isAuthorize())
                     Response.Redirect("/Login");
                 if (string.IsNullOrEmpty(id))
-                    ExceptionHandler.Error("Error! No Customer Found");
+                    ExceptionHandler.Error("Error! No Store Found");
                 Guid StoreId = Guid.Empty;
                 if (Guid.TryParse(id, out StoreId))
                 {

@@ -330,7 +330,7 @@ namespace MZXRM.PSS.DataManager
             XMLUtil.WriteToXmlFile<List<Item>>(fileName, data);
         }
 
-        internal static Item GetDefaultRef()
+        public static Item GetDefaultRef()
         {
             return new Item() { Index = 0, Value = "" };
         }
