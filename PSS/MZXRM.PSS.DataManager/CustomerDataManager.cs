@@ -41,6 +41,10 @@ namespace MZXRM.PSS.DataManager
             return AllCustomers;
 
         }
+        public static void ResetCache()
+        {
+            readFromDB = true;
+        }
         private static Customer CalculateCustomer(Customer Customer)
         {
             if (Customer != null)

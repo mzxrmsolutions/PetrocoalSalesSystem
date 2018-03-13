@@ -193,10 +193,31 @@ namespace MZXRM.PSS.DataManager
             return ListStores;
         }
 
-        public static Dictionary<string, object> reMapStockMovementData(DutyClear dCL)
+        public static Dictionary<string, object> reMapStockMovementData(PurchaseOrder PO,DutyClear DCL)
         {
-            //TODO
-            return null;
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+
+
+            keyValues.Add("@Store", DCL.Store.Id);
+            foreach (PODetail pod in PO.PODetailsList)
+            {
+                if (pod.Id == DCL.PODetail.Id)
+                {
+                    keyValues.Add("@CustomerId", pod.Customer.Id);
+                    break;
+                }
+
+            }
+            keyValues.Add("@Type", StMovType.DCSuccess);
+            keyValues.Add("@Quantity", DCL.Quantity);
+            keyValues.Add("@InOut", false);
+            keyValues.Add("@Reference", DCL.Id);
+            keyValues.Add("@Vessel",PO.Vessel.Index );
+            keyValues.Add("@Origin", PO.Origin.Index);
+            keyValues.Add("@Size", PO.Size.Index);
+            keyValues.Add("@Remarks", DCL.Remarks);
+            
+            return keyValues;
         }
 
         public static List<Store> MapStoreData(DataTable dTstore, DataTable dtCustStock)
@@ -225,7 +246,6 @@ namespace MZXRM.PSS.DataManager
                     if (StoreId != Guid.Empty && StoreId == mapData.Id)
                     {
                         CustomerStock CustStock = new CustomerStock();
-                        CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
                         CustStock.Customer = drCustStock["CustomerId"] != null ? new Reference() { Id = new Guid(drCustStock["CustomerId"].ToString()), Name = "" } : CustomerDataManager.GetDefaultRef();
                         CustStock.Store = new Reference() { Id = mapData.Id, Name = mapData.Name };
                         CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();
@@ -473,7 +493,6 @@ namespace MZXRM.PSS.DataManager
                     if (custId != Guid.Empty && custId == Cust.Id)
                     {
                         CustomerStock CustStock = new CustomerStock();
-                        //CustStock.Id = drCustStock["Id"] != null ? new Guid(drCustStock["Id"].ToString()) : Guid.Empty;
                         CustStock.Customer = new Reference() { Id = Cust.Id, Name = Cust.Name };
                         CustStock.Store = drCustStock["StoreId"] != null ? StoreDataManager.GetStoreRef(drCustStock["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
                         CustStock.Vessel = drCustStock["Vessel"] != null ? CommonDataManager.GetVessel(drCustStock["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();

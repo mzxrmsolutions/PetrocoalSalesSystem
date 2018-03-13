@@ -19,8 +19,18 @@ namespace PatrocoalSalesSystem.Controllers
                 if (!Common.isAuthorize())
                     Response.Redirect("/Login");
                 List<Customer> allCustomers = CustomerManager.AllCustomers;
+                List<Customer> filteredCustomers = new List<Customer>();
+                foreach (Customer cust in allCustomers)
+                {
+                    if (cust.TotalStock > 0)
+                        filteredCustomers.Add(cust);
+                }
 
-                ViewBag.Customers = allCustomers;
+
+
+
+
+                ViewBag.Customers = filteredCustomers;
 
             }
             catch (Exception ex)

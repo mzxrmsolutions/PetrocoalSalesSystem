@@ -124,7 +124,7 @@
                                 <label>Store</label>
                                 <select class="form-control" name="Store">
                                     <option value="0">--- Store ---</option>
-                                    @foreach (Reference item in Common.Store)
+                                    @foreach (Store item in StoreManager.AllStore)
                                     {
                                         <option value="@item.Id">@item.Name</option>
                                     }

@@ -25,7 +25,7 @@ namespace MZXRM.PSS.Data
     }
     public enum StMovType
     {
-        GRNClear,
-        DCSuccess
+        GRNClear=1,
+        DCSuccess=2
     }
 }

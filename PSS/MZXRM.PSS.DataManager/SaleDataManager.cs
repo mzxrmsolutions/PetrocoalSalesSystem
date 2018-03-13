@@ -148,7 +148,11 @@ namespace MZXRM.PSS.DataManager
                 }
 
             }
-        } 
+        }
         #endregion
+        public static void ResetCache()
+        {
+            readFromDB = true;
+        }
     }
 }

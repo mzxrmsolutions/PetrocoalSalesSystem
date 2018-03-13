@@ -136,7 +136,7 @@
                                     <td>
                                         @if (pod.Customer != null)
                                         {
-                                            <a href="/Customer/@pod.Customer.Id">@pod.Customer.Name</a>
+                                            <a href="/Customer/CustomerDetail/@pod.Customer.Id">@pod.Customer.Name</a>
                                         }
                                     </td>
                                     <td>
@@ -224,7 +224,7 @@
                                 <th> @grn.GRNNumber</th>
                                 <td>@grn.GRNDate.ToShortDateString()</td>
                                 <td><a href="/Stock/Store/@grn.Store.Id">@grn.Store.Name</a></td>
-                                <td><a href="/Customer/@pod.Customer.Id">@pod.Customer.Name</a></td>
+                                <td><a href="/Customer/CustomerDetail/@pod.Customer.Id">@pod.Customer.Name</a></td>
                                 <td>
                                     @if (grn.Quantity > 0)
                                     {<span class="badge bg-green"> @grn.Quantity.ToString("#,##,###.000")</span>}
@@ -290,7 +290,7 @@
                                 <th>@dcl.DCLNumber</th>
                                 <td>@dcl.DCLDate.ToShortDateString()</td>
                                 <td><a href="/Stock/Store/@dcl.Store.Id">@dcl.Store.Name</a></td>
-                                <td><a href="/Customer/@pod.Customer.Id">@pod.Customer.Name</a></td>
+                                <td><a href="/Customer/CustomerDetail/@pod.Customer.Id">@pod.Customer.Name</a></td>
                                 <td>
                                     @if (dcl.Quantity > 0)
                                     {<span class="badge bg-green"> @dcl.Quantity.ToString("#,##,###.000")</span>}

@@ -151,7 +151,12 @@ namespace MZXRM.PSS.DataManager
 
         public static Store CalculateStoreQuantity(Store Store)
         {
-            // Z:TODO
+            decimal quantity = 0;
+            foreach (CustomerStock custStock in Store.Stock)
+            {
+                quantity += custStock.Quantity;
+            }
+            Store.TotalStock = quantity;
             return Store;
         }
         public static void ResetCache()
@@ -214,11 +219,11 @@ namespace MZXRM.PSS.DataManager
             return new Reference() { Id = Guid.Empty, Name = "" };
         }
 
-        public static Guid CreateStockMovement(DutyClear DCL)
+        public static Guid CreateStockMovement(PurchaseOrder PO, DutyClear DCL)
         {
             using (var dbc = DataFactory.GetConnection())
             {
-                Dictionary<string, object> keyValues = DataMap.reMapStockMovementData(DCL); //map dcl to db columns
+                Dictionary<string, object> keyValues = DataMap.reMapStockMovementData(PO,DCL); //map dcl to db columns
                 IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStockMovement", keyValues);
 
                 if (command.Connection.State != ConnectionState.Open)
@@ -227,8 +232,8 @@ namespace MZXRM.PSS.DataManager
                 }
 
                 object obj = command.ExecuteScalar(); //execute query, no result
-                Guid retId = new Guid(obj.ToString());
-                return retId;
+                //Guid retId = new Guid(obj.ToString());
+                return Guid.Empty;
             }
         }
         #endregion

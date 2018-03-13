@@ -325,14 +325,14 @@ namespace MZXRM.PSS.Business
                     Dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                     Dcl.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     if (keyvalues.ContainsKey("Store"))
-                        Dcl.Store = Common.GetStore(keyvalues["Store"]);
+                        Dcl.Store = StoreDataManager.GetStoreRef( keyvalues["Store"].ToString());
                     Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                     Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                     POD.DutyClearsList.Add(Dcl);
 
                     PurchaseDataManager.CalculatePO(PO);
                     if (PO.isValid)
-                        PurchaseDataManager.CreateDCL(Dcl);
+                        PurchaseDataManager.CreateDCL(PO,Dcl);
                     else
                     {
                         ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");

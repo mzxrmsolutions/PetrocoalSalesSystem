@@ -48,6 +48,8 @@ namespace MZXRM.PSS.DataManager
         public static void ResetCache()
         {
             readFromDB = true;
+            CustomerDataManager.ResetCache();
+            StoreDataManager.ResetCache();
         }
         public static PurchaseOrder CalculatePO(PurchaseOrder PO)
         {
@@ -133,7 +135,7 @@ namespace MZXRM.PSS.DataManager
                     {
                         dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                         dcl.PODetail = new Reference() { Id = pod.Id, Name = PO.PONumber };
-                        Guid newDclId = CreateDCL(dcl);
+                        Guid newDclId = CreateDCL(PO, dcl);
                         dcl.Id = newDclId;
                     }
                     else
@@ -271,7 +273,7 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
-        public static Guid CreateDCL(DutyClear DCL)
+        public static Guid CreateDCL(PurchaseOrder PO, DutyClear DCL)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -286,7 +288,7 @@ namespace MZXRM.PSS.DataManager
                 object obj = command.ExecuteScalar(); //execute query, no result
                 Guid retId = new Guid(obj.ToString());
                 DCL.Id = retId;
-              //  StoreDataManager.CreateStockMovement( DCL); //TODO
+                StoreDataManager.CreateStockMovement(PO, DCL); //TODO
 
                 return retId;
             }
@@ -318,6 +320,21 @@ namespace MZXRM.PSS.DataManager
             {
                 throw new Exception("Error! Get all PO from DataBase", ex);
             }
+        }
+        public static PurchaseOrder GetPObyId(Guid Id)
+        {
+            try
+            {
+                List<PurchaseOrder> AllPO = ReadAllPO();
+                foreach (PurchaseOrder PO in AllPO)
+                    if (PO.Id == Id)
+                        return PO;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all PO from DataBase", ex);
+            }
+            return null;
         }
 
         private static DataTable GetAllPODs()
