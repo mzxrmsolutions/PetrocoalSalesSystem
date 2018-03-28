@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 
 namespace MZXRM.PSS.Data
 {
-  public  class StoreInOut
+  public  class StoreTransfer
     {
         public int Id;
         public StoreMovementType InOut;
-        public StoreInOutStatus Status;
+        public StoreTransferStatus Status;
         public DateTime CreatedOn;
         public Reference CreatedBy;
         public DateTime ModifiedOn;
         public Reference ModifiedBy;
         public DateTime CompletedOn;
         public Reference LeadId;
-        public string SMNumber;
-        public DateTime SMDate;
+        public string STNumber;
+        public DateTime STDate;
+        public Reference Customer;
         public Item Origin;
         public Item Size;
-        public int Vessel;
+        public Item Vessel;
         public decimal Quantity;
         public Reference FromStoreId;
         public Reference ToStoreId;
@@ -34,11 +35,12 @@ namespace MZXRM.PSS.Data
         public DateTime StoreInDate;
         public decimal StoreInQuantity;
         public Reference StoreMovementId;
+        public string Remarks;
     }
-    public enum StoreInOutStatus
+    public enum StoreTransferStatus
     {
-        Active=1,
-        InActive=0
+        InTransit=0,
+        Complete=1
     }
     public enum StoreMovementType
     {

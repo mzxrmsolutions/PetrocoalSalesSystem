@@ -1,7 +1,9 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
 @using MZXRM.PSS.Common
-@{SaleOrder ThisSO = ViewBag.ThisSO;}
+@{
+    SaleOrder ThisSO = ViewBag.ThisSO;
+}
 
 <section class="content-header">
     <h1>
@@ -17,7 +19,7 @@
 
 <!-- Main content -->
 <section class="content container-fluid">
-    <form method="post" action="/saleorder/createdo">
+    <form method="post" action="/saleorder/CreateDO">
         @if (ExceptionHandler.HasException())
         {
             <div class="alert alert-danger alert-dismissible">
@@ -55,9 +57,12 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Select SP</label>
-                            <select class="form-control" name="PO" id="selectPO">
+                            <select class="form-control" name="SONumber" id="selectSO">
                                 <option value="0">--- Approved SOs ---</option>
-
+                                @foreach (SaleOrder item in SaleManager.GetAllApprovedSOs())
+                                {
+                                    <option value="@item.Id" @((ThisSO != null && ThisSO.Id == item.Id) ? " selected " : "")>@item.SONumber</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -106,9 +111,22 @@
                             <label>From Store</label>
                             <select class="form-control select2" name="Store">
                                 <option value="0">--- Store ---</option>
-                                @foreach (Reference item in Common.Store)
+                                @foreach (Store store in StoreManager.AllStore)
                                 {
-                                    <option value="@item.Id">@item.Name</option>
+                                    <option value="@store.Id">@store.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lead</label>
+                            <label class="required">*</label>
+                            <select class="form-control select2" name="Lead">
+                                <option value="0">--- Lead ---</option>
+                                @foreach (User item in UserManager.Users)
+                                {
+                                    <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
                                 }
                             </select>
                         </div>
@@ -126,7 +144,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control pull-right" data-selector="date" name="LSDate" value="@DateTime.Now.ToShortDateString()">
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingStartDate" value="@DateTime.Now.ToShortDateString()">
                             </div>
                             <!-- /.input group -->
                         </div>
@@ -138,7 +156,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control pull-right" data-selector="date" name="LEDate" value="@DateTime.Now.ToShortDateString()">
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingEndDate" value="@DateTime.Now.ToShortDateString()">
                             </div>
                             <!-- /.input group -->
                         </div>
@@ -149,13 +167,13 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>DO Destination: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="DeliveryDestination" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Transporter</label>
-                            <select class="form-control select2" name="Store">
+                            <select class="form-control select2" name="TransporterId">
                                 <option value="0">--- Transporter ---</option>
                                 @foreach (Item item in Common.Trader)
                                 {
@@ -167,43 +185,43 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Dumper Rate: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="DumperRate" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Freight Payment Terms: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control"  name="FreightPaymentTerms"/>
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Freight Per Ton: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="FreightPerTon" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Freight Tax Per Ton: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="FreightTaxPerTon" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Freight Comission PSL: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="FreightComissionPSL" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Freight Comission Agent: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="FreightComissionAgent" />
                         </div>
                     </div>
                     <div class="col-sm-12">
                         <div class="form-group">
                             <label>Remarks: </label>
-                            <input type="text" class="form-control" />
+                            <input type="text" class="form-control" name="Remarks" />
                         </div>
                     </div>
 
@@ -211,19 +229,24 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <div class="col-sm-4">
-                    <a href="/saleorder/deliveryorder" class="btn btn-primary">Create DO</a>
-                </div>
-                <div class="col-sm-3">
-                </div>
-                <div class="col-sm-3">
-                </div>
-                <div class="col-sm-2">
-                    <span class="badge bg-yellow pull-right">Pending</span>
-                </div>
-
             </div>
         </div>
         <!-- /.box -->
     </form>
 </section>
+@section scripts
+{
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#selectSO').change(function () {
+                var so = $('#selectSO').val();
+                var url = "/saleorder/createdo?";
+                if (so != "0" && so != undefined) {
+                    url += "so=" + so;
+                }
+                window.location.href = url;
+            });
+        });
+</script>
+}

@@ -87,10 +87,31 @@ namespace MZXRM.PSS.Business
         #region Get Operations
         public static PurchaseOrder GetPO(string ponumber)
         {
+            Guid poid = Guid.Empty;
+            if (Guid.TryParse(ponumber, out poid))
+            {
+                foreach (PurchaseOrder po in AllPOs)
+                {
+                    if (po.Id == poid)
+                        return po;
+                }
+            }
             foreach (PurchaseOrder po in AllPOs)
             {
                 if (po.PONumber == ponumber)
                     return po;
+            }
+            return null;
+        }
+        public static Reference GetPOByDCL(string DCLNumber)
+        {
+            foreach (PurchaseOrder po in AllPOs)
+            {
+                foreach (PODetail pod in po.PODetailsList)
+                    foreach (DutyClear dcl in pod.DutyClearsList)
+
+                        if (dcl.DCLNumber == DCLNumber)
+                            return new Reference() { Id=po.Id,Name=dcl.DCLNumber};
             }
             return null;
         }
@@ -325,14 +346,14 @@ namespace MZXRM.PSS.Business
                     Dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                     Dcl.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     if (keyvalues.ContainsKey("Store"))
-                        Dcl.Store = StoreDataManager.GetStoreRef( keyvalues["Store"].ToString());
+                        Dcl.Store = StoreDataManager.GetStoreRef(keyvalues["Store"].ToString());
                     Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                     Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                     POD.DutyClearsList.Add(Dcl);
 
                     PurchaseDataManager.CalculatePO(PO);
                     if (PO.isValid)
-                        PurchaseDataManager.CreateDCL(PO,Dcl);
+                        PurchaseDataManager.CreateDCL(PO, Dcl);
                     else
                     {
                         ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
@@ -513,6 +534,8 @@ namespace MZXRM.PSS.Business
             string PONumber = keyvalues["ponumber"];
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.InProcess;
+            PO.ApprovedDate = DateTime.Now;
+            PO.ApprovedBy = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
             PurchaseDataManager.SavePO(PO);
             return PO;
         }

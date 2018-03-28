@@ -1,7 +1,6 @@
-﻿using System;
+﻿using MZXRM.PSS.Business;
+using MZXRM.PSS.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -19,7 +18,12 @@ namespace MZXRM.PSS.WebClient
         }
         protected void Session_Start()
         {
-            Session["ReloadPO"] = true;
+            List<Customer> Customer = CustomerManager.AllCustomers;
+            List<Store> Store = StoreManager.AllStore;
+            List<PurchaseOrder> PO = PurchaseManager.AllPOs;
+            List<SaleOrder> SO = SaleManager.AllSOs;
+
+
         }
     }
 }

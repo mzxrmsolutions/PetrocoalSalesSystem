@@ -197,7 +197,7 @@
                     @foreach (DeliveryOrder dos in ThisSO.DOList)
                     {
                         <tr>
-                            <td><a href="/SaleOrder/DODetail" class="btn btn-block btn-primary btn-sm">@dos.DONumber</a></td>
+                            <td><a href="/SaleOrder/DODetail/@dos.DONumber" class="btn btn-block btn-primary btn-sm">@dos.DONumber</a></td>
                             <td>@dos.DODate.ToShortDateString()</td>
                             <td>@dos.LiftingStartDate.ToShortDateString()</td>
                             <td><span class="badge bg-green">@dos.DumperRate</span></td>

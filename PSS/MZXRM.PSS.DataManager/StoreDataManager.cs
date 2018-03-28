@@ -39,6 +39,32 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all from DataBase", ex);
             }
         }
+        private static DataTable GetAllStockMovements()
+        {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllStockMovement");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader(); // execute select query
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all from DataBase", ex);
+            }
+        }
         private static DataTable GetAllCustomerStock() {
             try
             {
@@ -63,39 +89,61 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all from DataBase", ex);
             }
         }
-        /*private static DataTable GetAllStockMovement();
-        private static Guid CreateStore(Store Store)
+
+        
+
+        public static void CreateStoreTransfer(StoreTransfer ST)
         {
-            try
+            using (var dbc = DataFactory.GetConnection())
             {
-                using (var dbc = DataFactory.GetConnection())
+                Dictionary<string, object> keyValues = DataMap.reMapStoreTransferData(ST); //map grn to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStoreInOut", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
                 {
-                    Dictionary<string, object> keyValues = DataMap.reMapStoreData(Store); //map object to db columns
-                    IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStore", keyValues);
-
-                    if (command.Connection.State != ConnectionState.Open)
-                    {
-                        command.Connection.Open();
-                    }
-
-                    object obj = command.ExecuteScalar(); //execute create query
-                    Guid retId = new Guid(obj.ToString());
-                    return retId;
+                    command.Connection.Open();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error! Create in dataBase", ex);
+
+                object obj = command.ExecuteScalar(); //execute query
+                StoreDataManager.CreateStockMovementStoreOut(ST);
+                //Guid retId = new Guid(obj.ToString());
+                //return retId;
             }
         }
-        private static Guid CreateStockMovement(StockMovement StockMovement);
-        private static Guid CreateCustomerStock(CustomerStock CustomerStock);
-        private static Store GetStoreById(Guid id);
-        private static Store GetCustomerStockById(Guid id);
-        private static Store GetStockMovementById(Guid id);
-        private static void UpdateStore(Store Store);
-        private static void UpdateStockMovement(StockMovement StockMovement);
-        private static void UpdateCustomerStock(CustomerStock CustomerStock);*/
+
+        /*private static DataTable GetAllStockMovement();
+private static Guid CreateStore(Store Store)
+{
+   try
+   {
+       using (var dbc = DataFactory.GetConnection())
+       {
+           Dictionary<string, object> keyValues = DataMap.reMapStoreData(Store); //map object to db columns
+           IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStore", keyValues);
+
+           if (command.Connection.State != ConnectionState.Open)
+           {
+               command.Connection.Open();
+           }
+
+           object obj = command.ExecuteScalar(); //execute create query
+           Guid retId = new Guid(obj.ToString());
+           return retId;
+       }
+   }
+   catch (Exception ex)
+   {
+       throw new Exception("Error! Create in dataBase", ex);
+   }
+}
+private static Guid CreateStockMovement(StockMovement StockMovement);
+private static Guid CreateCustomerStock(CustomerStock CustomerStock);
+private static Store GetStoreById(Guid id);
+private static Store GetCustomerStockById(Guid id);
+private static Store GetStockMovementById(Guid id);
+private static void UpdateStore(Store Store);
+private static void UpdateStockMovement(StockMovement StockMovement);
+private static void UpdateCustomerStock(CustomerStock CustomerStock);*/
         private static DataTable GetAllStoreInOut()
         {
             try
@@ -126,7 +174,6 @@ namespace MZXRM.PSS.DataManager
         #region Business Need
         public static List<Store> ReadAllStore()
         {
-            // Z:TODO
             List<Store> AllStores = new List<Store>();
             if (HttpContext.Current.Session[SessionManager.StoreSession] == null)
                 readFromDB = true;
@@ -134,8 +181,8 @@ namespace MZXRM.PSS.DataManager
             {
                 DataTable DTstore = GetAllStore();
                 DataTable DTcustStock = GetAllCustomerStock();
-                //GetAllStockMovement();
-                List<Store> allStores = DataMap.MapStoreData(DTstore,DTcustStock);
+                DataTable DTstockMovement = GetAllStockMovements();
+                List<Store> allStores = DataMap.MapStoreData(DTstore,DTcustStock, DTstockMovement);
                 foreach (Store store in allStores)
                 {
                     Store CalculatedStore = CalculateStoreQuantity(store);
@@ -154,6 +201,7 @@ namespace MZXRM.PSS.DataManager
             decimal quantity = 0;
             foreach (CustomerStock custStock in Store.Stock)
             {
+
                 quantity += custStock.Quantity;
             }
             Store.TotalStock = quantity;
@@ -162,26 +210,28 @@ namespace MZXRM.PSS.DataManager
         public static void ResetCache()
         {
             readFromDB = true;
+            HttpContext.Current.Session.Remove(SessionManager.StoreIOSession);
         }
-        public static List<StoreInOut> ReadAllStoreIO()
+        public static List<StoreTransfer> ReadAllStoreIO()
         {
-            List<StoreInOut> AllStores = new List<StoreInOut>();
+            List<StoreTransfer> AllStores = new List<StoreTransfer>();
             if (HttpContext.Current.Session[SessionManager.StoreIOSession] == null)
                 readFromDB = true;
             if (readFromDB)
             {
                 DataTable DTstoreIO = GetAllStoreInOut();
-                List<StoreInOut> allStoreIOs = DataMap.MapStoreIOData(DTstoreIO);
+                List<StoreTransfer> allStoreIOs = DataMap.MapStoreTransferData(DTstoreIO);
                 //foreach (StoreInOut storeIO in allStoreIOs)
                 //{
                 //    StoreInOut CalculatedStore = CalculateStoreQuantity(storeIO);
                 //    AllStores.Add(CalculatedStore);
                 //}
-                HttpContext.Current.Session.Add(SessionManager.StoreSession, AllStores);
+                AllStores = allStoreIOs;
+                HttpContext.Current.Session.Add(SessionManager.StoreIOSession, AllStores);
                 readFromDB = false;
                 return AllStores;
             }
-            AllStores = HttpContext.Current.Session[SessionManager.StoreSession] as List<StoreInOut>;
+            AllStores = HttpContext.Current.Session[SessionManager.StoreIOSession] as List<StoreTransfer>;
             return AllStores;
         }
 
@@ -224,6 +274,23 @@ namespace MZXRM.PSS.DataManager
             using (var dbc = DataFactory.GetConnection())
             {
                 Dictionary<string, object> keyValues = DataMap.reMapStockMovementData(PO,DCL); //map dcl to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStockMovement", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query, no result
+                //Guid retId = new Guid(obj.ToString());
+                return Guid.Empty;
+            }
+        }
+        public static Guid CreateStockMovementStoreOut(StoreTransfer StoreOut)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapStockMovementSTOutData(StoreOut);
                 IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStockMovement", keyValues);
 
                 if (command.Connection.State != ConnectionState.Open)

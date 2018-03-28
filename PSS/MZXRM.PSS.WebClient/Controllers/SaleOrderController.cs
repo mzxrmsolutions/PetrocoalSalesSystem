@@ -206,42 +206,196 @@ namespace PatrocoalSalesSystem.Controllers
 
 
         #endregion
-        public ActionResult DODetail()
+        public ActionResult DODetail(String id)
         {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/Createdo");
+            DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+            if (DO == null)
+                return Redirect("/SaleOrder/CreateOrder");
+            ViewBag.ThisSO = SaleManager.GetSOById(DO.SaleOrder.Index);
+            ViewBag.ThisDO = DO;
+            ViewBag.ThisDC = SaleManager.GetDCByDOID(DO.Id);
             return View();
         }
         public ActionResult ApprovedSO()
         {
             return View();
         }
-        public ActionResult UpdateDO()
+
+        //added by kashif abbas starts here
+        public ActionResult UpdateDO(string id)
         {
-            return View();
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/Createdo");
+            DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+            if (DO == null)
+                return Redirect("/SaleOrder/CreateOrder");
+            ViewBag.ThisSO = SaleManager.GetSOById(DO.SaleOrder.Index);
+            ViewBag.ThisDO = DO;
+            return RedirectToAction("OrderDetail", new { id = DO.DONumber });
         }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateDO(FormCollection form)
+        {
+            try
+            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                if (formErrors == "")
+                {
+                    DeliveryOrder DO = SaleManager.UpdateDO(values);
+                    if (DO != null)
+                        Response.Redirect("/SaleOrder/DODetail/" + DO.DONumber);
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(form);
+        }
+        //added by kashif abbas ends here
         public ActionResult DeliveryOrder()
         {
             return View();
         }
+       
+        //added by kashif abbas 
+        public ActionResult CompleteDO(string id)
+        {
+
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder");
+            try
+            {
+                DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+                if (DO == null)
+                    return Redirect("/SaleOrder");
+                SaleManager.CompleteDO(DO);
+                return RedirectToAction("DODetail", new { id = DO.DONumber });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+        public ActionResult ApproveDO(string id)
+        {
+
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+                if (DO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.ApproveDO(DO);
+                return RedirectToAction("DODetail", new { id = DO.DONumber });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+
+        public ActionResult StopDOLoading(string id)
+        {
+
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+                if (DO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.StopDOLoading(DO);
+                return RedirectToAction("DODetail", new { id = DO.DONumber });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+
+        public ActionResult StartDOLoading(string id)
+        {
+
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                DeliveryOrder DO = SaleManager.GetDOByDONumber(id);
+                if (DO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.StartDOLoading(DO);
+                return RedirectToAction("DODetail", new { id = DO.DONumber });
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+
+
+
+        #region " CreateDO ActionResult "
+
         public ActionResult CreateDO()
         {
             //ViewBag.ThisSO
             Common.MyUrl = Request.RawUrl;
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
-            string soNumber = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : "";
-            if (soNumber != "")
+            int so = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Convert.ToInt32(Request.QueryString["so"]) : 0;
+            if (so != 0)
             {
-                SaleOrder SO = SaleManager.GetSOBySONumber(soNumber);
+                SaleOrder SO = SaleManager.GetSOById(so);
                 ViewBag.ThisSO = SO;
+
 
             }
             return View();
         }
 
-
-
-
-        #region " CreateDO ActionResult " [AcceptVerbs(HttpVerbs.Post)]
+        [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateDO(FormCollection form)
 
         {
@@ -277,10 +431,55 @@ namespace PatrocoalSalesSystem.Controllers
             return View(form);
         }
         #endregion
-        public ActionResult CreateDC()
+
+
+        #region " CreateDC ActionResult "
+
+        public ActionResult CreateDC(string id)
         {
+            //ViewBag.ThisSO
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
             return View();
         }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateDC(FormCollection form)
+
+        {
+            try
+            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                if (formErrors == "")
+                {
+                    DeliveryChalan DC = SaleManager.CreateDC(values);
+                    if (DC != null)
+                        Response.Redirect("/SaleOrder/DODetail/" + DC.DeliveryOrder.Value);
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(form);
+        }
+        #endregion
         public ActionResult DeliveryChalan()
         {
             return View();

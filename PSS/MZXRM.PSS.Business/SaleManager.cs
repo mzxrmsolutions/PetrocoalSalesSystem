@@ -23,6 +23,30 @@ namespace MZXRM.PSS.Business
                 _AllSOs = value;
             }
         }
+
+        public static List<SaleOrder> ApprovedSOs
+        {
+            get
+            {
+                return AllSOs.Where(x => x.Status == SOStatus.InProcess).ToList();
+            }
+        }
+        public static List<DeliveryOrder> ApprovedDOs
+        {
+            get
+            {
+                List<DeliveryOrder> dos = new List<DeliveryOrder>();
+                foreach (SaleOrder so in ApprovedSOs)
+                {
+                    foreach (DeliveryOrder DO in so.DOList)
+                    {
+                        if (DO.Status == DOStatus.InProcess)
+                            dos.Add(DO);
+                    }
+                }
+                return dos;
+            }
+        }
         //UDPATED BY KASHIF ABBAS ON 13TH MARCH TO ADD DO
         public static DeliveryOrder CreateDO(Dictionary<string, string> values)
         {
@@ -30,15 +54,15 @@ namespace MZXRM.PSS.Business
             {
                 DeliveryOrder DO = new DeliveryOrder();
 
-                SaleOrder SO = SaleDataManager.GetSO(values["SONubmer"]);
+                SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SONumber"]));
 
-                DO.Store = StoreDataManager.GetStoreRef(values["StoreID"]);
+                DO.Store = StoreDataManager.GetStoreRef(values["Store"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
                 DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
                 DO.Status = DOStatus.Created;
                 DO.CompletedOn = DO.ApprovedDate = DateTime.MinValue;
                 DO.ApprovedBy = null;
-                DO.DONumber = values["DONumber"];
+                //todo: autogenerate do number
                 DO.DODate = DateTime.Parse(values["DODate"].ToString());
                 DO.Quantity = decimal.Parse(values["Quantity"].ToString());
 
@@ -55,13 +79,104 @@ namespace MZXRM.PSS.Business
                 DO.FreightComissionAgent = Decimal.Parse(values["FreightComissionAgent"].ToString());
                 DO.Remarks = values["Remarks"] != null ? values["Remarks"].ToString() : "";
 
+                Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+                DO.CreatedBy = DO.ModifiedBy = CurrentUser;
+
                 DO.CreatedOn = DateTime.Now;
-                DO.CreatedBy = values["CreatedBy"] != null ? UserDataManager.GetUserRef(values["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
                 DO.ModifiedOn = DateTime.Now;
-                DO.ModifiedBy = values["ModifiedBy"] != null ? UserDataManager.GetUserRef(values["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
                 //todo: temp work
                 SaleDataManager.SaveDO(DO);
                 return DO;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+                ExceptionLogManager.Log(ex, null, "Creating SO");
+            }
+            return null;
+        }
+        public static DeliveryOrder UpdateDO(Dictionary<string, string> values)
+        {
+            try
+            {
+                DeliveryOrder DO = GetDOByDONumber(values["DONumber"]);
+
+                SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SOID"]));
+                DO.Id = Convert.ToInt32(values["DOID"]);
+                DO.Store = StoreDataManager.GetStoreRef(values["Store"]);
+                DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
+                DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
+                DO.Status = DOStatus.Created;
+                DO.CompletedOn = DO.ApprovedDate = DateTime.MinValue;
+                DO.ApprovedBy = null;
+                //todo: autogenerate do number
+                DO.DODate = DateTime.Parse(values["DODate"].ToString());
+                DO.Quantity = decimal.Parse(values["Quantity"].ToString());
+                DO.DONumber = values["DONumber"];
+
+                DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
+                DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
+                DO.DeliveryDestination = values["DeliveryDestination"].ToString();
+                //TODO: trader and transporter are different
+                DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
+                DO.FreightPaymentTerms = Decimal.Parse(values["FreightPaymentTerms"].ToString());
+                DO.FreightPerTon = Decimal.Parse(values["FreightPerTon"].ToString());
+                DO.FreightTaxPerTon = Decimal.Parse(values["FreightTaxPerTon"].ToString());
+                DO.FreightComissionPSL = Decimal.Parse(values["FreightComissionPSL"].ToString());
+                DO.FreightComissionAgent = Decimal.Parse(values["FreightComissionAgent"].ToString());
+                DO.Remarks = values["Remarks"] != null ? values["Remarks"].ToString() : "";
+                DO.CreatedOn = Convert.ToDateTime(values["CreatedOn"]);
+                
+                Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+                DO.ModifiedBy = CurrentUser;
+
+                DO.ModifiedOn = DateTime.Now;
+                //todo: temp work
+                SaleDataManager.UpdateDO(DO);
+                return DO;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+                ExceptionLogManager.Log(ex, null, "Creating SO");
+            }
+            return null;
+        }
+
+        public static DeliveryChalan CreateDC(Dictionary<string, string> values)
+        {
+            try
+            {
+                DeliveryChalan DC = new DeliveryChalan();
+
+               DeliveryOrder DO = SaleDataManager.GetDOById(Convert.ToInt32(values["DONumber"].ToString()));
+
+                DC.DeliveryOrder = new Item { Index = DO.Id, Value = DO.DONumber };
+                DC.Lead = UserManager.GetUserRef(values["Lead"].ToString());
+                //TODO: trader and transporter are different
+                DC.Transporter = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                DC.Status = DCStatus.InTransit;
+                DC.DCDate = DateTime.Parse(values["DCDate"].ToString());
+                DC.Quantity = decimal.Parse(values["Quantity"].ToString());
+                DC.TruckNo = values["TruckNo"].ToString();
+                DC.BiltyNo = values["BiltyNo"].ToString();
+                DC.SlipNo = values["SlipNo"].ToString();
+                DC.Weight = Decimal.Parse(values["Weight"].ToString());
+                DC.NetWeight = Decimal.Parse(values["NetWeight"].ToString());
+                DC.DriverName = values["DriverName"].ToString(); 
+
+                DC.DriverPhone = values["DriverPhone"].ToString(); 
+
+                DC.Remarks = values["Remarks"] != null ? values["Remarks"].ToString() : "";
+
+                Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+                DC.CreatedBy = DC.ModifiedBy = CurrentUser;
+
+                DC.CreatedOn = DateTime.Now;
+                DC.ModifiedOn = DateTime.Now;
+                SaleDataManager.SaveDC(DC);
+                return DC;
             }
             catch (Exception ex)
             {
@@ -189,6 +304,80 @@ namespace MZXRM.PSS.Business
             var SO = AllSOs.SingleOrDefault(x => x.SONumber == SONumber);
             return SO;
            //return AllSOs.Where(x => x.SONumber == SONumber) as SaleOrder;
+        }
+
+        public static DeliveryOrder GetDOByDONumber(string doNubmer)
+        {
+            foreach (SaleOrder so in AllSOs)
+            {
+                var DO = so.DOList.SingleOrDefault(x => x.DONumber == doNubmer);
+                return DO;
+            }
+            return null;
+        }
+
+        //ADDED BY KASHIF ABBAS FOR UPDATING SO
+        public static SaleOrder GetSOById(Int32 SOId)
+        {
+            var SO = AllSOs.SingleOrDefault(x => x.Id == SOId);
+            return SO;
+            //return AllSOs.Where(x => x.SONumber == SONumber) as SaleOrder;
+        }
+
+        public static List<DeliveryChalan> GetDCByDOID(int id)
+        {
+            foreach (SaleOrder so in AllSOs)
+            {
+                if (so.DOList != null)
+                {
+                    foreach (DeliveryOrder DO in so.DOList)
+                    {
+                        if(DO.DCList != null)
+                        return DO.DCList.Where(x => x.DeliveryOrder.Index == id).ToList();
+                    }
+                }
+            }
+            return null;
+        }
+
+        public static void CompleteDO(DeliveryOrder DO)
+        {
+            DO.Status = DOStatus.Completed;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            DO.ModifiedBy = CurrentUser;
+            DO.ModifiedOn =  DateTime.Now;
+            DO.ApprovedBy = CurrentUser;
+            SaleDataManager.UpdateDO(DO);
+        }
+
+        public static void ApproveDO(DeliveryOrder DO)
+        {
+            DO.Status = DOStatus.InProcess;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            DO.ModifiedBy = DO.ApprovedBy = CurrentUser;
+            DO.ModifiedOn = DO.ApprovedDate = DateTime.Now;
+           
+            SaleDataManager.UpdateDO(DO);
+            
+        }
+
+        public static void StopDOLoading(DeliveryOrder DO)
+        {
+            DO.Status = DOStatus.LoadingStop;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            DO.ModifiedBy =  CurrentUser;
+            DO.ModifiedOn = DateTime.Now;
+
+            SaleDataManager.UpdateDO(DO);
+        }
+        public static void StartDOLoading(DeliveryOrder DO)
+        {
+            DO.Status = DOStatus.InProcess;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            DO.ModifiedBy = CurrentUser;
+            DO.ModifiedOn = DateTime.Now;
+
+            SaleDataManager.UpdateDO(DO);
         }
 
         private static string GenerateNextSONumber()

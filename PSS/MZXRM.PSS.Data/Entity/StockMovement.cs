@@ -12,7 +12,8 @@ namespace MZXRM.PSS.Data
         public Reference Store;
         public Reference Customer;
         public StMovType Type;
-        public Reference HistoryRef;
+        public string HistoryRef;
+        public DateTime Date;
         public decimal Quantity;
 
         public bool IsIn;
@@ -26,6 +27,7 @@ namespace MZXRM.PSS.Data
     public enum StMovType
     {
         GRNClear=1,
-        DCSuccess=2
+        DCSuccess=2,
+        StoreMovement=3
     }
 }

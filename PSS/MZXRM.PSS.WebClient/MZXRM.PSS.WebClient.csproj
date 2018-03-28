@@ -14619,6 +14619,7 @@
     <Content Include="Views\Store\StoreInOut.cshtml" />
     <Content Include="Views\Customer\CustomerDetail.cshtml" />
     <Content Include="Views\Store\StoreDetail.cshtml" />
+    <Content Include="Views\Store\CreateStoreTransfer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\SO\" />

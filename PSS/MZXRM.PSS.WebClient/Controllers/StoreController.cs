@@ -3,6 +3,7 @@ using MZXRM.PSS.Common;
 using MZXRM.PSS.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -30,6 +31,22 @@ namespace PatrocoalSalesSystem.Controllers
             }
             return View();
         }
+        public FileResult Download(string id)
+        {
+            try
+            {
+                Store thisStore = StoreManager.GetStore(new Guid(id));
+
+                //Get result file stream
+                MemoryStream fileForDownload = ExcelUtil.GenerateStoreReport(thisStore);
+                return File(fileForDownload.ToArray(), "application/vnd.ms-excel", thisStore.Name + ".xls");
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return null;
+        }
         public ActionResult StoreInOut()
         {
             try
@@ -37,7 +54,7 @@ namespace PatrocoalSalesSystem.Controllers
                 Common.MyUrl = Request.RawUrl;
                 if (!Common.isAuthorize())
                     Response.Redirect("/Login");
-                List<StoreInOut> allStoreIO = StoreManager.AllStoreInOut;
+                List<StoreTransfer> allStoreIO = StoreManager.AllStoreInOut;
 
                 ViewBag.StoresInOuts = allStoreIO;
 
@@ -52,6 +69,50 @@ namespace PatrocoalSalesSystem.Controllers
         {
             return View();
         }
+
+        #region /Purchase/CreateGRN
+        public ActionResult CreateStoreTransfer()
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult CreateStoreTransfer(FormCollection form)
+        {
+            try
+            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                string formErrors = StoreManager.ValidateCreateStoreTransferForm(values);
+                if (formErrors == "")
+                {
+                    StoreTransfer storeio = StoreManager.CreateStoreTransfer(values);
+                    Response.Redirect("/Store/StoreInOut");
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(form);
+        }
+        #endregion
+
         public ActionResult StoreDetail(string id)
         {
             try

@@ -1,4 +1,13 @@
-﻿
+﻿@using MZXRM.PSS.Data
+@using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+
+@{
+    SaleOrder ThisSO = ViewBag.ThisSO;
+    DeliveryOrder ThisDO = ViewBag.ThisDO;
+}
+
+
 <section class="content-header">
     <h1>
         Sales
@@ -12,258 +21,262 @@
 </section>
 
 <!-- Main content -->
-<section class="content container-fluid">
-    <div class="box box-default box-solid collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">Quick Links</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-plus"></i>
-                </button>
+<form method="post" action="/saleorder/updatedo">
+    <section class="content container-fluid">
+        @if (ExceptionHandler.HasException())
+        {
+            <div class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                @ExceptionHandler.GetExceptionMessage()
             </div>
-            <!-- /.box-tools -->
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="col-md-6">
-                <div class="col-sm-4">
-                    <a href="/SaleOrder" class="btn btn-block btn-primary margin">My SOs</a>
+            { ExceptionHandler.CloseException(); }
+        }
+        <div class="box box-default box-solid">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="col-lg-6">
+                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Update"><i class="fa fa-floppy-o"></i> Update</button>
+                    <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
+                   
+                    <input type="hidden" name="SOID" value="@ThisSO.Id" />
+                    <input type="hidden" name="SONubmer" value="@ThisSO.SONumber" />
+                    <input type="hidden" name="DOID" value="@ThisDO.Id" />
+                    <input type="hidden" name="CreatedOn" value="@ThisDO.CreatedOn" />
+                    <input type="hidden" name="DONumber" value="@ThisDO.DONumber" />
                 </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder/CreateOrder" class="btn btn-block btn-primary margin">Create SO</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder/CreateDO" class="btn btn-block btn-primary margin">Create DO</a>
-                </div>
-                <div class="col-sm-4">
-                    <button type="button" class="btn btn-block btn-primary margin">...</button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-sm-4">
-                    <a href="/Stock" class="btn btn-block btn-info margin ">Stock Report</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/Purchase" class="btn btn-block btn-info margin ">Purchase Orders</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/SaleOrder" class="btn btn-block btn-info margin ">Sale Orders</a>
+                <div class="col-lg-6">
+                    <a href="/SaleOrder" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My SOs List</a>
+                    <a href="/SaleOrder/DOList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DOs List</a>
+                    <a href="/SaleOrder/DCList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCs List</a>
+                    <a href="/SaleOrder/DCRList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DC Returns</a>
                 </div>
             </div>
+            <!-- /.box-body -->
         </div>
-        <!-- /.box-body -->
-    </div>
-    <div class="box box-success box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">Delivery Oder: DO-1004</h3>
-            <p class="pull-right">Created: Zeeshan Shafqat on 12/15/2017</p>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
+        <div class="box box-success box-solid">
+            <div class="box-header with-border">
 
-                <div class="col-sm-1">
-                    <label>SO No:</label>
-                    <p>SO-1001</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>SO Date:</label>
-                    <p>15/12/2017</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>SO Expiry:</label>
-                    <p>31/12/2017</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>SO Type:</label>
-                    <p>LC</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>PO Number:</label>
-                    <p>ABC1234xyz</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>PO Date:</label>
-                    <p>15/12/2017</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>PO Expiry:</label>
-                    <p>16/12/2017</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>Origin:</label>
-                    <p>Indo</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>Vessel:</label>
-                    <p>ARIETTA</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>Size:</label>
-                    <p>0-50</p>
-                </div>
-                <div class="col-sm-1">
-                    <label>Trader:</label>
-                    <p>KS Traders</p>
-                </div>
-                <div class="col-sm-1 pull-right">
-                    <span class="badge bg-blue pull-right">In Process</span>
-                </div>
+                <h3 class="box-title">Delivery Oder: @ThisDO.DONumber</h3>
+                <p class="pull-right">Created: @ThisDO.CreatedBy on @ThisDO.CreatedOn.ToShortDateString()</p>
             </div>
-            <div class="row">
-                <div class="col-sm-2">
-                    <label>Customer:</label>
-                    <p>Orient Coating Company</p>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <label>SO No:</label>
+                        <p>@ThisSO.SONumber</p>
+                       
+                    </div>
+                    <div class="col-sm-1">
+                        <label>SO Date:</label>
+                        <p>@ThisSO.SODate.ToShortDateString()</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>SO Expiry:</label>
+                        <p>@ThisSO.SOExpiry.ToShortDateString()</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>SO Type:</label>
+                        <p>@ThisSO.OrderType</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>PO Number:</label>
+                        <p>@ThisSO.PartyPONumber</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>PO Date:</label>
+                        <p>@ThisSO.PODate.ToShortDateString()</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>PO Expiry:</label>
+                        <p>@ThisSO.POExpiry.ToShortDateString()</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Origin:</label>
+                        <p>@ThisSO.Origin.Value</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Vessel:</label>
+                        <p>@ThisSO.Vessel.Value</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Size:</label>
+                        <p>@ThisSO.Size</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Trader:</label>
+                        <p>@ThisSO.Trader.Value</p>
+                    </div>
+                    <div class="col-sm-1 pull-right">
+                        <span class="badge bg-blue pull-right">@ThisDO.Status</span>
+                    </div>
                 </div>
-                <div class="col-sm-1">
-                    <label>Quantity:</label>
-                    <span class="badge bg-green">10,000.000</span>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Customer:</label>
+                        <p>@ThisSO.Customer.Name</p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Quantity:</label>
+                        <span class="badge bg-green">@ThisSO.Quantity.ToString(Constants.QuantityFormat)</span>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Agreed Rate:</label>
+                        <p>@ThisSO.AgreedRate<p>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Agreed Tax Rate:</label>
+                        <p>@ThisSO.AgreedTaxRate </p>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Rate inc. Tax:</label>
+                        <p>PKR <span class="badge bg-green">@ThisSO.RateIncTax.ToString(Constants.PriceFormat)</span></p>
+                    </div>
+                    <div class="col-sm-1">
+                        <label>Sale Station:</label>
+                        <p>@ThisSO.SaleStation.Value</p>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Trader Commission:</label>
+                        <p>@ThisSO.TraderCommission.ToString(Constants.PriceFormat)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>DO Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="DODate" value="@ThisDO.DODate.ToShortDateString()">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>From Store</label>
+                            <select class="form-control select2" name="Store">
+                                <option value="0">--- Store ---</option>
+                                @foreach (Store store in StoreManager.AllStore)
+                            {
+                            <option value="@store.Id" @(store.Id == ThisDO.Store.Id ? " selected " : "")>@store.Name</option>
+                            }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lead</label>
+                            <label class="required">*</label>
+                            <select class="form-control select2" name="Lead">
+                                <option value="0">--- Lead ---</option>
+                                @foreach (User item in UserManager.Users)
+                            {
+                            <option value="@item.Id" @(item.Id == ThisDO.Lead.Id ? " selected " : "")>@item.Name</option>
+                            }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="text" class="form-control" name="Quantity" value="@ThisDO.Quantity">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lifting Start Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingStartDate" value="@ThisDO.LiftingStartDate">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lifting End Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingEndDate" value="@ThisDO.LiftingEndDate">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>DO Destination: </label>
+                            <input type="text" class="form-control" name="DeliveryDestination" value="@ThisDO.DeliveryDestination" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Transporter</label>
+                            <select class="form-control select2" name="TransporterId">
+                                <option value="0">--- Transporter ---</option>
+                                @foreach (Item item in Common.Trader)
+                            {
+                            <option value="@item.Index" @(item.Index == ThisDO.Transportor.Index ? " selected " : "")>@item.Value</option>
+                            }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Dumper Rate: </label>
+                            <input type="text" class="form-control" name="DumperRate" value="@ThisDO.DumperRate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Payment Terms: </label>
+                            <input type="text" class="form-control" name="FreightPaymentTerms" value="@ThisDO.FreightPaymentTerms" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Per Ton: </label>
+                            <input type="text" class="form-control" name="FreightPerTon" value="@ThisDO.FreightPerTon" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Tax Per Ton: </label>
+                            <input type="text" class="form-control" name="FreightTaxPerTon" value="@ThisDO.FreightTaxPerTon" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Comission PSL: </label>
+                            <input type="text" class="form-control" name="FreightComissionPSL" value="@ThisDO.FreightComissionPSL" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Comission Agent: </label>
+                            <input type="text" class="form-control" name="FreightComissionAgent" value="@ThisDO.FreightComissionAgent" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Remarks: </label>
+                            <input type="text" class="form-control" name="Remarks" value="@ThisDO.Remarks" />
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-sm-1">
-                    <label>Agreed Rate:</label>
-                    <p>PKR 10,000</p>
-                </div>
-                <div class="col-sm-2">
-                    <label>Agreed Tax Rate:</label>
-                    <p>17%</p>
-                </div>
-                <div class="col-sm-2">
-                    <label>Rate inc. Tax:</label>
-                    <p>PKR <span class="badge bg-green">11,700.000</span></p>
-                </div>
-                <div class="col-sm-1">
-                    <label>Sale Station:</label>
-                    <p>Islamabad</p>
-                </div>
-                <div class="col-sm-2">
-                    <label>Trader Commission:</label>
-                    <p>PKR 200</p>
-                </div>
+
             </div>
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>DO Date:</label>
-                        <div class="input-group date">
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                            <input type="text" class="form-control pull-right" id="datepicker" value="15/11/2017">
-                        </div>
-                        <!-- /.input group -->
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Loading Point</label>
-                        <select class="form-control">
-                            <option>--Loading Point--</option>
-                            <option selected>Karachi</option>
-                            <option>Islamabad</option>
-                            <option>Lahore</option>
-                            <option>Peshawar</option>
-                            <option>Faisalabad</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Quantity</label>
-                        <input type="text" class="form-control" id="input" value="4000">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Lifting Start</label>
-                        <div class="input-group date">
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                            <input type="text" class="form-control pull-right" id="datepicker" value="15/12/2017">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Lifting End</label>
-                        <div class="input-group date">
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                            <input type="text" class="form-control pull-right" id="datepicker" value="31/12/2017">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Delivery Destination</label>
-                        <select class="form-control">
-                            <option>--Destination--</option>
-                            <option>Karachi</option>
-                            <option>Islamabad</option>
-                            <option>Lahore</option>
-                            <option>Peshawar</option>
-                            <option selected>Faisalabad</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Transporter</label>
-                        <select class="form-control">
-                            <option>--Destination--</option>
-                            <option>Adil Enterprise</option>
-                            <option>Al-Khair</option>
-                            <option>Fastway Goods</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Dumper Rate</label>
-                        <input type="text" class="form-control" id="input" value="3000">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Freight Payment Term</label>
-                        <input type="text" class="form-control" id="input" value="inv">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Freight Per Ton</label>
-                        <input type="text" class="form-control" id="input" value="3500">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Freight Commission</label>
-                        <input type="text" class="form-control" id="input" value="400">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <div class="form-group">
-                        <label>Freight Commission of Agent</label>
-                        <input type="text" class="form-control" id="input" value="100">
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="input" value="SO is pending for approval for our client abc" placeholder="Remarks">
-                    </div>
-                </div>
-            </div>
+            <!-- /.box-body -->
         </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-            <div class="col-sm-3">
-                <a href="/saleorder/UpdateDO" class="btn btn-primary">Update</a>
-                <a href="/saleorder/DODetail" class="btn btn-danger">Reset</a>
-            </div>
-            
-        </div>
-    </div>
-    <!-- /.box -->
-</section>
+        <!-- /.box -->
+    </section>
+    </form>

@@ -35,7 +35,7 @@
             <div class="col-lg-6">
                 <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
                 <a href="/SaleOrder" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My SOs List</a>
-                <a href="/Customer/Download" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+                <a href="/Store/Download/@ThisStore.Id" class="btn btn-sm btn-default bg-purple pull-right" target="_blank"><i class="fa fa-file-excel-o"></i> Export Excel</a>
             </div>
         </div>
         <!-- /.box-body -->
@@ -83,7 +83,7 @@
     <!-- /.box -->
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title">Stores</h3>
+            <h3 class="box-title">PSL/LC</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                     <i class="fa fa-minus"></i>
@@ -139,4 +139,65 @@
         </div>
         <!-- /.box-body -->
     </div>
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Stock Movements</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Reference</th>
+                        <th>Origin</th>
+                        <th>Vessel</th>
+                        <th>Size</th>
+                        <th>In</th>
+                        <th>Out</th>
+                    </tr>
+                    @foreach (StockMovement stMovement in ThisStore.ListStockMovement)
+                    {
+                        <tr>
+                            <td><a href="/Customer/CustomerDetail/@stMovement.Customer.Id">@stMovement.Customer.Name</a></td>
+                            @if (stMovement.Type == StMovType.GRNClear)
+                            {
+                                Reference PO = PurchaseManager.GetPOByDCL(@stMovement.HistoryRef);
+                                <td><a href="/Purchase/OrderDetail/@PO.Id">@PO.Name</a></td>
+                            }
+                            else if (stMovement.Type == StMovType.StoreMovement)
+                            {
+                                <td><a href="/Store/StoreInOut?store=@ThisStore.Id">@stMovement.HistoryRef</a></td>
+                            }
+                            else
+                            {
+                               <td></td>
+                            }
+                            <td>@stMovement.Origin.Value</td>
+                            <td>@stMovement.Vessel.Value</td>
+                            <td>@stMovement.Size.Value</td>
+                            @if (stMovement.IsIn)
+                            {
+                                <td><span class="badge bg-green">@stMovement.Quantity.ToString(Constants.QuantityFormat)</span></td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td><span class="badge bg-red">@stMovement.Quantity.ToString(Constants.QuantityFormat)</span></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
 </section>

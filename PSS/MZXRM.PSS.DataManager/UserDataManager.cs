@@ -152,9 +152,14 @@ namespace MZXRM.PSS.DataManager
             }
             return objUser;
         }
+
+        internal static Reference GetCurrentUserRef()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
-        
+
         #region DB Get all functions
         private static DataTable GetAllUsers()
         {

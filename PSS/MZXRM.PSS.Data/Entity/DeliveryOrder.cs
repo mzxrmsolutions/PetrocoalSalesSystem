@@ -34,14 +34,16 @@ namespace MZXRM.PSS.Data
         public decimal FreightComissionPSL { get; set; }
         public decimal FreightComissionAgent { get; set; }
         public String Remarks { get; set; }
+        public List<DeliveryChalan> DCList { get; set; }
 
     }
     public enum DOStatus
     {
         Cancelled = 0,//0
         Created = 1,//1
-        //PendingApproval,//2
+        PendingApproval,//2
         InProcess = 3,//3
-        Completed = 4//4
+        Completed = 4,//4
+        LoadingStop = 5
     }
 }
