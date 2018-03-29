@@ -58,6 +58,10 @@ namespace MZXRM.PSS.Data
 
         public string PartyPOImage;
         public List<DeliveryOrder> DOList { get; set; }
+
+        //QUANTITY RELATED WORK GOES HERE
+        public decimal DeliveredQuantity { get; set; }
+        public decimal RemainingQuantity { get; set; }
     }
     public enum SOStatus
     {

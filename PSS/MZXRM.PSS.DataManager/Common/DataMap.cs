@@ -14,7 +14,7 @@ namespace MZXRM.PSS.DataManager
         public static Dictionary<string, object> reMapDOData(DeliveryOrder DO)
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
-            if (!String.IsNullOrEmpty(DO.Id.ToString()))
+            if (!String.IsNullOrEmpty(DO.Id.ToString()) && DO.Id != 0)
             {
                 keyValues.Add("@Id", DO.Id);
             }
@@ -117,6 +117,39 @@ namespace MZXRM.PSS.DataManager
             keyValues.Add("@Remarks", DC.Remarks);
             return keyValues;
         }
+
+        public static Dictionary<string, object> reMapCustData(Customer c)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+            if (c.Id != Guid.Empty)
+                keyValues.Add("@id", c.Id);
+            keyValues.Add("@Status", c.Status);
+            if (c.CreatedOn == DateTime.MinValue)
+                keyValues.Add("@CreatedOn", DBNull.Value);
+            else
+                keyValues.Add("@CreatedOn", c.CreatedOn);
+            keyValues.Add("@CreatedBy", c.CreatedBy == null ? Guid.Empty : c.CreatedBy.Id);
+            if (c.ModifiedOn == DateTime.MinValue)
+                keyValues.Add("@ModifiedOn", DBNull.Value);
+            else
+                keyValues.Add("@ModifiedOn", c.ModifiedOn);
+            keyValues.Add("@ModifiedBy", c.ModifiedBy == null ? Guid.Empty : c.ModifiedBy.Id);
+            keyValues.Add("@Lead", c.Lead == null ? Guid.Empty : c.Lead.Id);
+            keyValues.Add("@FullName", c.Name);
+            keyValues.Add("@ShortName", c.ShortName);
+            keyValues.Add("@NTN", c.NTN);
+            keyValues.Add("@STRN", c.STRN);
+            keyValues.Add("@Address", c.Address);
+            keyValues.Add("@InvoiceAddress", c.InvoiceAddress);
+            keyValues.Add("@Email", c.Email);
+            keyValues.Add("@Phone", c.Phone);
+            keyValues.Add("@ContactPerson", c.ContactPerson);
+            keyValues.Add("@HeadOffice", c.HeadOffice);
+            keyValues.Add("@Remarks", c.Remarks);
+
+            return keyValues;
+        }
+
         public static List<StockMovement> MapStockMovementData(DataTable dt)
         {
             List<StockMovement> StMovements = new List<StockMovement>();
@@ -371,7 +404,25 @@ namespace MZXRM.PSS.DataManager
 
             return keyValues;
         }
+        public static Dictionary<string, object> reMapStockMovementData_DC(SaleOrder SO, DeliveryOrder DO, DeliveryChalan DC)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
 
+
+            keyValues.Add("@Store", DO.Store.Id);
+            keyValues.Add("@CustomerId", SO.Customer.Id);
+            keyValues.Add("@Type", StMovType.DCSuccess);
+            keyValues.Add("@Quantity", DC.Quantity);
+            keyValues.Add("@InOut", false);
+            keyValues.Add("@Date", DC.CreatedOn);
+            keyValues.Add("@Reference", DC.DCNumber);
+            keyValues.Add("@Vessel", SO.Vessel.Index);
+            keyValues.Add("@Origin", SO.Origin.Index);
+            keyValues.Add("@Size", SO.Size.Index);
+            keyValues.Add("@Remarks", DC.Remarks);
+
+            return keyValues;
+        }
         public static List<Store> MapStoreData(DataTable dTstore, DataTable dtCustStock, DataTable dtStockMovement)
         {
             List<Store> ListStores = new List<Store>();
@@ -418,7 +469,7 @@ namespace MZXRM.PSS.DataManager
                         StMovement.Customer = drStMovement["CustomerId"] != null ? CustomerDataManager.GetCustRef(drStMovement["CustomerId"].ToString()) : CustomerDataManager.GetDefaultRef();
                         StMovement.Store = new Reference() { Id = mapData.Id, Name = mapData.Name };
                         StMovement.Type = (StMovType)Enum.Parse(typeof(StMovType), drStMovement["Type"].ToString());
-                        StMovement.HistoryRef = drStMovement["Reference"] != null ? drStMovement["Reference"].ToString() :  "" ;
+                        StMovement.HistoryRef = drStMovement["Reference"] != null ? drStMovement["Reference"].ToString() : "";
                         StMovement.Quantity = drStMovement["Quantity"] != null ? decimal.Parse(drStMovement["Quantity"].ToString()) : 0;
                         StMovement.IsIn = drStMovement["InOut"] != null ? bool.Parse(drStMovement["InOut"].ToString()) : true;
                         StMovement.Origin = drStMovement["Origin"] != null ? CommonDataManager.GetOrigin(drStMovement["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
@@ -485,81 +536,89 @@ namespace MZXRM.PSS.DataManager
                 #region " Populating DOs "
                 foreach (DataRow drDo in dTdo.Rows)
                 {
-                    DeliveryOrder DO = new DeliveryOrder();
-
-                    DO.Id = (int)drDo["Id"];
-                    DO.Store = drDo["StoreId"] != null ? StoreDataManager.GetStoreRef(drDo["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
-                    DO.Lead = drDo["LeadId"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
-                    DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
-
-                    DO.CompletedOn = drDo["CompletedOn"] != DBNull.Value ? DateTime.Parse(drDo["CompletedOn"].ToString()) : DateTime.MinValue;
-                    DO.ApprovedDate = drDo["ApprovedDate"] != DBNull.Value ? DateTime.Parse(drDo["ApprovedDate"].ToString()) : DateTime.MinValue;
-                    DO.ApprovedBy = drDo["ApprovedBy"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
-
-
-                    //TODO: Get sale order reference here
-                    DO.SaleOrder = new Item() { Index = SO.Id, Value = SO.SONumber };
-
-                    DO.DONumber = drDo["DONumber"].ToString();
-                    DO.DODate = DateTime.Parse(drDo["DODate"].ToString());
-                    DO.Quantity = Decimal.Parse(drDo["Quantity"].ToString());
-                    DO.LiftingStartDate = DateTime.Parse(drDo["LiftingStartDate"].ToString());
-                    DO.LiftingEndDate = DateTime.Parse(drDo["LiftingEndDate"].ToString());
-                    DO.DeliveryDestination = drDo["DeliveryDestination"].ToString();
-                    //TODO: trader and transporter are different
-                    DO.Transportor = drDo["TransporterId"] != null ? CommonDataManager.GetTrader(drDo["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
-                    DO.DumperRate = Decimal.Parse(drDo["DumperRate"].ToString());
-                    DO.FreightPaymentTerms = Decimal.Parse(drDo["FreightPaymentTerms"].ToString());
-                    DO.FreightPerTon = Decimal.Parse(drDo["FreightPerTon"].ToString());
-                    DO.FreightTaxPerTon = Decimal.Parse(drDo["FreightTaxPerTon"].ToString());
-                    DO.FreightComissionPSL = Decimal.Parse(drDo["FreightComissionPSL"].ToString());
-                    DO.FreightComissionAgent = Decimal.Parse(drDo["FreightComissionAgent"].ToString());
-                    DO.Remarks = drDo["Remarks"] != null ? drDo["Remarks"].ToString() : "";
-
-
-
-                    DO.CreatedOn = drDo["CreatedOn"] != DBNull.Value ? DateTime.Parse(drDo["CreatedOn"].ToString()) : DateTime.MinValue;
-                    DO.CreatedBy = drDo["CreatedBy"] != null ? UserDataManager.GetUserRef(drDo["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
-                    DO.ModifiedOn = drDo["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drDo["ModifiedOn"].ToString()) : DateTime.MinValue;
-
-                    DO.ModifiedBy = drDo["ModifiedBy"] != null ? UserDataManager.GetUserRef(drDo["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
-                    DO.DCList = new List<DeliveryChalan>();
-                    #region " Populating DCs "
-                    foreach (DataRow drDC in dTdc.Rows)
+                    int soId = drDo["SOId"] != null ? int.Parse(drDo["SOId"].ToString()) : 0;
+                    if (soId != 0 && soId == SO.Id)
                     {
-                        DeliveryChalan DC = new DeliveryChalan();
+                        DeliveryOrder DO = new DeliveryOrder();
 
-                        DC.Id = (int)drDC["Id"];
-                        //TODO
-                        DC.DeliveryOrder = new Item() { Index = DO.Id, Value = DO.DONumber };
+                        DO.Id = (int)drDo["Id"];
+                        DO.Store = drDo["StoreId"] != null ? StoreDataManager.GetStoreRef(drDo["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
+                        DO.Lead = drDo["LeadId"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
+                        DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
+
+                        DO.CompletedOn = drDo["CompletedOn"] != DBNull.Value ? DateTime.Parse(drDo["CompletedOn"].ToString()) : DateTime.MinValue;
+                        DO.ApprovedDate = drDo["ApprovedDate"] != DBNull.Value ? DateTime.Parse(drDo["ApprovedDate"].ToString()) : DateTime.MinValue;
+                        DO.ApprovedBy = drDo["ApprovedBy"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
+
+
+                        //TODO: Get sale order reference here
+                        DO.SaleOrder = new Item() { Index = SO.Id, Value = SO.SONumber };
+
+                        DO.DONumber = drDo["DONumber"].ToString();
+                        DO.DODate = DateTime.Parse(drDo["DODate"].ToString());
+                        DO.Quantity = Decimal.Parse(drDo["Quantity"].ToString());
+                        DO.LiftingStartDate = DateTime.Parse(drDo["LiftingStartDate"].ToString());
+                        DO.LiftingEndDate = DateTime.Parse(drDo["LiftingEndDate"].ToString());
+                        DO.DeliveryDestination = drDo["DeliveryDestination"].ToString();
                         //TODO: trader and transporter are different
-                        DC.Lead = drDC["LeadId"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
-                        DC.Transporter = drDC["TransporterId"] != null ? CommonDataManager.GetTrader(drDC["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
-                        DC.Status = (DCStatus)Enum.Parse(typeof(DCStatus), drDC["status"].ToString());
-                        DC.DCNumber = drDC["DCNumber"].ToString();
-                        DC.DCDate = DateTime.Parse(drDC["DCDate"].ToString());
-                        DC.Quantity = Decimal.Parse(drDC["Quantity"].ToString());
-                        DC.TruckNo = drDC["TruckNo"].ToString();
-                        DC.BiltyNo = drDC["BiltyNo"].ToString();
-                        DC.SlipNo = drDC["SlipNo"].ToString();
-                        DC.Weight = Decimal.Parse(drDC["Weight"].ToString());
-                        DC.NetWeight = Decimal.Parse(drDC["NetWeight"].ToString());
-                        DC.DriverName = drDC["DriverName"].ToString();
-                        DC.DriverPhone = drDC["DriverPhone"] != null ? drDC["DriverPhone"].ToString() : "";
+                        DO.Transportor = drDo["TransporterId"] != null ? CommonDataManager.GetTrader(drDo["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                        DO.DumperRate = Decimal.Parse(drDo["DumperRate"].ToString());
+                        DO.FreightPaymentTerms = Decimal.Parse(drDo["FreightPaymentTerms"].ToString());
+                        DO.FreightPerTon = Decimal.Parse(drDo["FreightPerTon"].ToString());
+                        DO.FreightTaxPerTon = Decimal.Parse(drDo["FreightTaxPerTon"].ToString());
+                        DO.FreightComissionPSL = Decimal.Parse(drDo["FreightComissionPSL"].ToString());
+                        DO.FreightComissionAgent = Decimal.Parse(drDo["FreightComissionAgent"].ToString());
+                        DO.Remarks = drDo["Remarks"] != null ? drDo["Remarks"].ToString() : "";
 
-                        DC.Remarks = drDC["Remarks"] != null ? drDC["Remarks"].ToString() : "";
-                        DC.CreatedOn = drDC["CreatedOn"] != DBNull.Value ? DateTime.Parse(drDC["CreatedOn"].ToString()) : DateTime.MinValue;
-                        DC.CreatedBy = drDC["CreatedBy"] != null ? UserDataManager.GetUserRef(drDC["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
-                        DC.ModifiedOn = drDC["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drDC["ModifiedOn"].ToString()) : DateTime.MinValue;
-                        DC.ModifiedBy = drDC["ModifiedBy"] != null ? UserDataManager.GetUserRef(drDC["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
 
-                        DO.DCList.Add(DC);
-                        DC = null;
+
+                        DO.CreatedOn = drDo["CreatedOn"] != DBNull.Value ? DateTime.Parse(drDo["CreatedOn"].ToString()) : DateTime.MinValue;
+                        DO.CreatedBy = drDo["CreatedBy"] != null ? UserDataManager.GetUserRef(drDo["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                        DO.ModifiedOn = drDo["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drDo["ModifiedOn"].ToString()) : DateTime.MinValue;
+
+                        DO.ModifiedBy = drDo["ModifiedBy"] != null ? UserDataManager.GetUserRef(drDo["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                        DO.DCList = new List<DeliveryChalan>();
+                        #region " Populating DCs "
+                        foreach (DataRow drDC in dTdc.Rows)
+                        {
+                            int doId = drDC["DOId"] != null ? int.Parse(drDC["DOId"].ToString()) : 0;
+                            if (doId != 0 && doId == DO.Id)
+                            {
+                                DeliveryChalan DC = new DeliveryChalan();
+
+                                DC.Id = (int)drDC["Id"];
+                                //TODO
+                                DC.DeliveryOrder = new Item() { Index = DO.Id, Value = DO.DONumber };
+                                //TODO: trader and transporter are different
+                                DC.Lead = drDC["LeadId"] != null ? UserDataManager.GetUserRef(drDC["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
+                                DC.Transporter = drDC["TransporterId"] != null ? CommonDataManager.GetTrader(drDC["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                                DC.Status = (DCStatus)Enum.Parse(typeof(DCStatus), drDC["status"].ToString());
+                                DC.DCNumber = drDC["DCNumber"].ToString();
+                                DC.DCDate = DateTime.Parse(drDC["DCDate"].ToString());
+                                DC.Quantity = Decimal.Parse(drDC["Quantity"].ToString());
+                                DC.TruckNo = drDC["TruckNo"].ToString();
+                                DC.BiltyNo = drDC["BiltyNo"].ToString();
+                                DC.SlipNo = drDC["SlipNo"].ToString();
+                                DC.Weight = Decimal.Parse(drDC["Weight"].ToString());
+                                DC.NetWeight = Decimal.Parse(drDC["NetWeight"].ToString());
+                                DC.DriverName = drDC["DriverName"].ToString();
+                                DC.DriverPhone = drDC["DriverPhone"] != null ? drDC["DriverPhone"].ToString() : "";
+
+                                DC.Remarks = drDC["Remarks"] != null ? drDC["Remarks"].ToString() : "";
+                                DC.CreatedOn = drDC["CreatedOn"] != DBNull.Value ? DateTime.Parse(drDC["CreatedOn"].ToString()) : DateTime.MinValue;
+                                DC.CreatedBy = drDC["CreatedBy"] != null ? UserDataManager.GetUserRef(drDC["CreatedBy"].ToString()) : UserDataManager.GetDefaultRef();
+                                DC.ModifiedOn = drDC["ModifiedOn"] != DBNull.Value ? DateTime.Parse(drDC["ModifiedOn"].ToString()) : DateTime.MinValue;
+                                DC.ModifiedBy = drDC["ModifiedBy"] != null ? UserDataManager.GetUserRef(drDC["ModifiedBy"].ToString()) : UserDataManager.GetDefaultRef();
+
+                                DO.DCList.Add(DC);
+                                DC = null;
+                            }
+                        }
+                        #endregion
+
+                        SO.DOList.Add(DO);
+                        DO = null;
                     }
-                    #endregion
-
-                    SO.DOList.Add(DO);
-                    DO = null;
                 }
                 #endregion
 

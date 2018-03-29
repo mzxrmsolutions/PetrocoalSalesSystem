@@ -29,11 +29,13 @@
         <!-- /.box-header -->
         <div class="box-body">
             <div class="col-lg-6">
-                <a href="/Purchase/UpdateCustomer/@ThisCustomer.Id" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="/Customer/UpdateCustomer/@ThisCustomer.Id" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
                 <a href="/Purchase/CreateOrder" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Create PO</a>
                 <a href="/SaleOrder/CreateOrder" class="btn btn-sm btn-success"><i class="fa fa-plus"></i> Create SO</a>
             </div>
             <div class="col-lg-6">
+                <a href="/Customer" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Customers </a>
+                <a href="/Customer?s=all" class="btn btn-sm btn-default"><i class="fa fa-list"></i> All Customers </a>
                 <a href="/Purchase" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My POs List</a>
                 <a href="/SaleOrder" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My SOs List</a>
                 <a href="/Customer/Download" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>

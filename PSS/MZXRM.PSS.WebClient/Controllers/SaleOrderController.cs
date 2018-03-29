@@ -239,7 +239,7 @@ namespace PatrocoalSalesSystem.Controllers
                 return Redirect("/SaleOrder/CreateOrder");
             ViewBag.ThisSO = SaleManager.GetSOById(DO.SaleOrder.Index);
             ViewBag.ThisDO = DO;
-            return RedirectToAction("OrderDetail", new { id = DO.DONumber });
+            return View();
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -384,10 +384,10 @@ namespace PatrocoalSalesSystem.Controllers
             Common.MyUrl = Request.RawUrl;
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
-            int so = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Convert.ToInt32(Request.QueryString["so"]) : 0;
-            if (so != 0)
+            String SONubmer = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : String.Empty;
+            if (!String.IsNullOrEmpty(SONubmer))
             {
-                SaleOrder SO = SaleManager.GetSOById(so);
+                SaleOrder SO = SaleManager.GetSOBySONumber(SONubmer);
                 ViewBag.ThisSO = SO;
 
 
@@ -439,6 +439,10 @@ namespace PatrocoalSalesSystem.Controllers
         {
             //ViewBag.ThisSO
             Common.MyUrl = Request.RawUrl;
+            if(!String.IsNullOrEmpty(id))
+            {
+                ViewBag.DONumber = id;
+            }
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
             return View();
@@ -467,6 +471,61 @@ namespace PatrocoalSalesSystem.Controllers
                 if (formErrors == "")
                 {
                     DeliveryChalan DC = SaleManager.CreateDC(values);
+                    if (DC != null)
+                        Response.Redirect("/SaleOrder/DODetail/" + DC.DeliveryOrder.Value);
+                }
+                else
+                    ExceptionHandler.Warning("Validation! " + formErrors);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(form);
+        }
+        #endregion
+
+        #region " UpdateDC Section "
+        public ActionResult UpdateDC(string id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/Createdc");
+            DeliveryChalan DC = SaleManager.GetDCByDCNumber(id);
+            DeliveryOrder DO = SaleManager.GetDOByDONumber(DC.DeliveryOrder.Value);
+            if (DC == null)
+                return Redirect("/SaleOrder/CreateDC");
+            ViewBag.ThisDC = DC;
+            ViewBag.ThisDO = DO;
+            //TODO: Kashif Abbas need to udpate the redirectotaction method
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateDC(FormCollection form)
+
+        {
+            try
+            {
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
+
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                if (formErrors == "")
+                {
+                    DeliveryChalan DC = SaleManager.UpdateDC(values);
                     if (DC != null)
                         Response.Redirect("/SaleOrder/DODetail/" + DC.DeliveryOrder.Value);
                 }

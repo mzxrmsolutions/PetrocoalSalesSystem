@@ -185,6 +185,47 @@ namespace MZXRM.PSS.Business
             }
             return null;
         }
+
+        public static DeliveryChalan UpdateDC(Dictionary<string, string> values)
+        {
+            try
+            {
+                DeliveryChalan DC = GetDCByDCNumber(values["DCNumber"]);
+
+                DeliveryOrder DO = SaleDataManager.GetDOById(Convert.ToInt32(values["DOId"].ToString()));
+
+                DC.DeliveryOrder = new Item { Index = DO.Id, Value = DO.DONumber };
+                DC.Lead = UserManager.GetUserRef(values["Lead"].ToString());
+                //TODO: trader and transporter are different
+                DC.Transporter = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                DC.Status = DCStatus.InTransit;
+                DC.DCDate = DateTime.Parse(values["DCDate"].ToString());
+                DC.Quantity = decimal.Parse(values["Quantity"].ToString());
+                DC.TruckNo = values["TruckNo"].ToString();
+                DC.BiltyNo = values["BiltyNo"].ToString();
+                DC.SlipNo = values["SlipNo"].ToString();
+                DC.Weight = Decimal.Parse(values["Weight"].ToString());
+                DC.NetWeight = Decimal.Parse(values["NetWeight"].ToString());
+                DC.DriverName = values["DriverName"].ToString();
+
+                DC.DriverPhone = values["DriverPhone"].ToString();
+
+                DC.Remarks = values["Remarks"] != null ? values["Remarks"].ToString() : "";
+
+                Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+                DC.ModifiedBy = CurrentUser;
+
+                DC.ModifiedOn = DateTime.Now;
+                SaleDataManager.UpdateDC(DC);
+                return DC;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+                ExceptionLogManager.Log(ex, null, "Creating SO");
+            }
+            return null;
+        }
         //ADDED BY KASHIF ABBAS TO UDPATE SO: 
         public static SaleOrder UpdateSO(Dictionary<string, string> values)
         {
@@ -311,6 +352,7 @@ namespace MZXRM.PSS.Business
             foreach (SaleOrder so in AllSOs)
             {
                 var DO = so.DOList.SingleOrDefault(x => x.DONumber == doNubmer);
+                if(DO!=null)
                 return DO;
             }
             return null;
@@ -339,6 +381,28 @@ namespace MZXRM.PSS.Business
             }
             return null;
         }
+
+        #region " Added by kashif abbas on 29th March 2018 "
+        public static DeliveryChalan GetDCByDCNumber(String DCNumber)
+        {
+            foreach (SaleOrder so in AllSOs)
+            {
+                if (so.DOList != null)
+                {
+                    foreach (DeliveryOrder DO in so.DOList)
+                    {
+                        if (DO.DCList != null)
+                        {
+                            DeliveryChalan dc = DO.DCList.SingleOrDefault(x => x.DCNumber == DCNumber);
+                            if (dc != null)
+                                return dc;
+                        }
+                    }
+                }
+            }
+            return null;
+        } 
+        #endregion
 
         public static void CompleteDO(DeliveryOrder DO)
         {

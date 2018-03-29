@@ -36,6 +36,9 @@ namespace MZXRM.PSS.Data
         public String Remarks { get; set; }
         public List<DeliveryChalan> DCList { get; set; }
 
+        //QUANTITY RELATED WORK GOES HERE
+        public decimal DeliveredQuantity { get; set; }
+        public decimal RemainingQuantity { get; set; }
     }
     public enum DOStatus
     {

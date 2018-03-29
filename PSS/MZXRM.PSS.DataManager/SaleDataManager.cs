@@ -49,7 +49,16 @@ namespace MZXRM.PSS.DataManager
         #region " CalculateSO Function "
         private static SaleOrder CalculateSO(SaleOrder SO)
         {
-            //TODO
+            if (SO == null)
+                return null;
+            //TODO: Kashif Abbas. Need to populate the delivered and remaining quantity for Sale Order
+            SO.DeliveredQuantity = SO.DOList.Sum(x => x.Quantity);
+            SO.RemainingQuantity = SO.Quantity - SO.DeliveredQuantity;
+            foreach(DeliveryOrder DO in SO.DOList)
+            {
+                DO.DeliveredQuantity = DO.DCList.Sum(y => y.Quantity);
+                DO.RemainingQuantity = DO.Quantity - DO.DeliveredQuantity;
+            }
             return SO;
         }
         #endregion
@@ -201,6 +210,7 @@ namespace MZXRM.PSS.DataManager
                 }
 
                 object obj = command.ExecuteScalar(); //execute query
+                ResetCache();
                 int retId = int.Parse(obj.ToString());
                 return retId;
             }
@@ -248,8 +258,33 @@ namespace MZXRM.PSS.DataManager
             return null;
         }
 
+        public static DeliveryChalan GetDCById(int id)
+        {
+            List<SaleOrder> soList = ReadAllSO();
+            try
+            {
+                foreach (SaleOrder SO in soList)
+                {
+                    foreach (DeliveryOrder DO in SO.DOList)
+                    {
+                        foreach(DeliveryChalan DC in DO.DCList)
+                        if (DC.Id == id)
+                        {
+                            return DC;
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all SO from DataBase", ex);
+            }
+            return null;
+        }
+
         #region " SaveDO Function "
-         public static int SaveDO(DeliveryOrder DO)
+        public static int SaveDO(DeliveryOrder DO)
         {
             using (var dbc = DataFactory.GetConnection())
             {
@@ -291,7 +326,29 @@ namespace MZXRM.PSS.DataManager
 
 
                 int retId = int.Parse(obj.ToString());
+                DC.Id = retId;
+
+                DeliveryOrder DO = GetDOById(DC.DeliveryOrder.Index);
+                SaleOrder SO = GetSOByNumber(DO.SaleOrder.Value);
+                DC = GetDCById(DC.Id);
+                StoreDataManager.CreateStockMovement_DC(SO, DO, DC);
                 return retId;
+            }
+        }
+        public static void UpdateDC(DeliveryChalan DC)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapDCData(DC); //map podetail to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_UpdateDC", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                ResetCache();
             }
         }
 
@@ -300,7 +357,7 @@ namespace MZXRM.PSS.DataManager
         #endregion
 
         #region " SaveDO Function "
-         public static int UpdateDO(DeliveryOrder DO)
+        public static int UpdateDO(DeliveryOrder DO)
         {
             using (var dbc = DataFactory.GetConnection())
             {

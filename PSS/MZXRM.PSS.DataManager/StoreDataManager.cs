@@ -303,6 +303,24 @@ private static void UpdateCustomerStock(CustomerStock CustomerStock);*/
                 return Guid.Empty;
             }
         }
+
+        public static Guid CreateStockMovement_DC(SaleOrder SO, DeliveryOrder DO, DeliveryChalan DC)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapStockMovementData_DC(SO, DO, DC); //map dcl to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStockMovement", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query, no result
+                //Guid retId = new Guid(obj.ToString());
+                return Guid.Empty;
+            }
+        }
         #endregion
 
 

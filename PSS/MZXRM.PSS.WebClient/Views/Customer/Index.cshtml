@@ -16,16 +16,36 @@
 
 <!-- Main content -->
 <section class="content container-fluid">
-
-    <!-- /.box -->
+    @if (ExceptionHandler.HasException())
+    {
+        <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+            @ExceptionHandler.GetExceptionMessage()
+        </div>
+        { ExceptionHandler.CloseException(); }
+    }
+    <!-- Top Menu -->
+    <div class="box box-default box-solid">
+        <div class="box-body">
+            <div class="col-lg-6">
+                <a class="btn btn-sm btn-default" href="/Customer/CreateCustomer"><i class="fa fa-plus"></i> New Customer</a>
+            </div>
+            <div class="col-lg-6">
+                <a href="/Customer" class="btn btn-sm btn-default"><i class="fa fa-list"></i> Customers </a>
+                <a href="/Customer?s=all" class="btn btn-sm btn-default"><i class="fa fa-list"></i> All Customers </a>
+                <a href="/Customer/Download" class="btn btn-sm btn-default bg-purple pull-right" disabled><i class="fa fa-file-excel-o"></i> Export Excel</a>
+            </div>
+        </div>
+    </div>
+    <!-- /.Menu -->
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
             <h3 class="box-title">Customers</h3>
-
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            <table id="example1" class="table table-condensed table-hover" style="table-layout: fixed; overflow-y: scroll;">
+            <table id="example1" class="table table-condensed table-hover">
                 <thead>
                     <tr>
                         <th class="col-sm-2">Name</th>

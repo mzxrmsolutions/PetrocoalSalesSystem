@@ -59,7 +59,7 @@
                             <label>Select SP</label>
                             <select class="form-control" name="SONumber" id="selectSO">
                                 <option value="0">--- Approved SOs ---</option>
-                                @foreach (SaleOrder item in SaleManager.GetAllApprovedSOs())
+                                @foreach (SaleOrder item in SaleManager.ApprovedSOs)
                                 {
                                     <option value="@item.Id" @((ThisSO != null && ThisSO.Id == item.Id) ? " selected " : "")>@item.SONumber</option>
                                 }

@@ -103,17 +103,17 @@ namespace MZXRM.PSS.Business
             }
             return null;
         }
-        public static Reference GetPOByDCL(string DCLNumber)
+        public static Reference GetPOByDCL(string DCLId)
         {
             foreach (PurchaseOrder po in AllPOs)
             {
                 foreach (PODetail pod in po.PODetailsList)
                     foreach (DutyClear dcl in pod.DutyClearsList)
 
-                        if (dcl.DCLNumber == DCLNumber)
-                            return new Reference() { Id=po.Id,Name=dcl.DCLNumber};
+                        if (dcl.Id.ToString() == DCLId)
+                            return new Reference() { Id = po.Id, Name = dcl.DCLNumber };
             }
-            return null;
+            return new Reference() { Id = Guid.Empty, Name = "" };
         }
         public static GRN GetGRN(string grnnumber)
         {

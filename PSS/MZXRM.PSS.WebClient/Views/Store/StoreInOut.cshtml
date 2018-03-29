@@ -78,9 +78,11 @@
                             <td>@st.Vessel.Value</td>
                             <td>@st.Size.Value</td>
                             <td>@st.Quantity.ToString(Constants.QuantityFormat)</td>
-                            @if (st.Status == StoreTransferStatus.InTransit)
-                            {
-                            <td><span class="badge bg-green">Complete</span></td>}
+                            
+                            <td>@if (st.Status == StoreTransferStatus.Complete)
+                            {<span class="badge bg-green">Complete</span>}
+                            else if (st.Status == StoreTransferStatus.InTransit)
+                            {<span class="badge bg-blue">In Transit</span>}</td>
                         </tr>
                     }
                 </tbody>

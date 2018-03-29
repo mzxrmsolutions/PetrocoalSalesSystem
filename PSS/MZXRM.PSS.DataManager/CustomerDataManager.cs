@@ -27,7 +27,7 @@ namespace MZXRM.PSS.DataManager
             {
                 DataTable DTcust = GetAllCustomer();
                 DataTable DTcuststock = GetAllCustomerStock();
-                List<Customer> allcusts = DataMap.MapCustomerDataTable(DTcust,DTcuststock);
+                List<Customer> allcusts = DataMap.MapCustomerDataTable(DTcust, DTcuststock);
                 foreach (Customer Cust in allcusts)
                 {
                     Customer cust = CalculateCustomer(Cust);
@@ -88,6 +88,9 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all Customer from DataBase", ex);
             }
         }
+
+
+
         private static DataTable GetAllCustomerStock()
         {
             try
@@ -113,6 +116,26 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all Customer from DataBase", ex);
             }
         }
+
+        public static Guid CreateCustomer(Customer cust)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapCustData(cust); //map po to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertCustomer", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                ResetCache();
+                object obj = command.ExecuteScalar(); //execute query
+                Guid retId = new Guid(obj.ToString());
+                return retId;
+            }
+        }
+
         public static bool SaveCustomer(Customer cust)
         {
             string poPath = _dataPath + "/Customer";
@@ -120,6 +143,24 @@ namespace MZXRM.PSS.DataManager
             XMLUtil.WriteToXmlFile<Customer>(fileName, cust);
             return true;
         }
+
+        public static void UpdateCustomer(Customer cust)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapCustData(cust); //map po to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_UpdateCustomer", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                command.ExecuteNonQuery(); //execute query
+                ResetCache();
+            }
+        }
+
         public static Reference GetCustRef(string id)
         {
             Guid custId = new Guid(id);

@@ -3,6 +3,7 @@
 @using MZXRM.PSS.Common
 @{
     DeliveryOrder ThisDO = ViewBag.ThisDO;
+    String DONumber = ViewBag.DONumber;
 }
 <section class="content-header">
     <h1>
@@ -12,7 +13,7 @@
     <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="/home"><i class="fa fa-dashboard"></i> Sales</a></li>
-        <li class="active">Create DC</li>
+        <li class="active">Update DC</li>
     </ol>
 </section>
 <!-- Main content -->
@@ -54,7 +55,7 @@
         </div>
         <div class="box box-warning box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Create new DO</h3>
+                <h3 class="box-title">Create New DC</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -66,7 +67,7 @@
                                 <option value="0">--- Approved DO ---</option>
                                 @foreach (DeliveryOrder item in SaleManager.ApprovedDOs)
                                 {
-                                    <option value="@item.Id">@item.DONumber</option>
+                                    <option value="@item.Id" @(item.DONumber == DONumber ? " selected " : "")>@item.DONumber</option>
                                 }
                             </select>
                         </div>
@@ -123,7 +124,7 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label>Lead</label>
+                            <label>Transporter</label>
                             <label class="required">*</label>
                             <select class="form-control select2" name="TransporterId">
                                 <option value="0">--- Transporter ---</option>
