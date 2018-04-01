@@ -14601,7 +14601,7 @@
     <Content Include="Views\Purchase\_OrderDetails.cshtml" />
     <Content Include="Views\Purchase\_UpdateGRN.cshtml" />
     <Content Include="Views\Purchase\_UpdateOrder.cshtml" />
-    <Content Include="Views\SaleOrder\ApprovedSO.cshtml" />
+    <Content Include="Views\SaleOrder\_ApprovedSO.cshtml" />
     <Content Include="Views\SaleOrder\CreateDC.cshtml" />
     <Content Include="Views\SaleOrder\CreateDO.cshtml" />
     <Content Include="Views\SaleOrder\CreateOrder.cshtml" />

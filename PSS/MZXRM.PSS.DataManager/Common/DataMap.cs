@@ -631,17 +631,22 @@ namespace MZXRM.PSS.DataManager
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
 
-
+            if (!String.IsNullOrEmpty(SO.Id.ToString()) && SO.Id != 0)
+            {
+                keyValues.Add("@Id", SO.Id);
+            }
             keyValues.Add("@Leadid", SO.Lead.Id);
             keyValues.Add("@OriginId", SO.Origin.Index);
             keyValues.Add("@SizeId", SO.Size.Index);
             keyValues.Add("@VesselId", SO.Vessel.Index);
+
             keyValues.Add("@CustomerId", SO.Customer.Id);
             keyValues.Add("@TaxRateId", SO.AgreedTaxRate.Index);
             keyValues.Add("@TraderId", SO.Trader.Index);
             keyValues.Add("@Status", SO.Status);
-            keyValues.Add("@OrderType", SO.OrderType);
             keyValues.Add("@SONumber", SO.SONumber);
+
+            keyValues.Add("@OrderType", SO.OrderType);
             keyValues.Add("@SODate", SO.SODate);
             keyValues.Add("@SOExpiryDate", SO.SOExpiry);
             keyValues.Add("@PartyPONumber", SO.PartyPONumber);
@@ -651,9 +656,31 @@ namespace MZXRM.PSS.DataManager
             keyValues.Add("@Quantity", SO.Quantity);
             keyValues.Add("@AgreedRate", SO.AgreedRate);
             keyValues.Add("@TraderCommision", SO.TraderCommission);
-            keyValues.Add("@CompletedOn", DBNull.Value);
-            keyValues.Add("@ApprovedDate", DBNull.Value);
-            keyValues.Add("@ApprovedBy", DBNull.Value);
+            if (SO.CompletedOn != null && SO.CompletedOn != DateTime.MinValue)
+            {
+                keyValues.Add("@CompletedOn", SO.CompletedOn);
+            }
+            else
+            {
+                keyValues.Add("@CompletedOn", DBNull.Value);
+            }
+
+            if (SO.ApprovedBy != null)
+            {
+                keyValues.Add("@ApprovedBy", SO.ApprovedBy.Id);
+            }
+            else
+            {
+                keyValues.Add("@ApprovedBy", DBNull.Value);
+            }
+            if (SO.ApprovedDate != null && SO.ApprovedDate != DateTime.MinValue)
+            {
+                keyValues.Add("@ApprovedDate", SO.ApprovedDate);
+            }
+            else
+            {
+                keyValues.Add("@ApprovedDate", DBNull.Value);
+            }
             keyValues.Add("@CreatedOn", SO.CreatedOn);
             keyValues.Add("@CreatedBy", SO.CreatedBy.Id);
             keyValues.Add("@ModifiedOn", SO.ModifiedOn);

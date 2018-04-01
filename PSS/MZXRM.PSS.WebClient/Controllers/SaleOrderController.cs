@@ -221,11 +221,7 @@ namespace PatrocoalSalesSystem.Controllers
             ViewBag.ThisDC = SaleManager.GetDCByDOID(DO.Id);
             return View();
         }
-        public ActionResult ApprovedSO()
-        {
-            return View();
-        }
-
+        
         //added by kashif abbas starts here
         public ActionResult UpdateDO(string id)
         {
@@ -542,6 +538,71 @@ namespace PatrocoalSalesSystem.Controllers
         public ActionResult DeliveryChalan()
         {
             return View();
+        }
+        public ActionResult ApprovedSO(String id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                SaleOrder SO = SaleManager.GetSOBySONumber(id);
+                if (SO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.ApprovedSO(SO);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+
+        public ActionResult CompleteOrder(String id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                SaleOrder SO = SaleManager.GetSOBySONumber(id);
+                if (SO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.CompleteSO(SO);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
+        }
+
+        public ActionResult CancelSO(String id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                Response.Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                Response.Redirect("/SaleOrder/CreateOrder");
+            try
+            {
+                SaleOrder SO = SaleManager.GetSOBySONumber(id);
+                if (SO == null)
+                    return Redirect("/SaleOrder/CreateOrder");
+                SaleManager.CancelSO(SO);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Unable to complete order", ex);
+            }
+            return RedirectToAction("index");
         }
     }
 }

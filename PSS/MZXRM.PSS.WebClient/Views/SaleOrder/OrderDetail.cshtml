@@ -35,7 +35,7 @@
                 @if (ThisSO.Status == SOStatus.Created || ThisSO.Status == SOStatus.PendingApproval)
                 {
                     <a href="/SaleOrder/UpdateOrder/@ThisSO.SONumber" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i> Edit</a>
-                    <a href="/SaleOrder/UpdateOrder/@ThisSO.SONumber" class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Approve</a>
+                    <a href="/SaleOrder/ApprovedSO/@ThisSO.SONumber" class="btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Approve</a>
                 }
                 @if (ThisSO.Status == SOStatus.InProcess)
                 {

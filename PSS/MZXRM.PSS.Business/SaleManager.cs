@@ -247,9 +247,9 @@ namespace MZXRM.PSS.Business
                 SO.Size = Common.GetSize(values["Size"].ToString());
                 SO.Vessel = Common.GetVessel(values["Vessel"].ToString());
                 SO.Quantity = decimal.Parse(values["Quantity"].ToString());
-                SO.AgreedTaxRate = values.ContainsKey("TaxRate")?Common.GetTaxRate(values["TaxRate"].ToString()): null;
+                SO.AgreedTaxRate = values.ContainsKey("TaxRate") ? Common.GetTaxRate(values["TaxRate"].ToString()) : null;
                 SO.Tax = !((SO.AgreedTaxRate == null) || (SO.AgreedTaxRate.Index == 0));
-                SO.AgreedRate = decimal.Parse(values["Rate"].ToString())  ;
+                SO.AgreedRate = decimal.Parse(values["Rate"].ToString());
                 if (SO.Tax)
                 {
                     //SO.TaxAmount = decimal.Parse(values[""].ToString());
@@ -265,6 +265,8 @@ namespace MZXRM.PSS.Business
                 //SO.PartyPOImage = values["POScanImage"].ToString();
                 //todo: temp work
                 SO.PartyPOImage = String.Empty;
+                SO.CompletedOn = SO.ApprovedDate = DateTime.MinValue;
+                SO.ApprovedBy = null;
                 SaleDataManager.UpdateSO(SO);
                 return SO;
             }
@@ -483,6 +485,35 @@ namespace MZXRM.PSS.Business
             {
                 return ex.Message;
             }
+        }
+        public static void ApprovedSO(SaleOrder SO)
+        {
+            SO.Status = SOStatus.InProcess;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            SO.ModifiedBy = SO.ApprovedBy = CurrentUser;
+            SO.ModifiedOn = SO.ApprovedDate = DateTime.Now;
+
+            SaleDataManager.UpdateSO(SO);
+        }
+
+        public static void CompleteSO(SaleOrder SO)
+        {
+            SO.Status = SOStatus.Completed;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            SO.ModifiedBy = CurrentUser;
+            SO.CompletedOn = DateTime.Now;
+            SO.ModifiedOn = DateTime.Now;
+
+            SaleDataManager.UpdateSO(SO);
+        }
+        public static void CancelSO(SaleOrder SO)
+        {
+            SO.Status = SOStatus.Cancelled;
+            Reference CurrentUser = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            SO.ModifiedBy = CurrentUser;
+            SO.ModifiedOn = DateTime.Now;
+
+            SaleDataManager.UpdateSO(SO);
         }
     }
 }
