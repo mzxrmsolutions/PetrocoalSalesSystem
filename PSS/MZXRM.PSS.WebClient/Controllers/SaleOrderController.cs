@@ -383,7 +383,7 @@ namespace PatrocoalSalesSystem.Controllers
             String SONubmer = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : String.Empty;
             if (!String.IsNullOrEmpty(SONubmer))
             {
-                SaleOrder SO = SaleManager.GetSOBySONumber(SONubmer);
+                SaleOrder SO = SaleManager.GetSOById(int.Parse(SONubmer));
                 ViewBag.ThisSO = SO;
 
 

@@ -36,7 +36,7 @@
                 <div class="col-lg-6">
                     <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
                     <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
-                   
+
                 </div>
                 <div class="col-lg-6">
                     @if (ThisDO != null)
@@ -91,38 +91,33 @@
                                 <label>Remaining Quantity</label>
                                 <p></p>
                             </div>
-
                         </div>
                     }
                 </div>
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>DC Date:</label>
                             <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
                                 <input type="text" class="form-control pull-right" data-selector="date" name="DCDate" value="@DateTime.Now.ToShortDateString()">
                             </div>
                             <!-- /.input group -->
                         </div>
                     </div>
-
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Lead</label>
-                            <label class="required">*</label>
-                            <select class="form-control select2" name="Lead">
-                                <option value="0">--- Lead ---</option>
-                                @foreach (User item in UserManager.Users)
-                                {
-                                    <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
+                    @*<div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Lead</label>
+                                <label class="required">*</label>
+                                <select class="form-control select2" name="Lead">
+                                    <option value="0">--- Lead ---</option>
+                                    @foreach (User item in UserManager.Users)
+                                    {
+                                        <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>*@
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Transporter</label>
                             <label class="required">*</label>
@@ -135,63 +130,96 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="text" class="form-control" name="Quantity">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
+                    @*<div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="text" class="form-control" name="Quantity">
+                            </div>
+                        </div>*@
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Truck No</label>
                             <input type="text" class="form-control" name="TruckNo">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Bilty No</label>
                             <input type="text" class="form-control" name="BiltyNo">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Slip No</label>
                             <input type="text" class="form-control" name="SlipNo">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Weight</label>
                             <input type="text" class="form-control" name="Weight">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>NetWeight</label>
                             <input type="text" class="form-control" name="NetWeight">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Driver Name</label>
                             <input type="text" class="form-control" name="DriverName">
                         </div>
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-sm-1">
                         <div class="form-group">
                             <label>Driver Phone</label>
                             <input type="text" class="form-control" name="DriverPhone">
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label>Loaded</label>
+                            <input type="text" class="form-control" name="Loaded">
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select class="form-control select2" name="LoadedSize">
+                                <option value="0">--- Size ---</option>
+                                @foreach (Item item in Common.Size)
+                                {
+                                    <option value="@item.Index">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label>Unloaded</label>
+                            <input type="text" class="form-control" name="Unloaded">
+                        </div>
+                    </div>
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <select class="form-control select2" name="UnloadedSize">
+                                <option value="0">--- Size ---</option>
+                                @foreach (Item item in Common.Size)
+                                {
+                                    <option value="@item.Index">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
                         <div class="form-group">
                             <label>Remarks</label>
                             <input type="text" class="form-control" name="Remarks">
                         </div>
                     </div>
-
                 </div>
             </div>
             <!-- /.box-body -->

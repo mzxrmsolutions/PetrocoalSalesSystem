@@ -396,7 +396,8 @@ namespace MZXRM.PSS.DataManager
             keyValues.Add("@Type", StMovType.DCSuccess);
             keyValues.Add("@Quantity", DCL.Quantity);
             keyValues.Add("@InOut", false);
-            keyValues.Add("@Reference", DCL.DCLNumber);
+            keyValues.Add("@Reference", DCL.Id);
+            keyValues.Add("@Date", DCL.DCLDate);
             keyValues.Add("@Vessel", PO.Vessel.Index);
             keyValues.Add("@Origin", PO.Origin.Index);
             keyValues.Add("@Size", PO.Size.Index);

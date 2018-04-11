@@ -230,6 +230,8 @@ namespace MZXRM.PSS.DataManager
                 {
                     command.Connection.Open();
                 }
+                command.ExecuteNonQuery(); //execute query
+                ResetCache();
 
             }
         }
