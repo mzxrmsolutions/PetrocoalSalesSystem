@@ -110,6 +110,24 @@ namespace MZXRM.PSS.DataManager
                 //return retId;
             }
         }
+        public static void UpdateStoreTransfer(StoreTransfer ST)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                Dictionary<string, object> keyValues = DataMap.reMapStoreTransferData(ST); //map grn to db columns
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_UpdateStoreInOut", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                StoreDataManager.CreateStockMovementStoreOut(ST);
+                //Guid retId = new Guid(obj.ToString());
+                //return retId;
+            }
+        }
 
         /*private static DataTable GetAllStockMovement();
 private static Guid CreateStore(Store Store)

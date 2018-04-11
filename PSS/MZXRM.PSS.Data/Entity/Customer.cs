@@ -31,6 +31,7 @@ namespace MZXRM.PSS.Data
         public List<CustomerStock> Stock;
         public decimal TotalStock;
         public bool StockMinus;
+        public List<Item> Destination;
     }
     public enum CustStatus
     {

@@ -23,9 +23,9 @@ namespace MZXRM.PSS.DataManager
             {
                 keyValues.Add("@DONumber", DO.DONumber);
             }
-            keyValues.Add("@StoreId", DO.Store.Id);
-            keyValues.Add("@SOId", DO.SaleOrder.Index);
+            keyValues.Add("@SaleStationId", DO.Location.Id);
             keyValues.Add("@LeadId", DO.Lead.Id);
+            keyValues.Add("@SOId", DO.SaleOrder.Index);
             keyValues.Add("@Status", DO.Status);
             if (DO.CompletedOn != null && DO.CompletedOn != DateTime.MinValue)
             {
@@ -39,7 +39,7 @@ namespace MZXRM.PSS.DataManager
             keyValues.Add("@Quantity", DO.Quantity);
             keyValues.Add("@LiftingStartDate", DO.LiftingStartDate);
             keyValues.Add("@LiftingEndDate", DO.LiftingEndDate);
-            keyValues.Add("@DeliveryDestination", DO.DeliveryDestination);
+            keyValues.Add("@DeliveryDestination", DO.DeliveryDestination.Index);
             keyValues.Add("@TransporterId", DO.Transportor.Index);
 
             if (DO.ApprovedBy != null)
@@ -289,6 +289,8 @@ namespace MZXRM.PSS.DataManager
         public static Dictionary<string, object> reMapStoreTransferData(StoreTransfer ST)
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
+            if (ST.Id != 0)
+                keyValues.Add("@id", ST.Id);
 
 
             keyValues.Add("@Type", ST.InOut);
@@ -314,6 +316,7 @@ namespace MZXRM.PSS.DataManager
                 keyValues.Add("@SMDate", DBNull.Value);
             else
                 keyValues.Add("@SMDate", ST.STDate);
+            keyValues.Add("@CustomerId", ST.Customer.Id);
             keyValues.Add("@Origin", ST.Origin.Index);
             keyValues.Add("@Size", ST.Size.Index);
             keyValues.Add("@Vessel", ST.Vessel.Index);
@@ -334,6 +337,7 @@ namespace MZXRM.PSS.DataManager
             //keyValues.Add("@Remarks", ST.Remarks);
             return keyValues;
         }
+
 
         public static List<StoreTransfer> MapStoreTransferData(DataTable dTstore)
         {
@@ -409,8 +413,8 @@ namespace MZXRM.PSS.DataManager
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
 
-
-            keyValues.Add("@Store", DO.Store.Id);
+            //TODO:
+            // keyValues.Add("@Store", DO.Store.Id);
             keyValues.Add("@CustomerId", SO.Customer.Id);
             keyValues.Add("@Type", StMovType.DCSuccess);
             keyValues.Add("@Quantity", DC.Quantity);
@@ -518,7 +522,6 @@ namespace MZXRM.PSS.DataManager
                 SO.CreditPeriod = int.Parse(dr["CreditPeriod"].ToString());
                 SO.Origin = dr["OriginId"] != null ? CommonDataManager.GetOrigin(dr["OriginId"].ToString()) : CommonDataManager.GetDefaultRef();
                 SO.Size = dr["SizeId"] != null ? CommonDataManager.GetSize(dr["SizeId"].ToString()) : CommonDataManager.GetDefaultRef();
-                SO.Vessel = dr["VesselId"] != null ? CommonDataManager.GetVessel(dr["VesselId"].ToString()) : CommonDataManager.GetDefaultRef();
                 SO.Quantity = decimal.Parse(dr["Quantity"].ToString());
 
                 SO.LC = SO.OrderType == SOType.LC;
@@ -543,7 +546,7 @@ namespace MZXRM.PSS.DataManager
                         DeliveryOrder DO = new DeliveryOrder();
 
                         DO.Id = (int)drDo["Id"];
-                        DO.Store = drDo["StoreId"] != null ? StoreDataManager.GetStoreRef(drDo["StoreId"].ToString()) : StoreDataManager.GetDefaultRef();
+                        DO.Location = drDo["SaleStationId"] != null ? CommonDataManager.GetSaleStation(drDo["SaleStationId"].ToString()) : CommonDataManager.GetDefaultReference();
                         DO.Lead = drDo["LeadId"] != null ? UserDataManager.GetUserRef(drDo["LeadId"].ToString()) : UserDataManager.GetDefaultRef();
                         DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
 
@@ -560,7 +563,7 @@ namespace MZXRM.PSS.DataManager
                         DO.Quantity = Decimal.Parse(drDo["Quantity"].ToString());
                         DO.LiftingStartDate = DateTime.Parse(drDo["LiftingStartDate"].ToString());
                         DO.LiftingEndDate = DateTime.Parse(drDo["LiftingEndDate"].ToString());
-                        DO.DeliveryDestination = drDo["DeliveryDestination"].ToString();
+                        DO.DeliveryDestination = CustomerDataManager.GetCustomerDestination(SO.Customer.Id, drDo["DeliveryDestination"].ToString());
                         //TODO: trader and transporter are different
                         DO.Transportor = drDo["TransporterId"] != null ? CommonDataManager.GetTrader(drDo["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                         DO.DumperRate = Decimal.Parse(drDo["DumperRate"].ToString());
@@ -639,7 +642,6 @@ namespace MZXRM.PSS.DataManager
             keyValues.Add("@Leadid", SO.Lead.Id);
             keyValues.Add("@OriginId", SO.Origin.Index);
             keyValues.Add("@SizeId", SO.Size.Index);
-            keyValues.Add("@VesselId", SO.Vessel.Index);
 
             keyValues.Add("@CustomerId", SO.Customer.Id);
             keyValues.Add("@TaxRateId", SO.AgreedTaxRate.Index);
@@ -750,7 +752,7 @@ namespace MZXRM.PSS.DataManager
             }
         }
 
-        public static List<Customer> MapCustomerDataTable(DataTable dtCust, DataTable dtCustStock)
+        public static List<Customer> MapCustomerDataTable(DataTable dtCust, DataTable dtCustStock, DataTable dtCustDest)
         {
             List<Customer> AllCustomers = new List<Customer>();
             foreach (DataRow drCust in dtCust.Rows)
@@ -789,6 +791,17 @@ namespace MZXRM.PSS.DataManager
                         CustStock.Size = drCustStock["Size"] != null ? CommonDataManager.GetSize(drCustStock["Size"].ToString()) : CommonDataManager.GetDefaultRef();
                         CustStock.Quantity = drCustStock["Quantity"] != null ? decimal.Parse(drCustStock["Quantity"].ToString()) : 0;
                         Cust.Stock.Add(CustStock);
+                    }
+
+                }
+                Cust.Destination = new List<Item>();
+                foreach (DataRow drCustDest in dtCustDest.Rows)
+                {
+                    Guid custId = drCustDest["CustomerId"] != null ? new Guid(drCustDest["CustomerId"].ToString()) : Guid.Empty;
+                    if (custId != Guid.Empty && custId == Cust.Id)
+                    {
+                        Item CustDest = new Item() { Index = int.Parse(drCustDest["id"].ToString()), Value = drCustDest["Name"].ToString() };
+                        Cust.Destination.Add(CustDest);
                     }
 
                 }

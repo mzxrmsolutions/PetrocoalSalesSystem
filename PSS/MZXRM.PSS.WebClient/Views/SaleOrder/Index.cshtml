@@ -109,7 +109,6 @@
                         <th>SO Expiry</th>
                         <th>Customer</th>
                         <th>Origin</th>
-                        <th>Vessel</th>
                         <th>Size</th>
                         <th>Quantity</th>
                         <th>Order Type</th>
@@ -134,7 +133,6 @@
                             <td>@so.SOExpiry.ToShortDateString()</td>
                             <td><a href="/Customer/@so.Customer.Id">@so.Customer.Name</a></td>
                             <td>@so.Origin.Value</td>
-                            <td>@so.Vessel.Value</td>
                             <td>@so.Size.Value</td>
                             <td align="right">@so.Quantity.ToString("#,##,###.000")</td>
 

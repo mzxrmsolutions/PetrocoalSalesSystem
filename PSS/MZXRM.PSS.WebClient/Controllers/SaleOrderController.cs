@@ -383,7 +383,17 @@ namespace PatrocoalSalesSystem.Controllers
             String SONubmer = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : String.Empty;
             if (!String.IsNullOrEmpty(SONubmer))
             {
-                SaleOrder SO = SaleManager.GetSOById(int.Parse(SONubmer));
+                SaleOrder SO = null;
+                int i;
+                bool success = int.TryParse(SONubmer, out i);
+                if (success)
+                {
+                    SO = SaleManager.GetSOById(int.Parse(SONubmer));
+                }
+                else
+                {
+                    SO = SaleManager.GetSOBySONumber(SONubmer);
+                }
                 ViewBag.ThisSO = SO;
 
 
@@ -415,7 +425,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     DeliveryOrder DO = SaleManager.CreateDO(values);
                     if (DO != null)
-                        Response.Redirect("/SaleOrder/UpdateDO/" + DO.DONumber);
+                        Response.Redirect("/SaleOrder/orderdetail/" + DO.SaleOrder.Value);
                 }
                 else
                     ExceptionHandler.Warning("Validation! " + formErrors);

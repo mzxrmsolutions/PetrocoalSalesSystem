@@ -9,7 +9,7 @@ namespace MZXRM.PSS.Data
     public class DeliveryOrder
     {
         public int Id { get; set; }
-        public Reference Store { get; set; }
+        public Reference Location { get; set; }
         public DOStatus Status { get; set; }
         public Item SaleOrder { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -25,7 +25,7 @@ namespace MZXRM.PSS.Data
         public decimal Quantity { get; set; }
         public DateTime LiftingStartDate { get; set; }
         public DateTime LiftingEndDate { get; set; }
-        public String DeliveryDestination { get; set; }
+        public Item DeliveryDestination { get; set; }
         public Item Transportor { get; set; }
         public decimal DumperRate { get; set; }
         public decimal FreightPaymentTerms { get; set; }

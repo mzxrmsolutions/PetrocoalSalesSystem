@@ -104,7 +104,7 @@ namespace MZXRM.PSS.Business
         public static StoreTransfer CreateStoreTransfer(Dictionary<string, string> values)
         {
             StoreTransfer ST = NewStoreTransfer();
-            ST.STDate= values.ContainsKey("Date") ? DateTime.Parse(values["Date"]) : DateTime.Now;
+            ST.STDate = values.ContainsKey("Date") ? DateTime.Parse(values["Date"]) : DateTime.Now;
             ST.Customer = values.ContainsKey("Customer") ? CustomerDataManager.GetCustRef(values["Customer"]) : CustomerDataManager.GetDefaultRef();
             ST.Origin = values.ContainsKey("Origin") ? CommonDataManager.GetOrigin(values["Origin"]) : CommonDataManager.GetDefaultRef();
             ST.Size = values.ContainsKey("Size") ? CommonDataManager.GetOrigin(values["Size"]) : CommonDataManager.GetDefaultRef();
@@ -117,12 +117,54 @@ namespace MZXRM.PSS.Business
             ST.BiltyDate = values.ContainsKey("BiltyDate") ? DateTime.Parse(values["BiltyDate"]) : DateTime.MinValue;
             ST.RRInvoice = values.ContainsKey("Invoice") ? values["Invoice"] : "";
             ST.CCMNumber = values.ContainsKey("CCMNo") ? values["CCMNo"] : "";
-            ST.Transporter = values.ContainsKey("Transporter") ? CommonDataManager.GetTrader( values["Transporter"]) : CommonDataManager.GetDefaultRef();
+            ST.Transporter = values.ContainsKey("Transporter") ? CommonDataManager.GetTrader(values["Transporter"]) : CommonDataManager.GetDefaultRef();
             ST.StoreInDate = DateTime.MinValue;
-            ST.StoreInQuantity= 0;
+            ST.StoreInQuantity = 0;
             ST.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
 
             StoreDataManager.CreateStoreTransfer(ST);
+            StoreDataManager.ResetCache();
+            return ST;
+        }
+
+        public static StoreTransfer GetStoreTransfer(string STNumber)
+        {
+            foreach (StoreTransfer st in AllStoreInOut)
+            {
+                if (st.STNumber == STNumber)
+                {
+                    return st;
+                }
+            }
+            return null;
+        }
+
+        public static StoreTransfer UpdateStoreTransfer(Dictionary<string, string> values)
+        {
+            string stNumber = values["STNumber"];
+            string stId = values["STID"];
+
+            StoreTransfer ST = GetStoreTransfer(stNumber);
+            ST.Id = string.IsNullOrEmpty(stId) ? 0 : int.Parse(stId);
+            ST.STDate = values.ContainsKey("Date") ? DateTime.Parse(values["Date"]) : DateTime.Now;
+            ST.Customer = values.ContainsKey("Customer") ? CustomerDataManager.GetCustRef(values["Customer"]) : CustomerDataManager.GetDefaultRef();
+            ST.Origin = values.ContainsKey("Origin") ? CommonDataManager.GetOrigin(values["Origin"]) : CommonDataManager.GetDefaultRef();
+            ST.Size = values.ContainsKey("Size") ? CommonDataManager.GetOrigin(values["Size"]) : CommonDataManager.GetDefaultRef();
+            ST.Vessel = values.ContainsKey("Vessel") ? CommonDataManager.GetOrigin(values["Vessel"]) : CommonDataManager.GetDefaultRef();
+            ST.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
+            ST.FromStoreId = values.ContainsKey("FromStore") ? StoreDataManager.GetStoreRef(values["FromStore"]) : StoreDataManager.GetDefaultRef();
+            ST.ToStoreId = values.ContainsKey("ToStore") ? StoreDataManager.GetStoreRef(values["ToStore"]) : StoreDataManager.GetDefaultRef();
+            ST.VehicleNo = values.ContainsKey("VehicleNo") ? values["VehicleNo"] : "";
+            ST.BiltyNo = values.ContainsKey("BiltyNo") ? values["BiltyNo"] : "";
+            ST.BiltyDate = values.ContainsKey("BiltyDate") ? DateTime.Parse(values["BiltyDate"]) : DateTime.MinValue;
+            ST.RRInvoice = values.ContainsKey("Invoice") ? values["Invoice"] : "";
+            ST.CCMNumber = values.ContainsKey("CCMNo") ? values["CCMNo"] : "";
+            ST.Transporter = values.ContainsKey("Transporter") ? CommonDataManager.GetTrader(values["Transporter"]) : CommonDataManager.GetDefaultRef();
+            ST.StoreInDate = DateTime.MinValue;
+            ST.StoreInQuantity = 0;
+            ST.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
+
+            StoreDataManager.UpdateStoreTransfer(ST);
             StoreDataManager.ResetCache();
             return ST;
         }

@@ -66,7 +66,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control pull-right" data-selector="date" name="Date" value="@DateTime.Now.ToShortDateString()">
+                                <input type="text" class="form-control pull-right" data-selector="date" name="date" value="@DateTime.Now.ToShortDateString()">
                             </div>
                             <!-- /.input group -->
                         </div>
@@ -86,7 +86,7 @@
                     <div class="col-sm-1">
                         <div class="form-group">
                             <label>Origin</label>
-                            <select class="form-control select2" name="Origin">
+                            <select class="form-control" name="Origin">
                                 <option value="0">--- Origin ---</option>
                                 @foreach (Item Origin in Common.Origin)
                                 {
@@ -98,7 +98,7 @@
                     <div class="col-sm-1">
                         <div class="form-group">
                             <label>Vessel</label>
-                            <select class="form-control select2" name="Vessel">
+                            <select class="form-control" name="Vessel">
                                 <option value="0">--- Vessel ---</option>
                                 @foreach (Item Vessel in Common.Vessel)
                                 {
@@ -110,7 +110,7 @@
                     <div class="col-sm-1">
                         <div class="form-group">
                             <label>Size</label>
-                            <select class="form-control select2" name="Size">
+                            <select class="form-control" name="Size">
                                 <option value="0">--- Size ---</option>
                                 @foreach (Item Size in Common.Size)
                                 {

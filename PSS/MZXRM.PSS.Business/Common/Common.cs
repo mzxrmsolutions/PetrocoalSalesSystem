@@ -16,6 +16,7 @@ namespace MZXRM.PSS.Business
         private static List<Item> _lTaxRate;
         private static List<Item> _lTrader;
         private static List<Reference> _lStore;
+        private static List<Reference> _lSaleStation;
 
         public static void ReloadData()
         {
@@ -221,6 +222,20 @@ namespace MZXRM.PSS.Business
         public static bool SavePO(PurchaseOrder po)
         {
             return true;
+        }
+
+        public static List<Reference> AllSaleStations
+        {
+            get
+            {
+                if (_lSaleStation == null || _lSaleStation.Count == 0)
+                    _lSaleStation = CommonDataManager.GetSaleStationList();
+                return _lSaleStation;
+            }
+            set
+            {
+                _lSaleStation = value;
+            }
         }
     }
 }

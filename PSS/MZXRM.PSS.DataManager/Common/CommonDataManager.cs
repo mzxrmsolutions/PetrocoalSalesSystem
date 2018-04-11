@@ -16,9 +16,10 @@ namespace MZXRM.PSS.DataManager
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
 
         static bool readDB = true;
-        
 
 
+
+        static bool readSSDB = true;
         #region Origin
         public static List<Item> GetOriginList()
         {
@@ -182,6 +183,66 @@ namespace MZXRM.PSS.DataManager
             }
             return GetDefaultRef();
         }
+
+
+
+        #endregion
+
+        #region " Sale Station Region "
+        public static List<Reference> GetSaleStationList()
+        {
+            if (HttpContext.Current.Session[SessionManager.SaleStationSession] == null)
+                readSSDB = true;
+            if (readSSDB)
+            {
+                try
+                {
+                    using (var dbc = DataFactory.GetConnection())
+                    {
+
+                        IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllSaleStation");
+
+                        if (command.Connection.State != ConnectionState.Open)
+                        {
+                            command.Connection.Open();
+                        }
+
+                        IDataReader datareader = command.ExecuteReader();
+
+                        List<Reference> returnList = new List<Reference>();
+                        while (datareader.Read())
+                        {
+                            Reference item = new Reference();
+                            item.Id = (Guid)datareader["Id"];
+                            item.Name = datareader["Name"].ToString();
+                            returnList.Add(item);
+                            //item = null;
+                        }
+                        HttpContext.Current.Session.Add(SessionManager.SaleStationSession, returnList);
+                        readSSDB = false;
+                        return returnList;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error! Get all Sale station from DataBase", ex);
+                }
+            }
+            List<Reference> Allresults = HttpContext.Current.Session[SessionManager.SaleStationSession] as List<Reference>;
+            return Allresults;
+
+        }
+        public static Reference GetSaleStation(string id)
+        {
+            List<Reference> list = GetSaleStationList();
+            foreach (Reference item in list)
+            {
+                if (item.Id.ToString() == id)
+                    return item;
+            }
+            return GetDefaultReference();
+        }
+
         #endregion
 
         #region TaxRate
@@ -334,14 +395,15 @@ namespace MZXRM.PSS.DataManager
         {
             return new Item() { Index = 0, Value = "" };
         }
+        public static Reference GetDefaultReference()
+        {
+            return new Reference() { Id = Guid.Empty, Name= "" };
+        }
 
         public static void SaveStoreList(List<Reference> data)
         {
             string fileName = _dataPath + "/Lists/Store.xml";
             XMLUtil.WriteToXmlFile<List<Reference>>(fileName, data);
         }
-
-
-
     }
 }

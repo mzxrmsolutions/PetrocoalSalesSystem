@@ -14623,6 +14623,7 @@
     <Content Include="Views\Customer\CreateCustomer.cshtml" />
     <Content Include="Views\Customer\UpdateCustomer.cshtml" />
     <Content Include="Views\SaleOrder\UpdateDC.cshtml" />
+    <Content Include="Views\Store\UpdateStoreTransfer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\SO\" />

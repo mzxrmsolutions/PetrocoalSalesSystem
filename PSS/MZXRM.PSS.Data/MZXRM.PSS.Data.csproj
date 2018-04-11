@@ -52,6 +52,7 @@
     <Compile Include="Entity\PurchaseOrder.cs" />
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
+    <Compile Include="Entity\SaleStation.cs" />
     <Compile Include="Entity\StockMovement.cs" />
     <Compile Include="Entity\StoreInOut.cs" />
     <Compile Include="Entity\Store.cs" />

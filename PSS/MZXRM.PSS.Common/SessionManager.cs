@@ -19,6 +19,7 @@ namespace MZXRM.PSS.Common
         public static string CustomerSession = "AllCustomers";
         public static string StoreSession = "AllStores";
         public static string StoreIOSession = "AllStoreIOs";
+        public static string SaleStationSession = "AllSaleStation";
         public static void ClearSession()
         {
             HttpContext.Current.Session.Clear();

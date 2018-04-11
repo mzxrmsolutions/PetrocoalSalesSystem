@@ -96,10 +96,7 @@
                         <label>Origin:</label>
                         <p>@ThisSO.Origin.Value</p>
                     </div>
-                    <div class="col-sm-1">
-                        <label>Vessel:</label>
-                        <p>@ThisSO.Vessel.Value</p>
-                    </div>
+                    
                     <div class="col-sm-1">
                         <label>Size:</label>
                         <p>@ThisSO.Size</p>
@@ -157,13 +154,13 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label>From Store</label>
-                            <select class="form-control select2" name="Store">
-                                <option value="0">--- Store ---</option>
-                                @foreach (Store store in StoreManager.AllStore)
-                            {
-                            <option value="@store.Id" @(store.Id == ThisDO.Store.Id ? " selected " : "")>@store.Name</option>
-                            }
+                            <label>Location</label>
+                            <select class="form-control select2" name="Location">
+                                <option value="0">--- Location ---</option>
+                                @foreach (Reference saleStation in Common.AllSaleStations)
+                                {
+                                    <option value="@saleStation.Id" @(saleStation.Id == ThisDO.Location.Id?"selected":"")>@saleStation.Name</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -214,7 +211,16 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>DO Destination: </label>
-                            <input type="text" class="form-control" name="DeliveryDestination" value="@ThisDO.DeliveryDestination" />
+                            @*<input type="text" class="form-control" name="DeliveryDestination" value="@ThisDO.DeliveryDestination" />*@
+                            @{Customer cust = CustomerManager.GetCustomer(ThisSO.Customer.Id);
+                            }
+                            <select class="form-control select2" name="DeliveryDestination">
+                                @foreach (Item item in cust.Destination)
+                                {
+                                    <option value="@item.Index" @((ThisDO.DeliveryDestination != null && item.Index == ThisDO.DeliveryDestination.Index) ? " selected " : "")>@item.Value</option>
+                                }
+                            </select>
+                            
                         </div>
                     </div>
                     <div class="col-sm-2">

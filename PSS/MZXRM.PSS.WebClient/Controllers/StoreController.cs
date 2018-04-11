@@ -135,5 +135,47 @@ namespace PatrocoalSalesSystem.Controllers
             }
             return View();
         }
+        #region /store/updatestoretransfer
+        public ActionResult UpdateStoreTransfer(string id)
+        {
+            Common.MyUrl = Request.RawUrl;
+            if (!Common.isAuthorize())
+                return Redirect("/Login");
+            if (string.IsNullOrEmpty(id))
+                return Redirect("/Purchase");
+            StoreTransfer ThisST = StoreManager.GetStoreTransfer(id);
+            if (ThisST == null)
+                return Redirect("/Store");
+            ViewBag.ThisST = ThisST;
+            return View();
+        }
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult UpdateStoreTransfer(FormCollection form)
+        {
+            if (!Common.isAuthorize())
+            {
+                ExceptionHandler.Error("Session Timeout");
+                return View();
+            }
+            if (form["btn"] != null && form["btn"] == "Reset")
+                return View();
+
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            foreach (string Key in form.Keys)
+            {
+                values.Add(Key, form[Key]);
+            }
+            string formErrors = StoreManager.ValidateCreateStoreTransferForm(values);
+            if (formErrors == "")
+            {
+                StoreTransfer ST = StoreManager.UpdateStoreTransfer(values);
+                if (ST != null)
+                    Response.Redirect("/Store/StoreInout");
+            }
+            else
+                ExceptionHandler.Warning("Validation! " + formErrors);
+            return RedirectToAction("Index");
+        }
+        #endregion
     }
 }

@@ -82,7 +82,7 @@
                             <td>@if (st.Status == StoreTransferStatus.Complete)
                             {<span class="badge bg-green">Complete</span>}
                             else if (st.Status == StoreTransferStatus.InTransit)
-                            {<span class="badge bg-blue">In Transit</span>}</td>
+                            {<a href="/store/UpdateStoreTransfer/@st.STNumber" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Mark Complete</a>}</td>
                         </tr>
                     }
                 </tbody>

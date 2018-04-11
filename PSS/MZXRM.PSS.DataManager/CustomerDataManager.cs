@@ -27,7 +27,8 @@ namespace MZXRM.PSS.DataManager
             {
                 DataTable DTcust = GetAllCustomer();
                 DataTable DTcuststock = GetAllCustomerStock();
-                List<Customer> allcusts = DataMap.MapCustomerDataTable(DTcust, DTcuststock);
+                DataTable DTcustdestination = GetAllCustomerDestination();
+                List<Customer> allcusts = DataMap.MapCustomerDataTable(DTcust, DTcuststock,DTcustdestination);
                 foreach (Customer Cust in allcusts)
                 {
                     Customer cust = CalculateCustomer(Cust);
@@ -116,6 +117,31 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all Customer from DataBase", ex);
             }
         }
+        public static DataTable GetAllCustomerDestination()
+        {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllCustomerDestination");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader();
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all Customer from DataBase", ex);
+            }
+        }
 
         public static Guid CreateCustomer(Customer cust)
         {
@@ -176,6 +202,21 @@ namespace MZXRM.PSS.DataManager
         public static Reference GetDefaultRef()
         {
             return new Reference() { Id = Guid.Empty, Name = "" };
+        }
+
+        public static Item GetCustomerDestination(Guid custId, string destId)
+        {
+            foreach (Customer cust in ReadAllCustomers())
+            {
+                if (cust.Id == custId)
+                {
+                    foreach (Item dest in cust.Destination)
+                        if (dest.Index.ToString() == destId)
+                            return dest;
+
+                }
+            }
+            return null;
         }
     }
 }

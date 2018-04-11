@@ -56,7 +56,7 @@ namespace MZXRM.PSS.Business
 
                 SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SONumber"]));
 
-                DO.Store = StoreDataManager.GetStoreRef(values["Store"]);
+                DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
                 DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
                 DO.Status = DOStatus.Created;
@@ -68,7 +68,7 @@ namespace MZXRM.PSS.Business
 
                 DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
                 DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
-                DO.DeliveryDestination = values["DeliveryDestination"].ToString();
+                DO.DeliveryDestination = CustomerDataManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
                 //TODO: trader and transporter are different
                 DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                 DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
@@ -103,7 +103,8 @@ namespace MZXRM.PSS.Business
 
                 SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SOID"]));
                 DO.Id = Convert.ToInt32(values["DOID"]);
-                DO.Store = StoreDataManager.GetStoreRef(values["Store"]);
+                
+                DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
                 DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
                 DO.Status = DOStatus.Created;
@@ -116,7 +117,7 @@ namespace MZXRM.PSS.Business
 
                 DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
                 DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
-                DO.DeliveryDestination = values["DeliveryDestination"].ToString();
+                DO.DeliveryDestination = CustomerDataManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
                 //TODO: trader and transporter are different
                 DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                 DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
