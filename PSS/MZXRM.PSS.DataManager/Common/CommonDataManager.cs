@@ -134,8 +134,6 @@ namespace MZXRM.PSS.DataManager
         public static List<Item> GetVesselList()
         {
             if (HttpContext.Current.Session[SessionManager.VesselSessionName] == null)
-                readDB = true;
-            if (readDB)
             {
                 try
                 {

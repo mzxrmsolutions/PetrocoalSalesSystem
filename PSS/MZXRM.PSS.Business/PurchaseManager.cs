@@ -140,51 +140,72 @@ namespace MZXRM.PSS.Business
         {
             try
             {
-                foreach (KeyValuePair<string, string> keyValue in values)
+                string ErrorMessage = string.Empty;
+                if (values["Origin"] == "0") ErrorMessage += "Origin, ";
+                if (values["Size"] == "0") ErrorMessage += "Size, ";
+                if (values["Vessel"] == "0") ErrorMessage += "Vessel, ";
+                if (string.IsNullOrEmpty(values["PODate"])) ErrorMessage += "PO Date, ";
+                if (string.IsNullOrEmpty(values["TargetDays"])) ErrorMessage += "Target Days, ";
+                if (string.IsNullOrEmpty(values["Supplier"])) ErrorMessage += "Supplier, ";
+                if (string.IsNullOrEmpty(values["Lead"])) ErrorMessage += "Lead, ";
+                // if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
+                if (string.IsNullOrEmpty(values["BufferMin"])) ErrorMessage += "Buffer Min %, ";
+                if (string.IsNullOrEmpty(values["BufferMax"])) ErrorMessage += "Buffer Max %, ";
+                if (values["Customer_1"] == "0") ErrorMessage += "Customer, ";
+                if (string.IsNullOrEmpty(ErrorMessage))
                 {
-                    string key = keyValue.Key;
-                    string value = keyValue.Value;
-                    if (key == "Origin" && value == "0") throw new Exception("Origin is required");
-                    if (key == "Size" && value == "0") throw new Exception("Size is required");
-                    if (key == "Vessel" && value == "0") throw new Exception("Vessel is required");
-                    if (key == "PODate" && string.IsNullOrEmpty(value)) throw new Exception("PODate is required");
-                    if (key == "TargetDays" && string.IsNullOrEmpty(value)) throw new Exception("TargetDays is required");
-                    if (key == "Supplier" && string.IsNullOrEmpty(value)) throw new Exception("Supplier is required");
-                    if (key == "Lead" && string.IsNullOrEmpty(value)) throw new Exception("Lead is required");
-                    // if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
-                    if (key == "BufferMin" && string.IsNullOrEmpty(value)) throw new Exception("Buffer Min is required");
-                    if (key == "BufferMax" && string.IsNullOrEmpty(value)) throw new Exception("Buffer Max is required");
-                }
-
-                PurchaseOrder PO = NewPO();
-                PO.Lead = UserManager.GetUserRef(values["Lead"]);
-                PO.PODate = values.ContainsKey("PODate") ? DateTime.Parse(values["PODate"]) : DateTime.Now;
-                PO.Origin = Common.GetOrigin(values["Origin"]);
-                PO.Size = Common.GetSize(values["Size"]);
-                PO.Vessel = Common.GetVessel(values["Vessel"]);
-                PO.TargetDays = values.ContainsKey("TargetDays") ? int.Parse(values["TargetDays"]) : 0;
-                PO.Supplier = Common.GetSupplier(values["Supplier"]);
-                PO.TermsOfPayment = values["PaymentTerms"];
-                PO.BufferQuantityMin = values.ContainsKey("BufferMin") ? decimal.Parse(values["BufferMin"]) : 10;
-                PO.BufferQuantityMax = values.ContainsKey("BufferMax") ? decimal.Parse(values["BufferMax"]) : 10;
-                for (int i = 1; i <= 10; i++)
-                {
-                    if (values.ContainsKey("Customer_" + i.ToString()))
-                        if (values["Customer_" + i.ToString()] != "0")
+                    bool error = false;
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        if (values["Customer_" + i] == "0")
+                            continue;
+                        if (string.IsNullOrEmpty(values["Quantity_" + i])) error = true;
+                        if (string.IsNullOrEmpty(values["Rate_" + i])) error = true;
+                        if (string.IsNullOrEmpty(values["AllowedWastage_" + i])) error = true;
+                        if (string.IsNullOrEmpty(values["CostPerTon_" + i])) error = true;
+                        DateTime tdate = new DateTime();
+                        if (!DateTime.TryParse(values["TargetDate_" + i], out tdate)) error = true;
+                        if (error)
                         {
-                            PODetail pod = NewPODetail(PO);
-                            pod.Customer = CustomerManager.GetCustomerRef(values["Customer_" + i.ToString()]);
-                            pod.Quantity = values.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(values["Quantity_" + i.ToString()]) : 0;
-                            pod.Rate = values.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(values["Rate_" + i.ToString()]) : 0;
-                            pod.AllowedWaistage = values.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(values["AllowedWastage_" + i.ToString()]) : 0;
-                            pod.CostPerTon = values.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(values["CostPerTon_" + i.ToString()]) : 0;
-                            pod.TargetDate = values.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(values["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
-                            PO.PODetailsList.Add(pod);
+                            ErrorMessage += "PO Detail";
+                            break;
                         }
+                    }
+
                 }
-                PO = PurchaseDataManager.CalculatePO(PO);
-                if (PO.isValid)
-                    return PO;
+                if (string.IsNullOrEmpty(ErrorMessage))
+                {
+                    PurchaseOrder PO = NewPO();
+                    PO.Lead = UserManager.GetUserRef(values["Lead"]);
+                    PO.PODate = values.ContainsKey("PODate") ? DateTime.Parse(values["PODate"]) : DateTime.Now;
+                    PO.Origin = Common.GetOrigin(values["Origin"]);
+                    PO.Size = Common.GetSize(values["Size"]);
+                    PO.Vessel = Common.GetVessel(values["Vessel"]);
+                    PO.TargetDays = values.ContainsKey("TargetDays") ? int.Parse(values["TargetDays"]) : 0;
+                    PO.Supplier = Common.GetSupplier(values["Supplier"]);
+                    PO.TermsOfPayment = values["PaymentTerms"];
+                    PO.BufferQuantityMin = values.ContainsKey("BufferMin") ? decimal.Parse(values["BufferMin"]) : 10;
+                    PO.BufferQuantityMax = values.ContainsKey("BufferMax") ? decimal.Parse(values["BufferMax"]) : 10;
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        if (values.ContainsKey("Customer_" + i.ToString()))
+                            if (values["Customer_" + i.ToString()] != "0")
+                            {
+                                PODetail pod = NewPODetail(PO);
+                                pod.Customer = CustomerManager.GetCustomerRef(values["Customer_" + i.ToString()]);
+                                pod.Quantity = values.ContainsKey("Quantity_" + i.ToString()) ? decimal.Parse(values["Quantity_" + i.ToString()]) : 0;
+                                pod.Rate = values.ContainsKey("Rate_" + i.ToString()) ? decimal.Parse(values["Rate_" + i.ToString()]) : 0;
+                                pod.AllowedWaistage = values.ContainsKey("AllowedWastage_" + i.ToString()) ? decimal.Parse(values["AllowedWastage_" + i.ToString()]) : 0;
+                                pod.CostPerTon = values.ContainsKey("CostPerTon_" + i.ToString()) ? decimal.Parse(values["CostPerTon_" + i.ToString()]) : 0;
+                                pod.TargetDate = values.ContainsKey("TargetDate_" + i.ToString()) ? DateTime.Parse(values["TargetDate_" + i.ToString()]) : DateTime.MaxValue;
+                                PO.PODetailsList.Add(pod);
+                            }
+                    }
+                    PO = PurchaseDataManager.CalculatePO(PO);
+                    if (PO.isValid)
+                        return PO;
+                }
+                throw new Exception("Enter required fields: " + ErrorMessage);
             }
             catch (Exception ex)
             {

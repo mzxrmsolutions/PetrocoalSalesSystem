@@ -155,6 +155,7 @@ namespace PatrocoalSalesSystem.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateOrder(FormCollection form)
         {
+            //List<FormMetaData> formItems = GetFormItems();
             try
             {
                 if (!Common.isAuthorize())
@@ -184,7 +185,7 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 ExceptionHandler.Error("Error! " + ex.Message, ex);
             }
-            return View(form);
+            return View(Request.Form);
         }
         #endregion
 

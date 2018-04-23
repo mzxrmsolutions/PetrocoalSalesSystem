@@ -159,33 +159,11 @@
                             </span>
                         </a>
                     </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-ship"></i> <span>Purchase</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/Purchase"><i class="fa fa-circle-o"></i>Purchase Orders</a></li>
-                            <li><a href="/Purchase/GRNList"><i class="fa fa-circle-o"></i>Good Received</a></li>
-                            <li><a href="/Purchase/GRNList?type=loan"><i class="fa fa-circle-o"></i>Loan Received</a></li>
-                            <li><a href="/Purchase/DCLList"><i class="fa fa-circle-o"></i>Duty Clears</a></li>
-                        </ul>
+                    <li class="active">
+                        <a href="/Purchase"><i class="fa fa-ship"></i> <span>Purchase</span></a>
                     </li>
-                    <li class="treeview">
-                        <a href="#">
-                            <i class="fa fa-truck"></i> <span>Sale</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li class="active"><a href="/saleorder"><i class="fa fa-circle-o"></i> My Sales</a></li>
-                            <li><a href="/home"><i class="fa fa-circle-o"></i> TO DO</a></li>
-                            <li><a href="/home"><i class="fa fa-circle-o"></i> TO DO</a></li>
-                            <li><a href="/home"><i class="fa fa-circle-o"></i> TO DO</a></li>
-                        </ul>
+                    <li class="active">
+                        <a href="/SaleOrder"><i class="fa fa-truck"></i> <span>Sale</span></a>
                     </li>
                     <li class="treeview">
                         <a href="#">
@@ -195,7 +173,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/Store"><i class="fa fa-circle-o"></i> Stock Status</a></li>
+                            <li><a href="/Store"><i class="fa fa-circle-o"></i> Store Status</a></li>
                             <li><a href="/Store/Seiving"><i class="fa fa-circle-o"></i> Seiving </a></li>
                             <li><a href="/Store/storeinout"><i class="fa fa-circle-o"></i> Store In/Out </a></li>
                         </ul>
@@ -221,11 +199,12 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="/Admin/Origin"><i class="fa fa-list text-yellow"></i> <span>Manage Origin</span></a></li>
-                    <li><a href="/Admin/Size"><i class="fa fa-list text-yellow"></i> <span>Manage Size</span></a></li>
-                    <li><a href="/Admin/Vessel"><i class="fa fa-list text-yellow"></i> <span>Manage Vessel</span></a></li>
-                    <li><a href="/Admin/Supplier"><i class="fa fa-list text-yellow"></i> <span>Manage Supplier</span></a></li>
-                    <li><a href="/Admin/Store"><i class="fa fa-list text-red"></i> <span>Manage Stores</span></a></li>
+                    <li>
+                        <a href="~/Admin/ListManagement"><i class="fa fa-bars"></i> <span>Manage Lists</span></a>
+                    </li>
+                    <li>
+                        <a href="~/Admin/UserManagement"><i class="fa fa-bars"></i> <span>Manage Users</span></a>
+                    </li>
                     <li class="header">TEMPLATE</li>
                     <li><a href="/AdminLTE"><i class="fa fa-circle-o text-yellow"></i> <span>Main Template</span></a></li>
 

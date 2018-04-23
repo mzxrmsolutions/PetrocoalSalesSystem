@@ -1,6 +1,7 @@
 ﻿@using MZXRM.PSS.Data
 @using MZXRM.PSS.Business
 @using MZXRM.PSS.Common
+
 <section class="content-header">
     <h1>
         Purchase
@@ -15,7 +16,7 @@
 
 <!-- Main content -->
 <section class="content container-fluid">
-    <form method="post" action="/purchase/createorder">
+    <form method="post" action="/Purchase/CreateOrder" name="CreateOrder">
         @if (ExceptionHandler.HasException())
         {
             <div class="alert alert-danger alert-dismissible">
@@ -40,7 +41,7 @@
                     <a href="/Purchase/GRNList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My GRNs List</a>
                     <a href="/Purchase/DCLList" class="btn btn-sm btn-default"><i class="fa fa-list"></i> My DCLs List</a>
                     <a href="/Purchase/GRNList?type=loan" class="btn btn-sm btn-default" disabled><i class="fa fa-list"></i> My LRNs List</a>
-                    
+
                 </div>
             </div>
             <!-- /.box-body -->
@@ -60,7 +61,7 @@
                                 <option value="0">--- Origin ---</option>
                                 @foreach (Item item in Common.Origin)
                                 {
-                                    <option value="@item.Index">@item.Value</option>
+                                    <option value="@item.Index" @(item.Index.ToString() == Request.Form["Origin"] ? " selected " : "")>@item.Value</option>
                                 }
                             </select>
                         </div>
@@ -72,9 +73,9 @@
                             <select class="form-control" name="Size">
                                 <option value="0">--- Size ---</option>
                                 @foreach (Item item in Common.Size)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
+                                    {
+                                        <option value="@item.Index" @(item.Index.ToString()==Request.Form["Size"]?" selected ":"")>@item.Value</option>
+                                    }
                             </select>
                         </div>
                     </div>
@@ -85,9 +86,9 @@
                             <select class="form-control select2" name="Vessel">
                                 <option value="0">--- Vessel ---</option>
                                 @foreach (Item item in Common.Vessel)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
+                                    {
+                                        <option value="@item.Index" @(item.Index.ToString() == Request.Form["Vessel"] ? " selected " : "")>@item.Value</option>
+                                    }
                             </select>
                         </div>
                     </div>
@@ -99,7 +100,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control pull-right" data-selector="date" name="PODate" value="@DateTime.Now.ToShortDateString()">
+                                <input type="text" class="form-control pull-right" data-selector="date" id="PODate" name="PODate" value="@DateTime.Now.ToShortDateString()">
                             </div>
                             <!-- /.input group -->
                         </div>
@@ -108,7 +109,7 @@
                         <div class="form-group">
                             <label>Target Days</label>
                             <label class="required">*</label>
-                            <input type="text" class="form-control" name="TargetDays">
+                            <input type="text" class="form-control" id="TargetDays" name="TargetDays" value='@(Request.Form["TargetDays"]!=null?@Request.Form["TargetDays"].ToString():"")'>
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -119,7 +120,7 @@
                                 <option value="0">--- Supplier ---</option>
                                 @foreach (Item item in Common.Supplier)
                                 {
-                                    <option value="@item.Index">@item.Value</option>
+                                    <option value="@item.Index" @(item.Index.ToString() == Request.Form["Supplier"] ? " selected " : "")>@item.Value</option>
                                 }
                             </select>
                         </div>
@@ -140,21 +141,21 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Terms of Payment</label>
-                            <input type="text" class="form-control" name="PaymentTerms">
+                            <input type="text" class="form-control" name="PaymentTerms" value='@(Request.Form["PaymentTerms"]!=null?@Request.Form["PaymentTerms"].ToString():"")'>
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Min Quantity Buffer (%)</label>
                             <label class="required">*</label>
-                            <input type="text" class="form-control" name="BufferMin" value="10">
+                            <input type="text" class="form-control" name="BufferMin" value='@(Request.Form["BufferMin"]!=null?@Request.Form["BufferMin"].ToString():"10")'>
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Max Quantity Buffer (%)</label>
                             <label class="required">*</label>
-                            <input type="text" class="form-control" name="BufferMax" value="10">
+                            <input type="text" class="form-control" name="BufferMax" value='@(Request.Form["BufferMax"]!=null?@Request.Form["BufferMax"].ToString():"10")'>
                         </div>
                     </div>
                 </div>
@@ -179,20 +180,20 @@
                                                 <option value="0">--- Customer ---</option>
                                                 @foreach (Customer item in CustomerManager.AllCustomers)
                                                 {
-                                                    <option value="@item.Id">@item.Name</option>
+                                                    <option value="@item.Id" @((Request.Form["Customer_"+i.ToString()] !=null && item.Id.ToString() == Request.Form["Customer_" + i.ToString()]) ? " selected " : "")>@item.Name</option>
                                                 }
                                             </select>
                                         </td>
-                                        <td><input type="text" class="form-control" name="Quantity_@i.ToString()" /></td>
-                                        <td><input type="text" class="form-control" name="Rate_@i.ToString()" /></td>
-                                        <td><input type="text" class="form-control" name="AllowedWastage_@i.ToString()" /></td>
-                                        <td><input type="text" class="form-control" name="CostPerTon_@i.ToString()" /></td>
+                                        <td><input type="text" class="form-control" name="Quantity_@i.ToString()" value='@(Request.Form["Quantity_"+i.ToString()]!=null?@Request.Form["Quantity_"+i.ToString()].ToString():"")' /></td>
+                                        <td><input type="text" class="form-control" name="Rate_@i.ToString()" value='@(Request.Form["Rate_"+i.ToString()]!=null?@Request.Form["Rate_"+i.ToString()].ToString():"")' /></td>
+                                        <td><input type="text" class="form-control" name="AllowedWastage_@i.ToString()" value='@(Request.Form["AllowedWastage_"+i.ToString()]!=null?@Request.Form["AllowedWastage_"+i.ToString()].ToString():"")' /></td>
+                                        <td><input type="text" class="form-control" name="CostPerTon_@i.ToString()" value='@(Request.Form["CostPerTon_"+i.ToString()]!=null?@Request.Form["CostPerTon_"+i.ToString()].ToString():"")' /></td>
                                         <td>
                                             <div class="input-group date">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input type="text" class="form-control pull-right" data-selector="date" name="TargetDate_@i.ToString()">
+                                                <input type="text" class="form-control pull-right" data-selector="date" id="TargetDate_@i.ToString()" name="TargetDate_@i.ToString()">
                                             </div>
                                         </td>
                                         <th><a href="#" class="btn btn-danger" onclick="hideRow(@i.ToString())">X</a></th>
@@ -205,7 +206,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                
+
             </div>
         </div>
     </form>
@@ -222,7 +223,7 @@
             if (i == 10)
                 alert('Max 10 rows');
             if (i == 1)
-                $('#row_' + i).show();
+            {$('#row_' + i).show();}
             //debugger;
             var v = 0;
             v = parseInt(i);
@@ -231,7 +232,15 @@
             if (option == 0)
                 $('#row_' + v).hide();
             else
+            {
                 $('#row_' + v).show();
+            var poDate=$('#PODate').val();
+            var days=$('#TargetDays').val();
+            var targetDate=new Date(poDate);
+            targetDate.setDate(targetDate.getDate()+parseInt(days));
+            //alert(targetDate);
+            $('#TargetDate_' + i).val((targetDate.getMonth() + 1) + "/" + targetDate.getDate() + "/" + targetDate.getFullYear());
+            }
         }
         function hideRow(i) {
             $('#Customer_' + i).val("0");
