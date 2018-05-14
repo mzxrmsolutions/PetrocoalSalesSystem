@@ -17,36 +17,7 @@ namespace MZXRM.PSS.DataManager
     public class CustomerDataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
-        static bool readFromDB = true;
-        public static List<Customer> ReadAllCustomers()
-        {
-            List<Customer> AllCustomers = new List<Customer>();
-            if (HttpContext.Current.Session[SessionManager.CustomerSession] == null)
-                readFromDB = true;
-            if (readFromDB)
-            {
-                DataTable DTcust = GetAllCustomer();
-                DataTable DTcuststock = GetAllCustomerStock();
-                DataTable DTcustdestination = GetAllCustomerDestination();
-                List<Customer> allcusts = DataMap.MapCustomerDataTable(DTcust, DTcuststock,DTcustdestination);
-                foreach (Customer Cust in allcusts)
-                {
-                    Customer cust = CalculateCustomer(Cust);
-                    AllCustomers.Add(cust);
-                }
-                HttpContext.Current.Session.Add(SessionManager.CustomerSession, AllCustomers);
-                readFromDB = false;
-                return AllCustomers;
-            }
-            AllCustomers = HttpContext.Current.Session[SessionManager.CustomerSession] as List<Customer>;
-            return AllCustomers;
-
-        }
-        public static void ResetCache()
-        {
-            readFromDB = true;
-        }
-        private static Customer CalculateCustomer(Customer Customer)
+        public static Customer CalculateCustomer(Customer Customer)
         {
             if (Customer != null)
             {
@@ -64,7 +35,7 @@ namespace MZXRM.PSS.DataManager
             }
             return null;
         }
-        private static DataTable GetAllCustomer()
+        public static DataTable GetAllCustomer()
         {
             try
             {
@@ -89,10 +60,7 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all Customer from DataBase", ex);
             }
         }
-
-
-
-        private static DataTable GetAllCustomerStock()
+        public static DataTable GetAllCustomerStock()
         {
             try
             {
@@ -142,12 +110,10 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all Customer from DataBase", ex);
             }
         }
-
-        public static Guid CreateCustomer(Customer cust)
+        public static Guid CreateCustomer(Dictionary<string, object> keyValues)
         {
             using (var dbc = DataFactory.GetConnection())
             {
-                Dictionary<string, object> keyValues = DataMap.reMapCustData(cust); //map po to db columns
                 IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertCustomer", keyValues);
 
                 if (command.Connection.State != ConnectionState.Open)
@@ -155,26 +121,15 @@ namespace MZXRM.PSS.DataManager
                     command.Connection.Open();
                 }
 
-                ResetCache();
                 object obj = command.ExecuteScalar(); //execute query
                 Guid retId = new Guid(obj.ToString());
                 return retId;
             }
         }
-
-        public static bool SaveCustomer(Customer cust)
-        {
-            string poPath = _dataPath + "/Customer";
-            string fileName = poPath + "/" + cust.Name + ".xml";
-            XMLUtil.WriteToXmlFile<Customer>(fileName, cust);
-            return true;
-        }
-
-        public static void UpdateCustomer(Customer cust)
+        public static void UpdateCustomer(Dictionary<string, object> keyValues)
         {
             using (var dbc = DataFactory.GetConnection())
             {
-                Dictionary<string, object> keyValues = DataMap.reMapCustData(cust); //map po to db columns
                 IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_UpdateCustomer", keyValues);
 
                 if (command.Connection.State != ConnectionState.Open)
@@ -183,40 +138,9 @@ namespace MZXRM.PSS.DataManager
                 }
 
                 command.ExecuteNonQuery(); //execute query
-                ResetCache();
             }
         }
 
-        public static Reference GetCustRef(string id)
-        {
-            Guid custId = new Guid(id);
-            if (custId != Guid.Empty)
-            {
-                List<Customer> allCustomers = ReadAllCustomers();
-                foreach (Customer cust in allCustomers)
-                    if (custId == cust.Id)
-                        return new Reference() { Id = cust.Id, Name = cust.Name };
-            }
-            return new Reference() { Id = Guid.Empty, Name = "" };
-        }
-        public static Reference GetDefaultRef()
-        {
-            return new Reference() { Id = Guid.Empty, Name = "" };
-        }
-
-        public static Item GetCustomerDestination(Guid custId, string destId)
-        {
-            foreach (Customer cust in ReadAllCustomers())
-            {
-                if (cust.Id == custId)
-                {
-                    foreach (Item dest in cust.Destination)
-                        if (dest.Index.ToString() == destId)
-                            return dest;
-
-                }
-            }
-            return null;
-        }
+       
     }
 }

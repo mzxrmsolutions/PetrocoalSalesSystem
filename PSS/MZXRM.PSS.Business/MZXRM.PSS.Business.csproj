@@ -47,6 +47,11 @@
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\ExceptionLogManager.cs" />
     <Compile Include="CustomerManager.cs" />
+    <Compile Include="DBMap\CustomerMap.cs" />
+    <Compile Include="DBMap\POMap.cs" />
+    <Compile Include="DBMap\SOMap.cs" />
+    <Compile Include="DBMap\StoreMap.cs" />
+    <Compile Include="DBMap\UserMap.cs" />
     <Compile Include="ExcelUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PurchaseManager.cs" />

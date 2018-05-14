@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Item>
+    <Index>1</Index>
+    <Value>00-10</Value>
+  </Item>
+  <Item>
+    <Index>2</Index>
+    <Value>00-04</Value>
+  </Item>
+  <Item>
+    <Index>3</Index>
+    <Value>10-25</Value>
+  </Item>
+  <Item>
+    <Index>4</Index>
+    <Value>25-50</Value>
+  </Item>
+  <Item>
+    <Index>5</Index>
+    <Value>05-10</Value>
+  </Item>
+<Item>
+    <Index>6</Index>
+    <Value>00-50</Value>
+  </Item>
+<Item>
+    <Index>7</Index>
+    <Value>00-00</Value>
+  </Item>
+</ArrayOfItem>

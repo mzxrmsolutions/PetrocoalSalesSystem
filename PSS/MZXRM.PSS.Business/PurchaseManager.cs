@@ -1,9 +1,11 @@
-﻿using MZXRM.PSS.Common;
+﻿using MZXRM.PSS.Business.DBMap;
+using MZXRM.PSS.Common;
 using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -19,60 +21,90 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _AllPOs = PurchaseDataManager.ReadAllPO();
+                if (HttpContext.Current.Session[SessionManager.POSession] != null)
+                    _AllPOs = HttpContext.Current.Session[SessionManager.POSession] as List<PurchaseOrder>;
+                if (_AllPOs == null || _AllPOs.Count == 0)
+                    _AllPOs = ReadAllPO();
                 return _AllPOs;
             }
-            set
-            {
-                _AllPOs = value;
-            }
         }
-        private static List<GRN> _AllGRNs;
+        public static List<PurchaseOrder> ReadAllPO()
+        {
+            DataTable DTpo = PurchaseDataManager.GetAllPOs();
+            DataTable DTpod = PurchaseDataManager.GetAllPODs();
+            DataTable DTgrn = PurchaseDataManager.GetAllGRNs();
+            DataTable DTdcl = PurchaseDataManager.GetAllDCLs();
+            List<PurchaseOrder> allPOs = POMap.MapPOData(DTpo, DTpod, DTgrn, DTdcl);
+            List<PurchaseOrder> calculatedPOs = new List<PurchaseOrder>();
+            foreach (PurchaseOrder PO in allPOs)
+            {
+                PurchaseOrder po = PurchaseDataManager.CalculatePO(PO);
+                calculatedPOs.Add(po);
+            }
+            HttpContext.Current.Session.Add(SessionManager.POSession, calculatedPOs);
+            _AllPOs = calculatedPOs;
+            return calculatedPOs;
+        }
+        private static void ResetCache()
+        {
+            HttpContext.Current.Session[SessionManager.POSession] = null;
+        }
+        public static bool SavePO(PurchaseOrder PO)
+        {
+            if (PO.Id == Guid.Empty)
+            {
+                Guid newPOId = PurchaseDataManager.CreatePO(POMap.reMapPOData(PO));
+                PO.Id = newPOId;
+            }
+            else
+                PurchaseDataManager.UpdatePO(POMap.reMapPOData(PO));
+            foreach (PODetail pod in PO.PODetailsList)
+            {
+                if (pod.Id == Guid.Empty)
+                {
+                    pod.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
+                    Guid newPODId = PurchaseDataManager.CreatePODetail(POMap.reMapPODetailData(pod));
+                    pod.Id = newPODId;
+                }
+                else
+                {
+                    PurchaseDataManager.UpdatePODetail(POMap.reMapPODetailData(pod));
+                }
+            }
+            ResetCache();
+            return true;
+        }
+
         public static List<GRN> AllGRNs
         {
             get
             {
-                //if (_AllGRNs == null || _AllGRNs.Count == 0)
+                List<GRN> allGRNs = new List<GRN>();
+                foreach (PurchaseOrder po in AllPOs)
                 {
-                    _AllGRNs = new List<GRN>();
-                    foreach (PurchaseOrder po in AllPOs)
+                    foreach (PODetail pod in po.PODetailsList)
                     {
-                        foreach (PODetail pod in po.PODetailsList)
-                        {
-                            foreach (GRN grn in pod.GRNsList)
-                                _AllGRNs.Add(grn);
-                        }
+                        foreach (GRN grn in pod.GRNsList)
+                            allGRNs.Add(grn);
                     }
                 }
-                return _AllGRNs;
-            }
-            set
-            {
-                _AllGRNs = value;
+                return allGRNs;
             }
         }
-        private static List<DutyClear> _AllDCLs;
         public static List<DutyClear> AllDCLs
         {
             get
             {
-                //if (_AllDCLs == null || _AllDCLs.Count == 0)
+                List<DutyClear> _AllDCLs = new List<DutyClear>();
+                foreach (PurchaseOrder po in AllPOs)
                 {
-                    _AllDCLs = new List<DutyClear>();
-                    foreach (PurchaseOrder po in AllPOs)
+                    foreach (PODetail pod in po.PODetailsList)
                     {
-                        foreach (PODetail pod in po.PODetailsList)
-                        {
-                            foreach (DutyClear dcl in pod.DutyClearsList)
-                                _AllDCLs.Add(dcl);
-                        }
+                        foreach (DutyClear dcl in pod.DutyClearsList)
+                            _AllDCLs.Add(dcl);
                     }
                 }
                 return _AllDCLs;
-            }
-            set
-            {
-                _AllDCLs = value;
             }
         }
         public static List<PurchaseOrder> ApprovedPOs
@@ -274,7 +306,7 @@ namespace MZXRM.PSS.Business
         {
             try
             {
-                Guid poid = PurchaseDataManager.CreatePO(PO);
+                Guid poid = PurchaseDataManager.CreatePO(POMap.reMapPOData(PO));
                 if (poid != Guid.Empty)
                 {
                     PO.Id = poid;
@@ -283,12 +315,12 @@ namespace MZXRM.PSS.Business
                         if (pod.Id == Guid.Empty)
                         {
                             pod.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
-                            Guid newPODId = PurchaseDataManager.CreatePODetail(pod);
+                            Guid newPODId = PurchaseDataManager.CreatePODetail(POMap.reMapPODetailData(pod));
                             pod.Id = newPODId;
                         }
                         else
                         {
-                            PurchaseDataManager.UpdatePODetail(pod);
+                            PurchaseDataManager.UpdatePODetail(POMap.reMapPODetailData(pod));
                         }
                     }
                 }
@@ -323,7 +355,7 @@ namespace MZXRM.PSS.Business
                     Grn.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
                     if (keyvalues.ContainsKey("Store"))
-                        Grn.Store = Common.GetStore(keyvalues["Store"]);
+                        Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"].ToString());
                     Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                     Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
                     Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
@@ -332,7 +364,7 @@ namespace MZXRM.PSS.Business
                     POD.GRNsList.Add(Grn);
                     PurchaseDataManager.CalculatePO(PO);
                     if (PO.isValid)
-                        PurchaseDataManager.CreateGRN(Grn);
+                        PurchaseDataManager.CreateGRN(POMap.reMapGRNData(Grn));
                     else
                     {
                         ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
@@ -367,14 +399,17 @@ namespace MZXRM.PSS.Business
                     Dcl.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
                     Dcl.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
                     if (keyvalues.ContainsKey("Store"))
-                        Dcl.Store = StoreDataManager.GetStoreRef(keyvalues["Store"].ToString());
+                        Dcl.Store = StoreManager.GetStoreRef(keyvalues["Store"].ToString());
                     Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                     Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                     POD.DutyClearsList.Add(Dcl);
 
                     PurchaseDataManager.CalculatePO(PO);
                     if (PO.isValid)
-                        PurchaseDataManager.CreateDCL(PO, Dcl);
+                    {
+                        PurchaseDataManager.CreateDCL(POMap.reMapDCLData(Dcl));
+                        //todo stock movement
+                    }
                     else
                     {
                         ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
@@ -436,7 +471,7 @@ namespace MZXRM.PSS.Business
                 PO.PODetailsList = updatedPOD;
                 PO.ModifiedOn = DateTime.Now;
                 PO.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
-                PurchaseDataManager.SavePO(PO);
+                SavePO(PO);
                 return PO;
             }
             catch (Exception ex)
@@ -445,7 +480,21 @@ namespace MZXRM.PSS.Business
             }
             return null;
         }
-
+        public static PurchaseOrder GetPObyId(Guid Id)
+        {
+            try
+            {
+                List<PurchaseOrder> AllPO = ReadAllPO();
+                foreach (PurchaseOrder PO in AllPO)
+                    if (PO.Id == Id)
+                        return PO;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all PO from DataBase", ex);
+            }
+            return null;
+        }
 
 
         public static GRN UpdateGRN(Dictionary<string, string> keyvalues)
@@ -460,7 +509,7 @@ namespace MZXRM.PSS.Business
             {
                 Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
                 Grn.PODetail = new Reference() { Id = new Guid(keyvalues["Customer"]), Name = PO.PONumber };
-                Grn.Store = Common.GetStore(keyvalues["Store"]);
+                Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"]);
                 Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                 Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
                 Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
@@ -483,7 +532,7 @@ namespace MZXRM.PSS.Business
                 }
                 PurchaseDataManager.CalculatePO(PO);
                 if (PO.isValid)
-                    PurchaseDataManager.UpdateGRN(Grn);
+                    PurchaseDataManager.UpdateGRN(POMap.reMapGRNData(Grn));
                 else
                 {
                     ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
@@ -507,7 +556,7 @@ namespace MZXRM.PSS.Business
             {
                 Dcl.DCLDate = keyvalues.ContainsKey("DCLDate") ? DateTime.Parse(keyvalues["DCLDate"]) : DateTime.Now;
                 Dcl.PODetail = new Reference() { Id = new Guid(keyvalues["Customer"]), Name = PO.PONumber };
-                Dcl.Store = Common.GetStore(keyvalues["Store"]);
+                Dcl.Store = StoreManager.GetStoreRef(keyvalues["Store"]);
                 Dcl.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
                 Dcl.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
                 Dcl.ModifiedOn = DateTime.Now;
@@ -529,7 +578,7 @@ namespace MZXRM.PSS.Business
 
                 PurchaseDataManager.CalculatePO(PO);
                 if (PO.isValid)
-                    PurchaseDataManager.UpdateDCL(Dcl);
+                    PurchaseDataManager.UpdateDCL(POMap.reMapDCLData(Dcl));
                 else
                 {
                     ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
@@ -547,7 +596,7 @@ namespace MZXRM.PSS.Business
             string PONumber = keyvalues["ponumber"];
             PurchaseOrder PO = GetPO(PONumber);
             PO.Status = POStatus.PendingApproval;
-            PurchaseDataManager.SavePO(PO);
+            SavePO(PO);
             return PO;
         }
         public static PurchaseOrder ApprovePO(Dictionary<string, string> keyvalues)
@@ -557,7 +606,7 @@ namespace MZXRM.PSS.Business
             PO.Status = POStatus.InProcess;
             PO.ApprovedDate = DateTime.Now;
             PO.ApprovedBy = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
-            PurchaseDataManager.SavePO(PO);
+            SavePO(PO);
             return PO;
         }
         public static void CompleteOrder(PurchaseOrder PO)
@@ -567,7 +616,7 @@ namespace MZXRM.PSS.Business
             if (PO.isValid)
             {
                 PO.Status = POStatus.Completed;
-                PurchaseDataManager.SavePO(PO);
+                SavePO(PO);
             }
             else
                 ExceptionHandler.Error("PO not valid");

@@ -15,81 +15,13 @@ namespace MZXRM.PSS.DataManager
 {
     public class UserDataManager
     {
-        static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
-        static bool readFromDB = true;
-        static string sessionName = "AllUsers";
-        public static List<User> ReadAllUsers()
-        {
-            List<User> AllUsers = new List<User>();
-            if (HttpContext.Current.Session[sessionName] == null)
-                readFromDB = true;
-            if (readFromDB)
-            {
-                DataTable DTuser = GetAllUsers();
-                DataTable DTrole = GetAllRoles();
-                DataTable DTteam = GetAllTeams();
-                List<User> allUsers = DataMap.MapUserData(DTuser, DTrole, DTteam);
-                foreach (User user in allUsers)
-                {
-                    User us = CalculateUser(user);
-                    AllUsers.Add(us);
-                }
-                HttpContext.Current.Session.Add(sessionName, AllUsers);
-                readFromDB = false;
-                return AllUsers;
-            }
-            AllUsers = HttpContext.Current.Session[sessionName] as List<User>;
-            return AllUsers;
-
-            //string filePath = _dataPath + "/User";
-            //List<User> users = new List<User>();
-
-            //if (Directory.Exists(filePath))
-            //{
-            //    string[] files = Directory.GetFiles(filePath);
-            //    foreach (string file in files)
-            //    {
-            //        User user = XMLUtil.ReadFromXmlFile<User>(file);
-            //        users.Add(user);
-            //    }
-            //}
-            //else
-            //    Directory.CreateDirectory(filePath);
-            //return users;
-        }
-
-        private static User CalculateUser(User user)
+        public static User CalculateUser(User user)
         {
             return user;
         }
 
-        public static User GetUser(Guid userId)
-        {
-            List<User> allUsers = ReadAllUsers();
-            foreach (User user in allUsers)
-            {
-                if (user.Id == userId)
-                    return user;
-            }
-            return null;
-        }
-        public static Reference GetDefaultRef()
-        {
-            return new Reference() { Id = Guid.Empty, Name = "" };
-        }
-
-        public static Reference GetUserRef(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-                return GetDefaultRef();
-            Guid userId = new Guid(id);
-            User user = GetUser(userId);
-            if (user != null)
-                return new Reference() { Id = user.Id, Name = user.Name };
-            return GetDefaultRef();
-        }
         #region " AuthenticateUser Function "
-        public static User AuthenticateUser(String LoginName, String Password)
+        public static User AuthenticateUser(string LoginName, string Password)
         {
             //USER OBJECT TO BE SAVED WHEN USER IS AUTHENTICATED
             User objUser = new User();
@@ -124,7 +56,7 @@ namespace MZXRM.PSS.DataManager
                         objUser.Office = Convert.ToString(result["Office"]);
                         objUser.Home = Convert.ToString(result["Home"]);
                         objUser.Address = Convert.ToString(result["Address"]);
-                        objUser.ProfileImage= Convert.ToString(result["Picture"]);
+                        objUser.ProfileImage = Convert.ToString(result["Picture"]);
                         /* Role population goes here */
                         if (objUser.Roles.Count(x => x.Id == Guid.Parse(result["RoleId"].ToString())) <= 0)
                         {
@@ -153,15 +85,12 @@ namespace MZXRM.PSS.DataManager
             return objUser;
         }
 
-        internal static Reference GetCurrentUserRef()
-        {
-            throw new NotImplementedException();
-        }
+
         #endregion
 
 
         #region DB Get all functions
-        private static DataTable GetAllUsers()
+        public static DataTable GetAllUsers()
         {
             try
             {
@@ -186,7 +115,7 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all User from DataBase", ex);
             }
         }
-        private static DataTable GetAllRoles()
+        public static DataTable GetAllRoles()
         {
             try
             {
@@ -211,7 +140,7 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all User from DataBase", ex);
             }
         }
-        private static DataTable GetAllTeams()
+        public static DataTable GetAllTeams()
         {
             try
             {

@@ -15,17 +15,11 @@ namespace MZXRM.PSS.DataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
 
-        static bool readDB = true;
-
-
-
-        static bool readSSDB = true;
         #region Origin
         public static List<Item> GetOriginList()
         {
-            if (HttpContext.Current.Session[SessionManager.OriginSessionName] == null)
-                readDB = true;
-            if (readDB)
+            string session = SessionManager.OriginSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
             {
                 try
                 {
@@ -75,12 +69,11 @@ namespace MZXRM.PSS.DataManager
         }
         #endregion
 
-         #region Size
+        #region Size
         public static List<Item> GetSizeList()
         {
-            if (HttpContext.Current.Session[SessionManager.SizeSessionName] == null)
-                readDB = true;
-            if (readDB)
+            string session = SessionManager.SizeSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
             {
                 try
                 {
@@ -105,7 +98,7 @@ namespace MZXRM.PSS.DataManager
                             returnList.Add(item);
                             item = null;
                         }
-                        HttpContext.Current.Session.Add(SessionManager.OriginSessionName, returnList);
+                        HttpContext.Current.Session.Add(SessionManager.SizeSessionName, returnList);
                         return returnList;
                     }
                 }
@@ -133,7 +126,8 @@ namespace MZXRM.PSS.DataManager
         #region Vessel
         public static List<Item> GetVesselList()
         {
-            if (HttpContext.Current.Session[SessionManager.VesselSessionName] == null)
+            string session = SessionManager.VesselSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
             {
                 try
                 {
@@ -189,9 +183,9 @@ namespace MZXRM.PSS.DataManager
         #region " Sale Station Region "
         public static List<Reference> GetSaleStationList()
         {
-            if (HttpContext.Current.Session[SessionManager.SaleStationSession] == null)
-                readSSDB = true;
-            if (readSSDB)
+            string session = SessionManager.SaleStationSession;
+            if (HttpContext.Current.Session[session] == null || ((List<Reference>)HttpContext.Current.Session[session]).Count == 0)
+
             {
                 try
                 {
@@ -217,7 +211,6 @@ namespace MZXRM.PSS.DataManager
                             //item = null;
                         }
                         HttpContext.Current.Session.Add(SessionManager.SaleStationSession, returnList);
-                        readSSDB = false;
                         return returnList;
                     }
                 }
@@ -246,9 +239,8 @@ namespace MZXRM.PSS.DataManager
         #region TaxRate
         public static List<Item> GetTaxRateList()
         {
-            if (HttpContext.Current.Session[SessionManager.TaxRateSessionName] == null)
-                readDB = true;
-            if (readDB)
+            string session = SessionManager.TaxRateSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
             {
                 try
                 {
@@ -301,9 +293,8 @@ namespace MZXRM.PSS.DataManager
         #region Trader
         public static List<Item> GetTraderList()
         {
-            if (HttpContext.Current.Session[SessionManager.TraderSessionName] == null)
-                readDB = true;
-            if (readDB)
+            string session = SessionManager.TraderSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
             {
                 try
                 {
@@ -341,6 +332,47 @@ namespace MZXRM.PSS.DataManager
             return Allresults;
 
         }
+        public static List<Item> GetTransporterList()
+        {
+            string session = SessionManager.TransporterSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
+            {
+                try
+                {
+                    using (var dbc = DataFactory.GetConnection())
+                    {
+
+                        IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllTransporter");
+
+                        if (command.Connection.State != ConnectionState.Open)
+                        {
+                            command.Connection.Open();
+                        }
+
+                        IDataReader datareader = command.ExecuteReader();
+
+                        List<Item> returnList = new List<Item>();
+                        while (datareader.Read())
+                        {
+                            Item item = new Item();
+                            item.Index = (int)datareader["id"];
+                            item.Value = datareader["name"].ToString();
+                            returnList.Add(item);
+                            item = null;
+                        }
+                        HttpContext.Current.Session.Add(SessionManager.TransporterSessionName, returnList);
+                        return returnList;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error! Get all trader from DataBase", ex);
+                }
+            }
+            List<Item> Allresults = HttpContext.Current.Session[SessionManager.TransporterSessionName] as List<Item>;
+            return Allresults;
+
+        }
         public static Item GetTrader(string id)
         {
             List<Item> list = GetTraderList();
@@ -352,19 +384,6 @@ namespace MZXRM.PSS.DataManager
             return GetDefaultRef();
         }
         #endregion
-
-        public static Item SaveOrigin(Item data)
-        {
-            // TODO
-            return GetDefaultRef();
-        }
-       
-        public static List<Reference> GetStoreList()
-        {
-            string fileName = _dataPath + "/Lists/Store.xml";
-            List<Reference> list = XMLUtil.ReadFromXmlFile<List<Reference>>(fileName);
-            return list;
-        }
 
         public static Item GetSupplier(string id)
         {
@@ -379,9 +398,43 @@ namespace MZXRM.PSS.DataManager
 
         public static List<Item> GetSupplierList()
         {
-            string fileName = _dataPath + "/Lists/Supplier.xml";
-            List<Item> list = XMLUtil.ReadFromXmlFile<List<Item>>(fileName);
-            return list;
+            string session = SessionManager.SupplierSessionName;
+            if (HttpContext.Current.Session[session] == null || ((List<Item>)HttpContext.Current.Session[session]).Count == 0)
+            {
+                try
+                {
+                    using (var dbc = DataFactory.GetConnection())
+                    {
+
+                        IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllSupplier");
+
+                        if (command.Connection.State != ConnectionState.Open)
+                        {
+                            command.Connection.Open();
+                        }
+
+                        IDataReader datareader = command.ExecuteReader();
+
+                        List<Item> returnList = new List<Item>();
+                        while (datareader.Read())
+                        {
+                            Item item = new Item();
+                            item.Index = (int)datareader["id"];
+                            item.Value = datareader["name"].ToString();
+                            returnList.Add(item);
+                            item = null;
+                        }
+                        HttpContext.Current.Session.Add(SessionManager.SupplierSessionName, returnList);
+                        return returnList;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error! Get all trader from DataBase", ex);
+                }
+            }
+            List<Item> Allresults = HttpContext.Current.Session[SessionManager.SupplierSessionName] as List<Item>;
+            return Allresults;
         }
         public static void SaveVesselList(List<Item> data)
         {
@@ -395,7 +448,7 @@ namespace MZXRM.PSS.DataManager
         }
         public static Reference GetDefaultReference()
         {
-            return new Reference() { Id = Guid.Empty, Name= "" };
+            return new Reference() { Id = Guid.Empty, Name = "" };
         }
 
         public static void SaveStoreList(List<Reference> data)

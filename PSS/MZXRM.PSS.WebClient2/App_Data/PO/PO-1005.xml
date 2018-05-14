@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PurchaseOrder xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Id>1fce2b6f-9ddb-4553-a8e9-92cbc354c772</Id>
+  <Status>Created</Status>
+  <CreatedOn>2018-01-05T15:37:28.1596691+05:00</CreatedOn>
+  <CreatedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </CreatedBy>
+  <ModifiedOn>2018-01-05T15:37:28.1596691+05:00</ModifiedOn>
+  <ModifiedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </ModifiedBy>
+  <CompletedOn>0001-01-01T00:00:00</CompletedOn>
+  <Lead>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </Lead>
+  <ApprovedDate>0001-01-01T00:00:00</ApprovedDate>
+  <PONumber>PO-1005</PONumber>
+  <PODate>2018-01-05T00:00:00</PODate>
+  <Origin>
+    <Index>3</Index>
+    <Value>Afghan</Value>
+  </Origin>
+  <Size>
+    <Index>6</Index>
+    <Value>00-50</Value>
+  </Size>
+  <Vessel>
+    <Index>3</Index>
+    <Value>IVS Pinehurst</Value>
+  </Vessel>
+  <TargetDays>45</TargetDays>
+  <Supplier>
+    <Index>1</Index>
+    <Value>Sbi  Hera</Value>
+  </Supplier>
+  <TermsOfPayment>check</TermsOfPayment>
+  <PODetailsList>
+    <PODetail>
+      <Id>4b145270-4a88-48b5-835d-1f1ac1ede107</Id>
+      <PONumber>PO-1005</PONumber>
+      <Customer>
+        <Id>b288c06d-1609-4de8-97b5-823d0f2db1d9</Id>
+        <Name>PSL</Name>
+      </Customer>
+      <Quantity>20000</Quantity>
+      <Rate>85</Rate>
+      <CostPerTon>200</CostPerTon>
+      <AllowedWaistage>0.05</AllowedWaistage>
+      <TargetDate>2018-01-31T00:00:00</TargetDate>
+      <Remarks />
+      <Received>0</Received>
+      <Remaining>20000</Remaining>
+      <DutyCleared>0</DutyCleared>
+      <DutyRemaining>0</DutyRemaining>
+      <Wastage>0.00</Wastage>
+      <GRNsList />
+      <DutyClearsList />
+    </PODetail>
+    <PODetail>
+      <Id>f6daa7ee-9079-4290-babf-770b21fc2e65</Id>
+      <PONumber>PO-1005</PONumber>
+      <Customer>
+        <Id>b288c06d-1609-4de9-97b5-823d0f2db1d9</Id>
+        <Name>Best Way</Name>
+      </Customer>
+      <Quantity>20000</Quantity>
+      <Rate>85</Rate>
+      <CostPerTon>200</CostPerTon>
+      <AllowedWaistage>0.05</AllowedWaistage>
+      <TargetDate>2018-01-31T00:00:00</TargetDate>
+      <Remarks />
+      <Received>0</Received>
+      <Remaining>20000</Remaining>
+      <DutyCleared>0</DutyCleared>
+      <DutyRemaining>0</DutyRemaining>
+      <Wastage>0.00</Wastage>
+      <GRNsList />
+      <DutyClearsList />
+    </PODetail>
+  </PODetailsList>
+  <TotalQuantity>40000</TotalQuantity>
+  <Available>0</Available>
+  <Received>0</Received>
+  <DutyCleared>0</DutyCleared>
+</PurchaseOrder>

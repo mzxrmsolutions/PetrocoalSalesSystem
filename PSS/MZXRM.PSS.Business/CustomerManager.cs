@@ -1,8 +1,10 @@
-﻿using MZXRM.PSS.Common;
+﻿using MZXRM.PSS.Business.DBMap;
+using MZXRM.PSS.Common;
 using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -15,16 +17,37 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                //if (_allCustomers == null || _allCustomers.Count == 0)
-                    _allCustomers = CustomerDataManager.ReadAllCustomers();
+                if (HttpContext.Current.Session[SessionManager.CustomerSession] != null)
+                    _allCustomers = HttpContext.Current.Session[SessionManager.CustomerSession] as List<Customer>;
+                if (_allCustomers == null || _allCustomers.Count == 0)
+                    _allCustomers = ReadAllCustomers();
                 return _allCustomers;
             }
-            set
-            {
-                _allCustomers = value;
-            }
         }
+        public static List<Customer> ReadAllCustomers(bool alldata = true)
+        {
+            DataTable DTcust = CustomerDataManager.GetAllCustomer();
+            if (!alldata)
+                return CustomerMap.MapCustomerDataTable(DTcust);
+            DataTable DTcuststock = CustomerDataManager.GetAllCustomerStock();
+            DataTable DTcustdestination = CustomerDataManager.GetAllCustomerDestination();
+            List<Customer> allcusts = CustomerMap.MapCustomerDataTable(DTcust, DTcuststock, DTcustdestination);
+            List<Customer> calculatedCusts = new List<Customer>();
 
+            foreach (Customer Cust in allcusts)
+            {
+                Customer cust = CustomerDataManager.CalculateCustomer(Cust);
+                calculatedCusts.Add(cust);
+            }
+            HttpContext.Current.Session.Add(SessionManager.CustomerSession, calculatedCusts);
+            _allCustomers = calculatedCusts;
+            return calculatedCusts;
+        }
+        private static void ResetCache()
+        {
+            HttpContext.Current.Session[SessionManager.CustomerSession] = null;
+
+        }
         public static Reference GetCustomerRef(string id)
         {
             foreach (Customer c in AllCustomers)
@@ -35,7 +58,11 @@ namespace MZXRM.PSS.Business
             ExceptionHandler.Error("Customer Not Found");
             return null;
         }
-        public static Reference GetCustomerPSL()
+        public static Reference GetDefaultRef()
+        {
+            return new Reference() { Id = Guid.Empty, Name = "" };
+        }
+        public static Reference GetCustomerRefPSL()
         {
             foreach (Customer c in AllCustomers)
             {
@@ -55,10 +82,23 @@ namespace MZXRM.PSS.Business
             ExceptionHandler.Error("Customer Not Found");
             return null;
         }
+        public static Item GetCustomerDestination(Guid custId, string destId)
+        {
+            foreach (Customer cust in AllCustomers)
+            {
+                if (cust.Id == custId)
+                {
+                    foreach (Item dest in cust.Destination)
+                        if (dest.Index.ToString() == destId)
+                            return dest;
+
+                }
+            }
+            return null;
+        }
 
         public static Customer ValidateCreateForm(Dictionary<string, string> values)
         {
-
             try
             {
                 foreach (KeyValuePair<string, string> keyValue in values)
@@ -102,7 +142,7 @@ namespace MZXRM.PSS.Business
 
         public static Guid CreateCustomer(Customer cust)
         {
-            Guid custId = CustomerDataManager.CreateCustomer(cust);
+            Guid custId = CustomerDataManager.CreateCustomer(CustomerMap.reMapCustData(cust));
             return custId;
         }
         public static Customer NewCustomer()
@@ -111,15 +151,15 @@ namespace MZXRM.PSS.Business
             c.Id = Guid.Empty;
             c.Status = CustStatus.Active;
             c.CreatedOn = c.ModifiedOn = DateTime.Now;
-            c.CreatedBy = c.ModifiedBy = c.Lead= new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
+            c.CreatedBy = c.ModifiedBy = c.Lead = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
             c.Stock = new List<CustomerStock>();
             c.TotalStock = 0;
             return c;
         }
 
-        public static void UpdateCustomer( Customer cust)
+        public static void UpdateCustomer(Customer cust)
         {
-            CustomerDataManager.UpdateCustomer(cust);
+            CustomerDataManager.UpdateCustomer(CustomerMap.reMapCustData(cust));
         }
     }
 }

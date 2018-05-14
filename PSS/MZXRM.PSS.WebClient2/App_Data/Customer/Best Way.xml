@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Customer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>b288c06d-1609-4de9-97b5-823d0f2db1d9</Id>
+  <Status>Active</Status>
+  <CreatedOn>0001-01-01T00:00:00</CreatedOn>
+  <CreatedBy>
+    <Id>088046e7-28cd-4acd-b82b-a1f3921abc2d</Id>
+    <Name>Zeeshan</Name>
+  </CreatedBy>
+  <ModifiedOn>0001-01-01T00:00:00</ModifiedOn>
+  <Name>Best Way</Name>
+  <ShortName>bestway</ShortName>
+  <NTN>abcd</NTN>
+  <STRN>asdfsdf</STRN>
+  <Address>house 1 street 2 islamabad</Address>
+  <InvoiceAddress>same</InvoiceAddress>
+  <Email>abc@abc.com</Email>
+  <Phone>123456789</Phone>
+  <ContactPerson>shahzad</ContactPerson>
+</Customer>

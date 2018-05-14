@@ -1,8 +1,10 @@
-﻿using MZXRM.PSS.Common;
+﻿using MZXRM.PSS.Business.DBMap;
+using MZXRM.PSS.Common;
 using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -15,13 +17,113 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _AllSOs = SaleDataManager.ReadAllSO();
+                if (HttpContext.Current.Session[SessionManager.SOSession] != null)
+                    _AllSOs = HttpContext.Current.Session[SessionManager.SOSession] as List<SaleOrder>;
+                if (_AllSOs == null || _AllSOs.Count == 0)
+                    _AllSOs = ReadAllSO();
                 return _AllSOs;
             }
-            set
+        }
+
+        #region " ReadAllSO Function "
+        public static List<SaleOrder> ReadAllSO()
+        {
+                DataTable DTso =SaleDataManager. GetAllSOs();
+                DataTable DTdo = SaleDataManager.GetAllDOs();
+                DataTable DTdc = SaleDataManager.GetAllDCs();
+
+                List<SaleOrder> allSOs = SOMap.MapSOData(DTso, DTdo, DTdc);
+            List<SaleOrder> calculatedSO = new List<SaleOrder>();
+                foreach (SaleOrder SO in allSOs)
+                {
+                    SaleOrder so = SaleDataManager.CalculateSO(SO);
+                    calculatedSO.Add(so);
+                }
+                HttpContext.Current.Session.Add(SessionManager.SOSession, calculatedSO);
+            _AllSOs = calculatedSO;
+                return _AllSOs;
+        }
+        #endregion
+        public static DeliveryOrder GetDOByDONumber(string donumber)
+        {
+            List<SaleOrder> soList = ReadAllSO();
+            try
             {
-                _AllSOs = value;
+                foreach (SaleOrder SO in soList)
+                {
+                    foreach (DeliveryOrder DO in SO.DOList)
+                    {
+                        if (DO.DONumber == donumber)
+                        {
+                            return DO;
+                        }
+                    }
+                }
             }
+
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all SO from DataBase", ex);
+            }
+            return null;
+        }
+        public static DeliveryOrder GetDOById(int id)
+        {
+            List<SaleOrder> soList = ReadAllSO();
+            try
+            {
+                foreach (SaleOrder SO in soList)
+                {
+                    foreach (DeliveryOrder DO in SO.DOList)
+                    {
+                        if (DO.Id == id)
+                        {
+                            return DO;
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all SO from DataBase", ex);
+            }
+            return null;
+        }
+        
+        public static SaleOrder GetSOByNumber(String SONumber)
+        {
+            foreach (SaleOrder so in ReadAllSO())
+            {
+                if (so.SONumber == SONumber)
+                    return so;
+            }
+            return null;
+        }
+
+        public static DeliveryChalan GetDCById(int id)
+        {
+            List<SaleOrder> soList = ReadAllSO();
+            try
+            {
+                foreach (SaleOrder SO in soList)
+                {
+                    foreach (DeliveryOrder DO in SO.DOList)
+                    {
+                        foreach (DeliveryChalan DC in DO.DCList)
+                            if (DC.Id == id)
+                            {
+                                return DC;
+                            }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all SO from DataBase", ex);
+            }
+            return null;
         }
 
         public static List<SaleOrder> ApprovedSOs
@@ -54,7 +156,7 @@ namespace MZXRM.PSS.Business
             {
                 DeliveryOrder DO = new DeliveryOrder();
 
-                SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SONumber"]));
+                SaleOrder SO = GetSOById(Convert.ToInt32(values["SONumber"]));
 
                 DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
@@ -68,7 +170,7 @@ namespace MZXRM.PSS.Business
 
                 DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
                 DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
-                DO.DeliveryDestination = CustomerDataManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
+                DO.DeliveryDestination = CustomerManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
                 //TODO: trader and transporter are different
                 DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                 DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
@@ -85,7 +187,7 @@ namespace MZXRM.PSS.Business
                 DO.CreatedOn = DateTime.Now;
                 DO.ModifiedOn = DateTime.Now;
                 //todo: temp work
-                SaleDataManager.SaveDO(DO);
+                SaleDataManager.SaveDO(SOMap.reMapDOData( DO));
                 return DO;
             }
             catch (Exception ex)
@@ -101,7 +203,7 @@ namespace MZXRM.PSS.Business
             {
                 DeliveryOrder DO = GetDOByDONumber(values["DONumber"]);
 
-                SaleOrder SO = SaleDataManager.GetSOById(Convert.ToInt32(values["SOID"]));
+                SaleOrder SO = GetSOById(Convert.ToInt32(values["SOID"]));
                 DO.Id = Convert.ToInt32(values["DOID"]);
                 
                 DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
@@ -117,7 +219,7 @@ namespace MZXRM.PSS.Business
 
                 DO.LiftingStartDate = DateTime.Parse(values["LiftingStartDate"].ToString());
                 DO.LiftingEndDate = DateTime.Parse(values["LiftingEndDate"].ToString());
-                DO.DeliveryDestination = CustomerDataManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
+                DO.DeliveryDestination = CustomerManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"].ToString());
                 //TODO: trader and transporter are different
                 DO.Transportor = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
                 DO.DumperRate = Decimal.Parse(values["DumperRate"].ToString());
@@ -134,7 +236,7 @@ namespace MZXRM.PSS.Business
 
                 DO.ModifiedOn = DateTime.Now;
                 //todo: temp work
-                SaleDataManager.UpdateDO(DO);
+                SaleDataManager.UpdateDO(SOMap.reMapDOData( DO));
                 return DO;
             }
             catch (Exception ex)
@@ -151,7 +253,7 @@ namespace MZXRM.PSS.Business
             {
                 DeliveryChalan DC = new DeliveryChalan();
 
-               DeliveryOrder DO = SaleDataManager.GetDOById(Convert.ToInt32(values["DONumber"].ToString()));
+               DeliveryOrder DO = SaleManager.GetDOById(Convert.ToInt32(values["DONumber"].ToString()));
 
                 DC.DeliveryOrder = new Item { Index = DO.Id, Value = DO.DONumber };
                 DC.Lead = UserManager.GetUserRef(values["Lead"].ToString());
@@ -176,7 +278,7 @@ namespace MZXRM.PSS.Business
 
                 DC.CreatedOn = DateTime.Now;
                 DC.ModifiedOn = DateTime.Now;
-                SaleDataManager.SaveDC(DC);
+                SaleDataManager.SaveDC(SOMap.reMapDCData( DC));
                 return DC;
             }
             catch (Exception ex)
@@ -193,7 +295,7 @@ namespace MZXRM.PSS.Business
             {
                 DeliveryChalan DC = GetDCByDCNumber(values["DCNumber"]);
 
-                DeliveryOrder DO = SaleDataManager.GetDOById(Convert.ToInt32(values["DOId"].ToString()));
+                DeliveryOrder DO = SaleManager.GetDOById(Convert.ToInt32(values["DOId"].ToString()));
 
                 DC.DeliveryOrder = new Item { Index = DO.Id, Value = DO.DONumber };
                 DC.Lead = UserManager.GetUserRef(values["Lead"].ToString());
@@ -217,7 +319,7 @@ namespace MZXRM.PSS.Business
                 DC.ModifiedBy = CurrentUser;
 
                 DC.ModifiedOn = DateTime.Now;
-                SaleDataManager.UpdateDC(DC);
+                SaleDataManager.UpdateDC(SOMap.reMapDCData( DC));
                 return DC;
             }
             catch (Exception ex)
@@ -268,7 +370,7 @@ namespace MZXRM.PSS.Business
                 SO.PartyPOImage = String.Empty;
                 SO.CompletedOn = SO.ApprovedDate = DateTime.MinValue;
                 SO.ApprovedBy = null;
-                SaleDataManager.UpdateSO(SO);
+                SaleDataManager.UpdateSO(SOMap.reMapSOData( SO));
                 return SO;
             }
             catch (Exception ex)
@@ -331,7 +433,7 @@ namespace MZXRM.PSS.Business
                 //SO.PartyPOImage = values["POScanImage"].ToString();
                 //todo: temp work
                 SO.PartyPOImage = String.Empty;
-                SaleDataManager.SaveSO(SO);
+                SaleDataManager.SaveSO(SOMap.reMapSOData( SO));
                 return SO;
             }
             catch (Exception ex)
@@ -348,17 +450,6 @@ namespace MZXRM.PSS.Business
             var SO = AllSOs.SingleOrDefault(x => x.SONumber == SONumber);
             return SO;
            //return AllSOs.Where(x => x.SONumber == SONumber) as SaleOrder;
-        }
-
-        public static DeliveryOrder GetDOByDONumber(string doNubmer)
-        {
-            foreach (SaleOrder so in AllSOs)
-            {
-                var DO = so.DOList.SingleOrDefault(x => x.DONumber == doNubmer);
-                if(DO!=null)
-                return DO;
-            }
-            return null;
         }
 
         //ADDED BY KASHIF ABBAS FOR UPDATING SO
@@ -414,7 +505,7 @@ namespace MZXRM.PSS.Business
             DO.ModifiedBy = CurrentUser;
             DO.ModifiedOn =  DateTime.Now;
             DO.ApprovedBy = CurrentUser;
-            SaleDataManager.UpdateDO(DO);
+            SaleDataManager.UpdateDO(SOMap.reMapDOData( DO));
         }
 
         public static void ApproveDO(DeliveryOrder DO)
@@ -424,7 +515,7 @@ namespace MZXRM.PSS.Business
             DO.ModifiedBy = DO.ApprovedBy = CurrentUser;
             DO.ModifiedOn = DO.ApprovedDate = DateTime.Now;
            
-            SaleDataManager.UpdateDO(DO);
+            SaleDataManager.UpdateDO(SOMap.reMapDOData(DO));
             
         }
 
@@ -435,7 +526,7 @@ namespace MZXRM.PSS.Business
             DO.ModifiedBy =  CurrentUser;
             DO.ModifiedOn = DateTime.Now;
 
-            SaleDataManager.UpdateDO(DO);
+            SaleDataManager.UpdateDO(SOMap.reMapDOData(DO));
         }
         public static void StartDOLoading(DeliveryOrder DO)
         {
@@ -444,7 +535,7 @@ namespace MZXRM.PSS.Business
             DO.ModifiedBy = CurrentUser;
             DO.ModifiedOn = DateTime.Now;
 
-            SaleDataManager.UpdateDO(DO);
+            SaleDataManager.UpdateDO(SOMap.reMapDOData(DO));
         }
 
         private static string GenerateNextSONumber()
@@ -494,7 +585,7 @@ namespace MZXRM.PSS.Business
             SO.ModifiedBy = SO.ApprovedBy = CurrentUser;
             SO.ModifiedOn = SO.ApprovedDate = DateTime.Now;
 
-            SaleDataManager.UpdateSO(SO);
+            SaleDataManager.UpdateSO(SOMap.reMapSOData( SO));
         }
 
         public static void CompleteSO(SaleOrder SO)
@@ -505,7 +596,7 @@ namespace MZXRM.PSS.Business
             SO.CompletedOn = DateTime.Now;
             SO.ModifiedOn = DateTime.Now;
 
-            SaleDataManager.UpdateSO(SO);
+            SaleDataManager.UpdateSO(SOMap.reMapSOData(SO));
         }
         public static void CancelSO(SaleOrder SO)
         {
@@ -514,7 +605,7 @@ namespace MZXRM.PSS.Business
             SO.ModifiedBy = CurrentUser;
             SO.ModifiedOn = DateTime.Now;
 
-            SaleDataManager.UpdateSO(SO);
+            SaleDataManager.UpdateSO(SOMap.reMapSOData(SO));
         }
     }
 }

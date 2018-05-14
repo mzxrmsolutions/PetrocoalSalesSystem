@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<User xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>c80ea431-a441-457e-97a7-85759740b2d0</Id>
+  <Status>Active</Status>
+  <CreatedOn>2017-12-30T00:09:49.3016251+05:00</CreatedOn>
+  <CreatedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </CreatedBy>
+  <ModifiedOn>2017-12-30T00:10:01.9464921+05:00</ModifiedOn>
+  <ModifiedBy>
+    <Id>ce654217-47b8-4b62-b96d-6d41af9de235</Id>
+    <Name>Zeeshan Shafqat</Name>
+  </ModifiedBy>
+  <Name>Faisal Nawaz</Name>
+  <Login>admin</Login>
+  <Password>admin</Password>
+  <Role>
+    <Id>fc0549de-78bb-40f4-8332-84c748720360</Id>
+    <Name>Admin</Name>
+  </Role>
+  <Designation>Manager</Designation>
+  <ProfileImage>Faisal Nawaz.png</ProfileImage>
+</User>

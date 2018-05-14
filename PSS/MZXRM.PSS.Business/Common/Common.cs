@@ -15,13 +15,11 @@ namespace MZXRM.PSS.Business
         private static List<Item> _lSupplier;
         private static List<Item> _lTaxRate;
         private static List<Item> _lTrader;
-        private static List<Reference> _lStore;
+        private static List<Item> _lTransporter;
         private static List<Reference> _lSaleStation;
 
         public static void ReloadData()
         {
-            PurchaseDataManager.ResetCache();
-            
             CurrentUser = null;
         }
 
@@ -34,10 +32,6 @@ namespace MZXRM.PSS.Business
                     _lOrigin = CommonDataManager.GetOriginList();
                 return _lOrigin;
             }
-            set
-            {
-                _lOrigin = value;
-            }
         }
         public static List<Item> TaxRate
         {
@@ -46,10 +40,6 @@ namespace MZXRM.PSS.Business
                 if (_lTaxRate == null || _lTaxRate.Count == 0)
                     _lTaxRate = CommonDataManager.GetTaxRateList();
                 return _lTaxRate;
-            }
-            set
-            {
-                _lTaxRate = value;
             }
         }
         public static List<Item> Trader
@@ -60,9 +50,14 @@ namespace MZXRM.PSS.Business
                     _lTrader = CommonDataManager.GetTraderList();
                 return _lTrader;
             }
-            set
+        }
+        public static List<Item> Transporter
+        {
+            get
             {
-                _lTrader = value;
+                if (_lTransporter == null || _lTransporter.Count == 0)
+                    _lTransporter = CommonDataManager.GetTransporterList();
+                return _lTransporter;
             }
         }
         public static List<Item> Size
@@ -73,10 +68,6 @@ namespace MZXRM.PSS.Business
                     _lSize = CommonDataManager.GetSizeList();
                 return _lSize;
             }
-            set
-            {
-                _lSize = value;
-            }
         }
         public static List<Item> Vessel
         {
@@ -85,11 +76,6 @@ namespace MZXRM.PSS.Business
                 if (_lVessel == null || _lVessel.Count == 0)
                     _lVessel = CommonDataManager.GetVesselList();
                 return _lVessel;
-            }
-            set
-            {
-                _lVessel = value;
-                CommonDataManager.SaveVesselList(_lVessel);
             }
         }
 
@@ -127,7 +113,7 @@ namespace MZXRM.PSS.Business
                 _lSupplier = value;
             }
         }
-        public static List<Reference> Store
+       /* public static List<Reference> Store
         {
             get
             {
@@ -140,7 +126,7 @@ namespace MZXRM.PSS.Business
                 _lStore = value;
                 CommonDataManager.SaveStoreList(_lStore);
             }
-        }
+        }*/
 
         public static Item GetSize(string id)
         {
@@ -171,13 +157,6 @@ namespace MZXRM.PSS.Business
                 if (origin.Index.ToString() == id)
                     return origin;
             return new Item() { Index = 0, Value = "" };
-        }
-        public static Reference GetStore(string id)
-        {
-            foreach (Reference origin in Store)
-                if (origin.Id == new Guid(id))
-                    return origin;
-            return new Reference() { Id = Guid.Empty, Name = "" };
         }
         //public static List<Item> Origin;
         //public static List<Item> Origin;

@@ -14,7 +14,7 @@ namespace PatrocoalSalesSystem.Controllers
         // GET: Login
         public ActionResult Index()
         {
-            Session.Clear();
+            
             return View();
         }
         #region " HttpPost method for Authenticating User "

@@ -13,13 +13,17 @@ namespace MZXRM.PSS.Common
         public static string SizeSessionName = "AllSize";
         public static string VesselSessionName = "AllVessel";
         public static string TraderSessionName = "AllTrader";
+        public static string TransporterSessionName = "AllTransporter";
         public static string TaxRateSessionName = "AllTaxRate";
-       public static string POSession = "AllPurchaseOrders";
+        public static string POSession = "AllPurchaseOrders";
+        public static string UserSession = "AllUsers";
         public static string SOSession = "AllSaleOrders";
         public static string CustomerSession = "AllCustomers";
         public static string StoreSession = "AllStores";
         public static string StoreIOSession = "AllStoreIOs";
         public static string SaleStationSession = "AllSaleStation";
+        public static string SupplierSessionName = "AllSupplier";
+
         public static void ClearSession()
         {
             HttpContext.Current.Session.Clear();

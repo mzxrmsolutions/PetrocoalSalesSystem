@@ -1,10 +1,11 @@
-﻿using MZXRM.PSS.Data;
+﻿using MZXRM.PSS.Business.DBMap;
+using MZXRM.PSS.Common;
+using MZXRM.PSS.Data;
 using MZXRM.PSS.DataManager;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using System.Web;
 
 namespace MZXRM.PSS.Business
 {
@@ -15,12 +16,11 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _allStores = StoreDataManager.ReadAllStore();
+                if (HttpContext.Current.Session[SessionManager.StoreSession] != null)
+                    _allStores = HttpContext.Current.Session[SessionManager.StoreSession] as List<Store>;
+                if (_allStores == null || _allStores.Count == 0)
+                    _allStores = ReadAllStore();
                 return _allStores;
-            }
-            set
-            {
-                _allStores = value;
             }
         }
         private static List<StoreTransfer> _allStoreInOuts;
@@ -28,14 +28,59 @@ namespace MZXRM.PSS.Business
         {
             get
             {
-                _allStoreInOuts = StoreDataManager.ReadAllStoreIO();
+                if (HttpContext.Current.Session[SessionManager.StoreIOSession] != null)
+                    _allStoreInOuts = HttpContext.Current.Session[SessionManager.StoreIOSession] as List<StoreTransfer>;
+                if (_allStoreInOuts == null || _allStoreInOuts.Count == 0)
+                    _allStoreInOuts = ReadAllStoreIO();
                 return _allStoreInOuts;
             }
-            set
-            {
-                _allStoreInOuts = value;
-            }
         }
+        #region Business Need
+        public static List<Store> ReadAllStore()
+        {
+            DataTable DTstore =StoreDataManager. GetAllStore();
+            DataTable DTcustStock = StoreDataManager.GetAllCustomerStock();
+            DataTable DTstockMovement = StoreDataManager.GetAllStockMovements();
+            List<Store> allStores = StoreMap.MapStoreData(DTstore, DTcustStock, DTstockMovement);
+            List<Store> calculatedStores = new List<Store>();
+            foreach (Store store in allStores)
+            {
+                Store CalculatedStore = CalculateStoreQuantity(store);
+                calculatedStores.Add(CalculatedStore);
+            }
+            HttpContext.Current.Session.Add(SessionManager.StoreSession, calculatedStores);
+            _allStores = calculatedStores;
+            return calculatedStores;
+        }
+        public static Store CalculateStoreQuantity(Store Store)
+        {
+            decimal quantity = 0;
+            foreach (CustomerStock custStock in Store.Stock)
+            {
+                quantity += custStock.Quantity;
+            }
+            Store.TotalStock = quantity;
+            return Store;
+        }
+        public static void ResetCache()
+        {
+            HttpContext.Current.Session.Remove(SessionManager.StoreSession);
+            HttpContext.Current.Session.Remove(SessionManager.StoreIOSession);
+        }
+        public static List<StoreTransfer> ReadAllStoreIO()
+        {
+                DataTable DTstoreIO =StoreDataManager. GetAllStoreInOut();
+                List<StoreTransfer> allStoreIOs = StoreMap.MapStoreTransferData(DTstoreIO);
+                //foreach (StoreInOut storeIO in allStoreIOs)
+                //{
+                //    StoreInOut CalculatedStore = CalculateStoreQuantity(storeIO);
+                //    AllStores.Add(CalculatedStore);
+                //}
+                HttpContext.Current.Session.Add(SessionManager.StoreIOSession, allStoreIOs);
+                return allStoreIOs;
+        }
+        #endregion
+        
 
         public static Store GetStore(Guid storeId)
         {
@@ -105,13 +150,13 @@ namespace MZXRM.PSS.Business
         {
             StoreTransfer ST = NewStoreTransfer();
             ST.STDate = values.ContainsKey("Date") ? DateTime.Parse(values["Date"]) : DateTime.Now;
-            ST.Customer = values.ContainsKey("Customer") ? CustomerDataManager.GetCustRef(values["Customer"]) : CustomerDataManager.GetDefaultRef();
+            ST.Customer = values.ContainsKey("Customer") ? CustomerManager.GetCustomerRef(values["Customer"]) : CustomerManager.GetDefaultRef();
             ST.Origin = values.ContainsKey("Origin") ? CommonDataManager.GetOrigin(values["Origin"]) : CommonDataManager.GetDefaultRef();
             ST.Size = values.ContainsKey("Size") ? CommonDataManager.GetOrigin(values["Size"]) : CommonDataManager.GetDefaultRef();
             ST.Vessel = values.ContainsKey("Vessel") ? CommonDataManager.GetOrigin(values["Vessel"]) : CommonDataManager.GetDefaultRef();
             ST.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
-            ST.FromStoreId = values.ContainsKey("FromStore") ? StoreDataManager.GetStoreRef(values["FromStore"]) : StoreDataManager.GetDefaultRef();
-            ST.ToStoreId = values.ContainsKey("ToStore") ? StoreDataManager.GetStoreRef(values["ToStore"]) : StoreDataManager.GetDefaultRef();
+            ST.FromStoreId = values.ContainsKey("FromStore") ? StoreManager.GetStoreRef(values["FromStore"]) : StoreManager.GetDefaultRef();
+            ST.ToStoreId = values.ContainsKey("ToStore") ? StoreManager.GetStoreRef(values["ToStore"]) : StoreManager.GetDefaultRef();
             ST.VehicleNo = values.ContainsKey("VehicleNo") ? values["VehicleNo"] : "";
             ST.BiltyNo = values.ContainsKey("BiltyNo") ? values["BiltyNo"] : "";
             ST.BiltyDate = values.ContainsKey("BiltyDate") ? DateTime.Parse(values["BiltyDate"]) : DateTime.MinValue;
@@ -122,8 +167,8 @@ namespace MZXRM.PSS.Business
             ST.StoreInQuantity = 0;
             ST.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
 
-            StoreDataManager.CreateStoreTransfer(ST);
-            StoreDataManager.ResetCache();
+            StoreDataManager.CreateStoreTransfer(StoreMap.reMapStoreTransferData( ST));
+            ResetCache();
             return ST;
         }
 
@@ -147,13 +192,13 @@ namespace MZXRM.PSS.Business
             StoreTransfer ST = GetStoreTransfer(stNumber);
             ST.Id = string.IsNullOrEmpty(stId) ? 0 : int.Parse(stId);
             ST.STDate = values.ContainsKey("Date") ? DateTime.Parse(values["Date"]) : DateTime.Now;
-            ST.Customer = values.ContainsKey("Customer") ? CustomerDataManager.GetCustRef(values["Customer"]) : CustomerDataManager.GetDefaultRef();
+            ST.Customer = values.ContainsKey("Customer") ? CustomerManager.GetCustomerRef(values["Customer"]) : CustomerManager.GetDefaultRef();
             ST.Origin = values.ContainsKey("Origin") ? CommonDataManager.GetOrigin(values["Origin"]) : CommonDataManager.GetDefaultRef();
             ST.Size = values.ContainsKey("Size") ? CommonDataManager.GetOrigin(values["Size"]) : CommonDataManager.GetDefaultRef();
             ST.Vessel = values.ContainsKey("Vessel") ? CommonDataManager.GetOrigin(values["Vessel"]) : CommonDataManager.GetDefaultRef();
             ST.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
-            ST.FromStoreId = values.ContainsKey("FromStore") ? StoreDataManager.GetStoreRef(values["FromStore"]) : StoreDataManager.GetDefaultRef();
-            ST.ToStoreId = values.ContainsKey("ToStore") ? StoreDataManager.GetStoreRef(values["ToStore"]) : StoreDataManager.GetDefaultRef();
+            ST.FromStoreId = values.ContainsKey("FromStore") ? GetStoreRef(values["FromStore"]) : GetDefaultRef();
+            ST.ToStoreId = values.ContainsKey("ToStore") ? GetStoreRef(values["ToStore"]) : GetDefaultRef();
             ST.VehicleNo = values.ContainsKey("VehicleNo") ? values["VehicleNo"] : "";
             ST.BiltyNo = values.ContainsKey("BiltyNo") ? values["BiltyNo"] : "";
             ST.BiltyDate = values.ContainsKey("BiltyDate") ? DateTime.Parse(values["BiltyDate"]) : DateTime.MinValue;
@@ -164,9 +209,28 @@ namespace MZXRM.PSS.Business
             ST.StoreInQuantity = 0;
             ST.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
 
-            StoreDataManager.UpdateStoreTransfer(ST);
-            StoreDataManager.ResetCache();
+            StoreDataManager.UpdateStoreTransfer(StoreMap.reMapStoreTransferData( ST));
+            ResetCache();
             return ST;
         }
+
+       
+        #region Get Reference
+        public static Reference GetStoreRef(string id)
+        {
+            Guid storeId = !string.IsNullOrEmpty(id) ? new Guid(id) : Guid.Empty;
+            Store store = GetStore(storeId);
+            if (store != null)
+                return new Reference() { Id = store.Id, Name = store.Name };
+            return GetDefaultRef();
+        }
+
+        public static Reference GetDefaultRef()
+        {
+            return new Reference() { Id = Guid.Empty, Name = "" };
+        }
+
+        
+        #endregion
     }
 }

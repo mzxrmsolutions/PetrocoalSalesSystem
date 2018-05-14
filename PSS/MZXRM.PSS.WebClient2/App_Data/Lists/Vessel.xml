@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Item>
+    <Index>1</Index>
+    <Value>Sbi  Hera</Value>
+  </Item>
+  <Item>
+    <Index>2</Index>
+    <Value>MARE TRACER</Value>
+  </Item>
+  <Item>
+    <Index>3</Index>
+    <Value>IVS Pinehurst</Value>
+  </Item>
+  <Item>
+    <Index>4</Index>
+    <Value>ARIETTA</Value>
+  </Item>
+  <Item>
+    <Index>5</Index>
+    <Value>Greener</Value>
+  </Item>
+  <Item>
+    <Index>6</Index>
+    <Value>Achilleas S</Value>
+  </Item>
+  <Item>
+    <Index>7</Index>
+    <Value>Alam Manis</Value>
+  </Item>
+  <Item>
+    <Index>8</Index>
+    <Value>Calimero</Value>
+  </Item>
+  <Item>
+    <Index>9</Index>
+    <Value>Stove Caledonia</Value>
+  </Item>
+  <Item>
+    <Index>10</Index>
+    <Value>Sinar Kutai</Value>
+  </Item>
+</ArrayOfItem>

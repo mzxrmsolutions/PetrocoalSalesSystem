@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Item>
+    <Index>1</Index>
+    <Value>19%</Value>
+  </Item>
+  <Item>
+    <Index>2</Index>
+    <Value>17%</Value>
+  </Item>
+</ArrayOfItem>
