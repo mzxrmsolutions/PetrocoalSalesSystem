@@ -18,11 +18,6 @@ namespace MZXRM.PSS.DataManager
     {
         static string _dataPath = ConfigurationManager.AppSettings["DataPath"];
         #region Business need
-        public static void ResetCache()
-        {
-            //CustomerDataManager.ResetCache();
-            //StoreDataManager.ResetCache();
-        }
         #endregion
 
         #region DB Update functions
@@ -146,11 +141,6 @@ namespace MZXRM.PSS.DataManager
 
                 object obj = command.ExecuteScalar(); //execute query, no result
                 Guid retId = new Guid(obj.ToString());
-
-                //TODO
-               // DCL.Id = retId;
-
-                //StoreDataManager.CreateStockMovement(PO, DCL); //TODO
 
                 return retId;
             }

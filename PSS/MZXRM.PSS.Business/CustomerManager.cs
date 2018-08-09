@@ -43,8 +43,9 @@ namespace MZXRM.PSS.Business
             _allCustomers = calculatedCusts;
             return calculatedCusts;
         }
-        private static void ResetCache()
+        public static void ResetCache()
         {
+            _allCustomers = null;
             HttpContext.Current.Session[SessionManager.CustomerSession] = null;
 
         }

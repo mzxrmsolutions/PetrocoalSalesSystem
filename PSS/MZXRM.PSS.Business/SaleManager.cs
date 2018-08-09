@@ -43,6 +43,12 @@ namespace MZXRM.PSS.Business
             _AllSOs = calculatedSO;
                 return _AllSOs;
         }
+
+        public static void ResetCache()
+        {
+            _AllSOs = null;
+            HttpContext.Current.Session[SessionManager.SOSession] = null;
+        }
         #endregion
         public static DeliveryOrder GetDOByDONumber(string donumber)
         {

@@ -45,6 +45,7 @@ namespace PatrocoalSalesSystem.Controllers
         }
         public ActionResult CustomerDetail(string id)
         {
+
             try
             {
                 Common.MyUrl = Request.RawUrl;

@@ -35,7 +35,7 @@
                 <div class="col-lg-6">
                     <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
                     <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
-                    
+
                 </div>
                 <div class="col-lg-6">
                     @if (ThisPO != null)
@@ -221,9 +221,9 @@
                                     <label>Store</label>
                                     <select class="form-control select2" name="Store">
                                         <option value="0">--- Store ---</option>
-                                        @foreach (Reference item in Common.Store)
+                                        @foreach (Store item in StoreManager.AllStore)
                                         {
-                                            <option value="@item.Id">@item.Name</option>
+                                            <option value="@item.Id" @(item.Id.ToString() == Request.Form["Store"] ? " selected " : "")>@item.Name</option>
                                         }
                                     </select>
                                 </div>
@@ -231,25 +231,28 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label>Recieved Quantity (Ton)</label>
-                                    <input type="text" class="form-control" name="Quantity">
+                                    <input type="text" class="form-control" name="Quantity" value='@(Request.Form["Quantity"]!=null?Request.Form["Quantity"].ToString():"")'>
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label>Invoice No.</label>
-                                    <input type="text" class="form-control" name="Invoice">
+                                    <input type="text" class="form-control" name="Invoice" value='@(Request.Form["Invoice"]!=null?Request.Form["Invoice"].ToString():"")'>
                                 </div>
                             </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label>Adj. Price</label>
-                                    <input type="text" class="form-control" name="Price">
+                                    <input type="text" class="form-control" name="Price" value='@(Request.Form["Price"]!=null?Request.Form["Price"].ToString():"")'>
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
                                 <div class="form-group">
                                     <label>Remarks</label>
-                                    <input type="text" class="form-control" name="Remarks">
+                                    <input type="text" class="form-control" name="Remarks" value='@(Request.Form["Remarks"]!=null?Request.Form["Remarks"].ToString():"")'>
                                 </div>
                             </div>
                         </div>

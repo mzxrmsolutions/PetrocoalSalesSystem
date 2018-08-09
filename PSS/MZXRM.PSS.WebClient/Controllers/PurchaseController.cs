@@ -314,21 +314,21 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = PurchaseManager.ValidateCreateGRNForm(values);
-                if (formErrors == "")
+                GRN grn = PurchaseManager.ValidateCreateGRNForm(values);
+                if (grn != null)
                 {
-                    GRN GRN = PurchaseManager.CreateGRN(values);
-                    if (GRN != null)
-                        Response.Redirect("/Purchase/OrderDetail/" + GRN.PO.Name);
+                    bool success = PurchaseManager.CreateGRN(grn);
+                    if (success)
+                        Response.Redirect("/Purchase/OrderDetail/" + grn.PO.Name);
+                    else
+                        ExceptionHandler.Warning("Error creating GRN");
                 }
-                else
-                    ExceptionHandler.Warning("Validation! " + formErrors);
             }
             catch (Exception ex)
             {
                 ExceptionHandler.Error("Error! " + ex.Message, ex);
             }
-            return View(form);
+            return View(Request.Form);
         }
         #endregion
 
@@ -363,15 +363,15 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 values.Add(Key, form[Key]);
             }
-            string formErrors = PurchaseManager.ValidateCreateGRNForm(values);
-            if (formErrors == "")
+            GRN grn = PurchaseManager.ValidateCreateGRNForm(values);
+            if (grn != null)
             {
-                GRN GRN = PurchaseManager.UpdateGRN(values);
-                if (GRN != null)
-                    Response.Redirect("/Purchase/OrderDetail/" + GRN.PO.Name);
+                bool success = PurchaseManager.UpdateGRN(grn);
+                if (success)
+                    Response.Redirect("/Purchase/OrderDetail/" + grn.PO.Name);
             }
-            else
-                ExceptionHandler.Warning("Validation! " + formErrors);
+            //else
+            //    ExceptionHandler.Warning("Validation! " + formErrors);
             return RedirectToAction("Index");
         }
         #endregion
@@ -400,30 +400,38 @@ namespace PatrocoalSalesSystem.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult CreateDCL(FormCollection form)
         {
-            if (!Common.isAuthorize())
+            try
             {
-                ExceptionHandler.Error("Session Timeout");
-                return View();
-            }
-            if (form["btn"] != null && form["btn"] == "Reset")
-                return View();
+                if (!Common.isAuthorize())
+                {
+                    ExceptionHandler.Error("Session Timeout");
+                    return View();
+                }
+                if (form["btn"] != null && form["btn"] == "Reset")
+                    return View();
 
-            Dictionary<string, string> values = new Dictionary<string, string>();
-            foreach (string Key in form.Keys)
-            {
-                values.Add(Key, form[Key]);
-            }
-            string formErrors = PurchaseManager.ValidateCreateDutyClearForm(values);
-            if (formErrors == "")
-            {
-                DutyClear DCL = PurchaseManager.CreateDutyClear(values);
-                if (DCL != null)
-                    Response.Redirect("/Purchase/OrderDetail/" + DCL.PO.Name);
-            }
-            else
-                ExceptionHandler.Warning("Validation! " + formErrors);
+                Dictionary<string, string> values = new Dictionary<string, string>();
+                foreach (string Key in form.Keys)
+                {
+                    values.Add(Key, form[Key]);
+                }
+                DutyClear dcl = PurchaseManager.ValidateCreateDutyClearForm(values);
+                if (dcl != null)
+                {
+                    bool success = PurchaseManager.CreateDutyClear(dcl);
+                    if (success)
+                        Response.Redirect("/Purchase/OrderDetail/" + dcl.PO.Name);
+                    else
+                        ExceptionHandler.Warning("Error creating Duty Clear");
+                }
 
-            return View(form);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Error! " + ex.Message, ex);
+            }
+            return View(Request.Form);
+
         }
 
         #endregion
@@ -459,15 +467,16 @@ namespace PatrocoalSalesSystem.Controllers
             {
                 values.Add(Key, form[Key]);
             }
-            string formErrors = PurchaseManager.ValidateCreateDutyClearForm(values);
-            if (formErrors == "")
+            DutyClear dcl = PurchaseManager.ValidateCreateDutyClearForm(values);
+            if (dcl != null)
             {
-                DutyClear DCL = PurchaseManager.UpdateDCL(values);
-                if (DCL != null)
-                    Response.Redirect("/Purchase/OrderDetail/" + DCL.PO.Name);
+                bool success = PurchaseManager.UpdateDCL(dcl);
+                if (success)
+                    Response.Redirect("/Purchase/OrderDetail/" + dcl.PO.Name);
+                else
+                    ExceptionHandler.Warning("Error Updating Dcl");
             }
-            else
-                ExceptionHandler.Warning("Validation! " + formErrors);
+
             return RedirectToAction("Index");
         }
         #endregion

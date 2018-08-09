@@ -64,7 +64,7 @@ namespace MZXRM.PSS.Business
         }
         public static void ResetCache()
         {
-            HttpContext.Current.Session.Remove(SessionManager.StoreSession);
+            _allStores = null;
             HttpContext.Current.Session.Remove(SessionManager.StoreIOSession);
         }
         public static List<StoreTransfer> ReadAllStoreIO()

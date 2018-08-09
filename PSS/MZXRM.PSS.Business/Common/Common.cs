@@ -18,9 +18,41 @@ namespace MZXRM.PSS.Business
         private static List<Item> _lTransporter;
         private static List<Reference> _lSaleStation;
 
+        public static void ReloadMasterData()
+        {
+            _lOrigin = null;
+            _lSize = null;
+            _lVessel = null;
+            _lSupplier = null;
+            _lTaxRate = null;
+            _lTrader = null;
+            _lTransporter = null;
+            _lSaleStation = null;
+            List<Item> Origin = Business.Common.Origin;
+            List<Item> Size = Business.Common.Size;
+            List<Item> Vessel = Business.Common.Vessel;
+            List<Item> Supplier = Business.Common.Supplier;
+            List<Item> TaxRate = Business.Common.TaxRate;
+            List<Item> Trader = Business.Common.Trader;
+            List<Item> Transporter = Business.Common.Transporter;
+            List<Reference> AllSaleStations = Business.Common.AllSaleStations;
+            ReloadData();
+            
+        }
         public static void ReloadData()
         {
             CurrentUser = null;
+            PurchaseManager.ResetCache();
+            SaleManager.ResetCache();
+            CustomerManager.ResetCache();
+            StoreManager.ResetCache();
+
+
+            List<Customer> Customer = CustomerManager.ReadAllCustomers(false);
+            List<Store> Store = StoreManager.AllStore;
+            List<PurchaseOrder> PO = PurchaseManager.AllPOs;
+            List<SaleOrder> SO = SaleManager.AllSOs;
+            Customer = CustomerManager.AllCustomers;
         }
 
         public static List<Role> AllRole;

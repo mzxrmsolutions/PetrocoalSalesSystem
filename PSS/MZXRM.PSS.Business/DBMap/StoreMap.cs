@@ -148,7 +148,7 @@ namespace MZXRM.PSS.Business.DBMap
             }
             keyValues.Add("@Type", StMovType.DCSuccess);
             keyValues.Add("@Quantity", DCL.Quantity);
-            keyValues.Add("@InOut", false);
+            keyValues.Add("@InOut", true);
             keyValues.Add("@Reference", DCL.Id);
             keyValues.Add("@Date", DCL.DCLDate);
             keyValues.Add("@Vessel", PO.Vessel.Index);

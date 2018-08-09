@@ -45,8 +45,9 @@ namespace MZXRM.PSS.Business
             _AllPOs = calculatedPOs;
             return calculatedPOs;
         }
-        private static void ResetCache()
+        public static void ResetCache()
         {
+            _AllPOs = null;
             HttpContext.Current.Session[SessionManager.POSession] = null;
         }
         public static bool SavePO(PurchaseOrder PO)
@@ -245,59 +246,86 @@ namespace MZXRM.PSS.Business
             }
             return null;
         }
-        public static string ValidateCreateGRNForm(Dictionary<string, string> values)
+        public static GRN ValidateCreateGRNForm(Dictionary<string, string> values)
         {
             try
             {
-                foreach (KeyValuePair<string, string> keyValue in values)
-                {
-                    string key = keyValue.Key;
-                    string value = keyValue.Value;
-                    if (key == "PO" && value == "0") throw new Exception("PO is required");
-                    if (key == "Customer" && value == "0") throw new Exception("Customer is required");
-                    if (key == "GRNDate" && string.IsNullOrEmpty(value)) throw new Exception("GRN Date is required");
-                    if (key == "Store" && value == "0") throw new Exception("Store is required");
-                    if (key == "Quantity" && value == "0") throw new Exception("Quantity is required");
-                    //if (key == "Invoice" && string.IsNullOrEmpty(value)) throw new Exception("Supplier is required");
-                    //if (key == "Price" && string.IsNullOrEmpty(value)) throw new Exception("Lead is required");
-                    // if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
-                    //if (key == "Remarks" && string.IsNullOrEmpty(value)) throw new Exception("Buffer Min is required");
+                string ErrorMessage = string.Empty;
 
-                }
+                if (values["PO"] == "0") ErrorMessage += "PO, ";
+                if (values["Customer"] == "0") ErrorMessage += "Customer, ";
+                if (string.IsNullOrEmpty(values["GRNDate"])) ErrorMessage += "GRN Date, ";
+                if (values["Store"] == "0") ErrorMessage += "Store, ";
+                if (values["Quantity"] == "0") ErrorMessage += "Quantity, ";
+
                 PurchaseOrder po = GetPO(values["PO"]);
-                return "";
+                if (po != null && po.PODetailsList.Count > 0)
+                {
+                    foreach (PODetail pod in po.PODetailsList)
+                    {
+                        if (pod.Customer.Id.ToString() == values["Customer"])
+                        {
+                            GRN Grn = NewGRN();
+                            Grn.PO = new Reference() { Id = po.Id, Name = po.PONumber };
+                            Grn.PODetail = new Reference() { Id = pod.Id, Name = po.PONumber };
+                            Grn.GRNDate = values.ContainsKey("GRNDate") ? DateTime.Parse(values["GRNDate"]) : DateTime.Now;
+                            if (values.ContainsKey("Store"))
+                                Grn.Store = StoreManager.GetStoreRef(values["Store"].ToString());
+                            Grn.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
+                            Grn.InvoiceNo = values.ContainsKey("Invoice") ? values["Invoice"] : "";
+                            Grn.AdjPrice = values.ContainsKey("Price") ? decimal.Parse(values["Price"]) : 0;
+                            Grn.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
+
+                            return Grn;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                ExceptionHandler.Error(ex.Message);
             }
+            return null;
         }
-        public static string ValidateCreateDutyClearForm(Dictionary<string, string> values)
+        public static DutyClear ValidateCreateDutyClearForm(Dictionary<string, string> values)
         {
             try
             {
-                foreach (KeyValuePair<string, string> keyValue in values)
-                {
-                    string key = keyValue.Key;
-                    string value = keyValue.Value;
-                    if (key == "PO" && value == "0") throw new Exception("PO is required");
-                    if (key == "Customer" && value == "0") throw new Exception("Customer is required");
-                    if (key == "GRNDate" && string.IsNullOrEmpty(value)) throw new Exception("GRN Date is required");
-                    if (key == "Store" && value == "0") throw new Exception("Store is required");
-                    if (key == "Quantity" && value == "0") throw new Exception("Quantity is required");
-                    //if (key == "Invoice" && string.IsNullOrEmpty(value)) throw new Exception("Supplier is required");
-                    //if (key == "Price" && string.IsNullOrEmpty(value)) throw new Exception("Lead is required");
-                    // if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
-                    //if (key == "Remarks" && string.IsNullOrEmpty(value)) throw new Exception("Buffer Min is required");
+                string ErrorMessage = string.Empty;
 
+                if (values["PO"] == "0") ErrorMessage += "PO, ";
+                if (values["Customer"] == "0") ErrorMessage += "Customer, ";
+                if (string.IsNullOrEmpty(values["DCLDate"])) ErrorMessage += "DCL Date, ";
+                if (values["Store"] == "0") ErrorMessage += "Store, ";
+                if (values["Quantity"] == "0") ErrorMessage += "Quantity, ";
+
+                PurchaseOrder po = GetPO(values["PO"]);
+                if (po != null && po.PODetailsList.Count > 0)
+                {
+                    foreach (PODetail pod in po.PODetailsList)
+                    {
+                        if (pod.Customer.Id.ToString() == values["Customer"])
+                        {
+                            DutyClear Dcl = NewDCL();
+                            Dcl.PO = new Reference() { Id = po.Id, Name = po.PONumber };
+                            Dcl.PODetail = new Reference() { Id = pod.Id, Name = po.PONumber };
+                            Dcl.DCLDate = values.ContainsKey("DCLDate") ? DateTime.Parse(values["DCLDate"]) : DateTime.Now;
+                            if (values.ContainsKey("Store"))
+                                Dcl.Store = StoreManager.GetStoreRef(values["Store"].ToString());
+                            Dcl.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
+                            Dcl.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
+
+                            return Dcl;
+                        }
+                    }
                 }
-                //PurchaseOrder po = GetPO(values["PO"]);
-                return "";
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                ExceptionHandler.Error(ex.Message);
             }
+            return null;
+
         }
         #endregion
 
@@ -324,6 +352,7 @@ namespace MZXRM.PSS.Business
                         }
                     }
                 }
+                ResetCache();
                 return true;
 
             }
@@ -333,53 +362,81 @@ namespace MZXRM.PSS.Business
             }
             return false;
         }
-        public static GRN CreateGRN(Dictionary<string, string> keyvalues)
+        public static bool CreateGRN(GRN grn)
         {
-
-            string poNumber = keyvalues.ContainsKey("PO") ? keyvalues["PO"] : "";
-            string cusId = keyvalues.ContainsKey("Customer") ? keyvalues["Customer"] : "";
-
-            if (poNumber != "" && cusId != "")
+            try
             {
-                PurchaseOrder PO = GetPO(poNumber);
-                PODetail POD = null;
-                foreach (PODetail pod in PO.PODetailsList)
-                {
-                    if (pod.Customer.Id == new Guid(cusId))
-                        POD = pod;
-                }
-                if (POD != null)
-                {
-                    GRN Grn = NewGRN();
-                    Grn.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
-                    Grn.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
-                    Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
-                    if (keyvalues.ContainsKey("Store"))
-                        Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"].ToString());
-                    Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
-                    Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
-                    Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
-                    Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
 
-                    POD.GRNsList.Add(Grn);
-                    PurchaseDataManager.CalculatePO(PO);
-                    if (PO.isValid)
-                        PurchaseDataManager.CreateGRN(POMap.reMapGRNData(Grn));
-                    else
+                if (grn.PO != null && grn.PO.Id != Guid.Empty && grn.PODetail != null && grn.PODetail.Id != Guid.Empty)
+                {
+                    PurchaseDataManager.CreateGRN(POMap.reMapGRNData(grn));
+                    ResetCache();
+                    /*PurchaseOrder PO = GetPO(grn.PO.Name);
+                    PODetail POD = null;
+                    foreach (PODetail pod in PO.PODetailsList)
                     {
-                        ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
-                        PurchaseDataManager.ResetCache();
-                        return null;
+                        if (pod.Id == grn.PODetail.Id)
+                            POD = pod;
                     }
-                    PurchaseDataManager.ResetCache();
-                    return Grn;
+                    if (POD != null)
+                    {
+                        GRN Grn = NewGRN();
+                        Grn.PO = new Reference() { Id = PO.Id, Name = PO.PONumber };
+                        Grn.PODetail = new Reference() { Id = POD.Id, Name = PO.PONumber };
+                        Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
+                        if (keyvalues.ContainsKey("Store"))
+                            Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"].ToString());
+                        Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
+                        Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
+                        Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
+                        Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
+
+                        POD.GRNsList.Add(Grn);
+                        PurchaseDataManager.CalculatePO(PO);
+                        if (PO.isValid)
+                            PurchaseDataManager.CreateGRN(POMap.reMapGRNData(Grn));
+                        else
+                        {
+                            ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
+                            PurchaseDataManager.ResetCache();
+                            return null;
+                        }
+                        PurchaseDataManager.ResetCache();
+                        return Grn;
+                    }*/
                 }
+                return true;
+
             }
-            return null;
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return false;
         }
-        public static DutyClear CreateDutyClear(Dictionary<string, string> keyvalues)
+        public static bool CreateDutyClear(DutyClear dcl)
         {
-            string poNumber = keyvalues.ContainsKey("PO") ? keyvalues["PO"] : "";
+            try
+            {
+
+                if (dcl.PO != null && dcl.PO.Id != Guid.Empty && dcl.PODetail != null && dcl.PODetail.Id != Guid.Empty)
+                {
+                    Guid dclId = PurchaseDataManager.CreateDCL(POMap.reMapDCLData(dcl));
+                    dcl.Id = dclId;
+                    PurchaseOrder po = GetPO(dcl.PO.Name);
+                    StoreDataManager.CreateStockMovement(StoreMap.reMapStockMovementData(po, dcl)); //TODO
+                    ResetCache();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return false;
+
+
+            /*string poNumber = keyvalues.ContainsKey("PO") ? keyvalues["PO"] : "";
             string cusId = keyvalues.ContainsKey("Customer") ? keyvalues["Customer"] : "";
 
             if (poNumber != "" && cusId != "")
@@ -420,7 +477,7 @@ namespace MZXRM.PSS.Business
                     return Dcl;
                 }
             }
-            return null;
+            return null;*/
         }
 
         #endregion
@@ -497,56 +554,87 @@ namespace MZXRM.PSS.Business
         }
 
 
-        public static GRN UpdateGRN(Dictionary<string, string> keyvalues)
+        public static bool UpdateGRN(GRN grn)
         {
-            string PONumber = keyvalues["ponumber"];
-            string GRNNumber = keyvalues["grnnumber"];
-            string GRNId = keyvalues["grnid"];
-
-            PurchaseOrder PO = GetPO(PONumber);
-            GRN Grn = GetGRN(GRNNumber);
-            if (PO != null && Grn != null)
+            try
             {
-                Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
-                Grn.PODetail = new Reference() { Id = new Guid(keyvalues["Customer"]), Name = PO.PONumber };
-                Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"]);
-                Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
-                Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
-                Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
-                Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
-                Grn.ModifiedOn = DateTime.Now;
-                Grn.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
-                foreach (PODetail pod in PO.PODetailsList)
-                {
-                    foreach (GRN grn in pod.GRNsList)
-                        if (grn.Id.ToString() == GRNId || grn.GRNNumber == GRNNumber)
-                        {
-                            pod.GRNsList.Remove(grn);
-                            break;
-                        }
-                    if (pod.Id == Grn.PODetail.Id)
-                    {
-                        pod.GRNsList.Add(Grn);
-                        break;
-                    }
-                }
-                PurchaseDataManager.CalculatePO(PO);
-                if (PO.isValid)
-                    PurchaseDataManager.UpdateGRN(POMap.reMapGRNData(Grn));
-                else
-                {
-                    ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
-                    return null;
-                }
-                PurchaseDataManager.ResetCache();
 
-                return Grn;
+                if (grn.Id != Guid.Empty && grn.PO != null && grn.PO.Id != Guid.Empty && grn.PODetail != null && grn.PODetail.Id != Guid.Empty)
+                {
+                    PurchaseDataManager.UpdateGRN(POMap.reMapGRNData(grn));
+                    ResetCache();
+                }
+                return true;
             }
-            return null;
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return false;
+
+            /* string PONumber = keyvalues["ponumber"];
+             string GRNNumber = keyvalues["grnnumber"];
+             string GRNId = keyvalues["grnid"];
+
+             PurchaseOrder PO = GetPO(PONumber);
+             GRN Grn = GetGRN(GRNNumber);
+             if (PO != null && Grn != null)
+             {
+                 Grn.GRNDate = keyvalues.ContainsKey("GRNDate") ? DateTime.Parse(keyvalues["GRNDate"]) : DateTime.Now;
+                 Grn.PODetail = new Reference() { Id = new Guid(keyvalues["Customer"]), Name = PO.PONumber };
+                 Grn.Store = StoreManager.GetStoreRef(keyvalues["Store"]);
+                 Grn.Quantity = keyvalues.ContainsKey("Quantity") ? decimal.Parse(keyvalues["Quantity"]) : 0;
+                 Grn.InvoiceNo = keyvalues.ContainsKey("Invoice") ? keyvalues["Invoice"] : "";
+                 Grn.AdjPrice = keyvalues.ContainsKey("Price") ? decimal.Parse(keyvalues["Price"]) : 0;
+                 Grn.Remarks = keyvalues.ContainsKey("Remarks") ? keyvalues["Remarks"] : "";
+                 Grn.ModifiedOn = DateTime.Now;
+                 Grn.ModifiedBy = UserManager.GetUserRef(Common.CurrentUser.Id.ToString());
+                 foreach (PODetail pod in PO.PODetailsList)
+                 {
+                     foreach (GRN grn in pod.GRNsList)
+                         if (grn.Id.ToString() == GRNId || grn.GRNNumber == GRNNumber)
+                         {
+                             pod.GRNsList.Remove(grn);
+                             break;
+                         }
+                     if (pod.Id == Grn.PODetail.Id)
+                     {
+                         pod.GRNsList.Add(Grn);
+                         break;
+                     }
+                 }
+                 PurchaseDataManager.CalculatePO(PO);
+                 if (PO.isValid)
+                     PurchaseDataManager.UpdateGRN(POMap.reMapGRNData(Grn));
+                 else
+                 {
+                     ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
+                     return null;
+                 }
+                 ResetCache();
+
+                 return Grn;
+             }
+             return null;*/
         }
-        public static DutyClear UpdateDCL(Dictionary<string, string> keyvalues)
+        public static bool UpdateDCL(DutyClear dcl)
         {
-            string PONumber = keyvalues["ponumber"];
+            try
+            {
+
+                if (dcl.Id != Guid.Empty && dcl.PO != null && dcl.PO.Id != Guid.Empty && dcl.PODetail != null && dcl.PODetail.Id != Guid.Empty)
+                {
+                    PurchaseDataManager.UpdateDCL(POMap.reMapDCLData(dcl));
+                    ResetCache();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error("Something went wrong. Details: " + ex.Message, ex);
+            }
+            return false;
+            /*string PONumber = keyvalues["ponumber"];
             string DCLNumber = keyvalues["dclnumber"];
             string DCLId = keyvalues["dclid"];
 
@@ -584,12 +672,12 @@ namespace MZXRM.PSS.Business
                     ExceptionHandler.Error("Something went wrong! PO Quantity is not valid.");
                     return null;
                 }
-                PurchaseDataManager.ResetCache();
+                ResetCache();
 
 
                 return Dcl;
             }
-            return null;
+            return null;*/
         }
         public static PurchaseOrder SubmitPO(Dictionary<string, string> keyvalues)
         {
