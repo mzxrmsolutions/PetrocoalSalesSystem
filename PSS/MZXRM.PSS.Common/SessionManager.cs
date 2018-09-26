@@ -9,7 +9,7 @@ namespace MZXRM.PSS.Common
 {
    public class SessionManager
     {
-       public static string OriginSessionName = "AllOrigin";
+        public static string OriginSessionName = "AllOrigin";
         public static string SizeSessionName = "AllSize";
         public static string VesselSessionName = "AllVessel";
         public static string TraderSessionName = "AllTrader";

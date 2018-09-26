@@ -47,7 +47,6 @@ namespace MZXRM.PSS.Business
             CustomerManager.ResetCache();
             StoreManager.ResetCache();
 
-
             List<Customer> Customer = CustomerManager.ReadAllCustomers(false);
             List<Store> Store = StoreManager.AllStore;
             List<PurchaseOrder> PO = PurchaseManager.AllPOs;

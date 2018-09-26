@@ -65,7 +65,9 @@ namespace MZXRM.PSS.Business
         public static void ResetCache()
         {
             _allStores = null;
+            _allStoreInOuts = null;
             HttpContext.Current.Session.Remove(SessionManager.StoreIOSession);
+            HttpContext.Current.Session.Remove(SessionManager.StoreSession);
         }
         public static List<StoreTransfer> ReadAllStoreIO()
         {
@@ -100,15 +102,23 @@ namespace MZXRM.PSS.Business
                 {
                     string key = keyValue.Key;
                     string value = keyValue.Value;
-                    //if (key == "PO" && value == "0") throw new Exception("PO is required");
-                    //if (key == "Customer" && value == "0") throw new Exception("Customer is required");
-                    //if (key == "GRNDate" && string.IsNullOrEmpty(value)) throw new Exception("GRN Date is required");
-                    //if (key == "Store" && value == "0") throw new Exception("Store is required");
-                    //if (key == "Quantity" && value == "0") throw new Exception("Quantity is required");
-                    //if (key == "Invoice" && string.IsNullOrEmpty(value)) throw new Exception("Supplier is required");
-                    //if (key == "Price" && string.IsNullOrEmpty(value)) throw new Exception("Lead is required");
-                    // if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
-                    //if (key == "Remarks" && string.IsNullOrEmpty(value)) throw new Exception("Buffer Min is required");
+                    DateTime dtTemp = DateTime.Now.Date;
+                    decimal decTemp = 0;
+                    if (key == "FromStore" && value == "0") throw new Exception("From Store is required");
+                    if (key == "date" && !DateTime.TryParse(value,out dtTemp)) throw new Exception("Date is required");
+                    if (key == "Customer" && value == "0") throw new Exception("Customer is required");
+                    if (key == "Origin" && value == "0") throw new Exception("Origin is required");
+                    if (key == "Vessel" && value == "0") throw new Exception("Vessel is required");
+                    if (key == "Size" && value == "0") throw new Exception("Size is required");
+                    if (key == "Quantity" && string.IsNullOrEmpty(value) && !decimal.TryParse(value,out decTemp)) throw new Exception("Quantity is required");
+                    if (key == "ToStore" && value == "0") throw new Exception("ToStore is required");
+                    if (key == "VehicleNo" && string.IsNullOrEmpty(value)) throw new Exception("VehicleNo is required");
+                    if (key == "BiltyNo" && string.IsNullOrEmpty(value)) throw new Exception("BiltyNo is required");
+                    if (key == "BiltyDate" && !DateTime.TryParse(value, out dtTemp)) throw new Exception("BiltyDate is required");
+                    if (key == "Invoice" && string.IsNullOrEmpty(value)) throw new Exception("Invoice is required");
+                    if (key == "CCMNo" && string.IsNullOrEmpty(value)) throw new Exception("CCMNo is required");
+                    if (key == "Transporter" && string.IsNullOrEmpty(value)) throw new Exception("Transporter is required");
+                    //if (key == "Remarks" && string.IsNullOrEmpty(value)) throw new Exception("Remarks is required");
 
                 }
                 //PurchaseOrder po = GetPO(values["PO"]);
@@ -168,6 +178,10 @@ namespace MZXRM.PSS.Business
             ST.Remarks = values.ContainsKey("Remarks") ? values["Remarks"] : "";
 
             StoreDataManager.CreateStoreTransfer(StoreMap.reMapStoreTransferData( ST));
+
+            // ztodo: create store movement record
+
+
             ResetCache();
             return ST;
         }

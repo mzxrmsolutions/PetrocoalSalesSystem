@@ -19,6 +19,7 @@ namespace MZXRM.PSS.Business
         private static List<PurchaseOrder> _AllPOs;
         public static List<PurchaseOrder> AllPOs
         {
+            
             get
             {
                 if (HttpContext.Current.Session[SessionManager.POSession] != null)
@@ -30,6 +31,7 @@ namespace MZXRM.PSS.Business
         }
         public static List<PurchaseOrder> ReadAllPO()
         {
+           
             DataTable DTpo = PurchaseDataManager.GetAllPOs();
             DataTable DTpod = PurchaseDataManager.GetAllPODs();
             DataTable DTgrn = PurchaseDataManager.GetAllGRNs();
@@ -263,7 +265,7 @@ namespace MZXRM.PSS.Business
                 {
                     foreach (PODetail pod in po.PODetailsList)
                     {
-                        if (pod.Customer.Id.ToString() == values["Customer"])
+                        if (pod.Customer.Id.ToString() == values ["Customer"])
                         {
                             GRN Grn = NewGRN();
                             Grn.PO = new Reference() { Id = po.Id, Name = po.PONumber };

@@ -54,7 +54,7 @@
                                 <option value="0">--- From Store ---</option>
                                 @foreach (Store store in StoreManager.AllStore)
                                 {
-                                    <option value="@store.Id" )>@store.Name</option>
+                                    <option value="@store.Id"  @(store.Id.ToString() == Request.Form["FromStore"] ? " selected " : "")>@store.Name</option>
                                 }
                             </select>
                         </div>
@@ -78,7 +78,7 @@
                                 <option value="0">--- Customer ---</option>
                                 @foreach (Customer customer in CustomerManager.AllCustomers)
                                 {
-                                    <option value="@customer.Id" )>@customer.Name</option>
+                                    <option value="@customer.Id"  @(customer.Id.ToString() == Request.Form["Customer"] ? " selected " : "")>@customer.Name</option>
                                 }
                             </select>
                         </div>
@@ -90,7 +90,7 @@
                                 <option value="0">--- Origin ---</option>
                                 @foreach (Item Origin in Common.Origin)
                                 {
-                                    <option value="@Origin.Index" )>@Origin.Value</option>
+                                    <option value="@Origin.Index"  @(Origin.Index.ToString() == Request.Form["Origin"] ? " selected " : "")>@Origin.Value</option>
                                 }
                             </select>
                         </div>
@@ -102,7 +102,7 @@
                                 <option value="0">--- Vessel ---</option>
                                 @foreach (Item Vessel in Common.Vessel)
                                 {
-                                    <option value="@Vessel.Index" )>@Vessel.Value</option>
+                                    <option value="@Vessel.Index"  @(Vessel.Index.ToString() == Request.Form["Vessel"] ? " selected " : "")>@Vessel.Value</option>
                                 }
                             </select>
                         </div>
@@ -114,7 +114,7 @@
                                 <option value="0">--- Size ---</option>
                                 @foreach (Item Size in Common.Size)
                                 {
-                                    <option value="@Size.Index" )>@Size.Value</option>
+                                    <option value="@Size.Index"  @(Size.Index.ToString() == Request.Form["Size"] ? " selected " : "")>@Size.Value</option>
                                 }
                             </select>
                         </div>
@@ -122,7 +122,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Quantity</label>
-                            <input type="text" class="form-control" name="Quantity" />
+                            <input type="text" class="form-control" name="Quantity" value="@Request.Form["Quantity"]" />
                         </div>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                                 <option value="0">--- To Store ---</option>
                                 @foreach (Store store in StoreManager.AllStore)
                                 {
-                                    <option value="@store.Id" )>@store.Name</option>
+                                    <option value="@store.Id" @(store.Id.ToString() == Request.Form["ToStore"] ? " selected " : "")>@store.Name</option>
                                 }
                             </select>
                         </div>
@@ -142,13 +142,13 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Vehicle No</label>
-                            <input type="text" class="form-control" name="VehicleNo" />
+                            <input type="text" class="form-control" name="VehicleNo" value="@Request.Form["VehicleNo"]" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Bilty No</label>
-                            <input type="text" class="form-control" name="BiltyNo" />
+                            <input type="text" class="form-control" name="BiltyNo"  value="@Request.Form["BiltyNo"]" />
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -166,13 +166,13 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Invoice</label>
-                            <input type="text" class="form-control" name="Invoice" />
+                            <input type="text" class="form-control" name="Invoice" value="@Request.Form["Invoice"]" />
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Train Number</label>
-                            <input type="text" class="form-control" name="CCMNo" />
+                            <input type="text" class="form-control" name="CCMNo" value="@Request.Form["CCMNo"]" />
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -180,9 +180,9 @@
                             <label>Transporter</label>
                             <select class="form-control" name="Transporter">
                                 <option value="0">--- Transporter ---</option>
-                                @foreach (Item trader in Common.Trader)
+                                @foreach (Item transporter in Common.Transporter)
                                 {
-                                    <option value="@trader.Index" )>@trader.Value</option>
+                                    <option value="@transporter.Index" @(transporter.Index.ToString() == Request.Form["Transporter"] ? " selected " : "")>@transporter.Value</option>
                                 }
                             </select>
                         </div>
@@ -192,7 +192,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             <label>Remarks</label>
-                            <input type="text" class="form-control" name="Remarks">
+                            <input type="text" class="form-control" name="Remarks" value="@Request.Form["Remarks"]" >
                         </div>
                     </div>
                 </div>
@@ -205,3 +205,16 @@
     <!-- /.box -->
 
 </section>
+
+
+
+@section scripts
+{
+    <script>
+
+        $('input[data-selector=date]').datepicker({
+            autoclose: true
+        });
+    </script>
+}
+

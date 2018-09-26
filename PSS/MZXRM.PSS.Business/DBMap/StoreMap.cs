@@ -97,6 +97,7 @@ namespace MZXRM.PSS.Business.DBMap
                 mapData.Id = int.Parse(dr["id"].ToString());
                 mapData.InOut = (StoreMovementType)Enum.Parse(typeof(StoreMovementType), dr["Type"].ToString());
                 mapData.Status = (StoreTransferStatus)Enum.Parse(typeof(StoreTransferStatus), dr["Status"].ToString());
+                mapData.Customer = dr["CustomerId"] != null ? CustomerManager.GetCustomerRef(dr["CustomerId"].ToString()) : CustomerManager.GetDefaultRef();
 
                 mapData.CreatedOn = dr["CreatedOn"] != DBNull.Value ? DateTime.Parse(dr["CreatedOn"].ToString()) : DateTime.MinValue;
                 mapData.CreatedBy = dr["CreatedBy"] != null ? UserManager.GetUserRef(dr["CreatedBy"].ToString()) : UserManager.GetDefaultRef();
@@ -225,7 +226,7 @@ namespace MZXRM.PSS.Business.DBMap
                         StMovement.Type = (StMovType)Enum.Parse(typeof(StMovType), drStMovement["Type"].ToString());
                         StMovement.HistoryRef = drStMovement["Reference"] != null ? drStMovement["Reference"].ToString() : "";
                         StMovement.Quantity = drStMovement["Quantity"] != null ? decimal.Parse(drStMovement["Quantity"].ToString()) : 0;
-                        StMovement.IsIn = drStMovement["InOut"] != null ? bool.Parse(drStMovement["InOut"].ToString()) : true;
+                        StMovement.IsIn = drStMovement["InOut"] != null ? bool.Parse(drStMovement["InOut"].ToString()) : false;
                         StMovement.Origin = drStMovement["Origin"] != null ? CommonDataManager.GetOrigin(drStMovement["Origin"].ToString()) : CommonDataManager.GetDefaultRef();
                         StMovement.Vessel = drStMovement["Vessel"] != null ? CommonDataManager.GetVessel(drStMovement["Vessel"].ToString()) : CommonDataManager.GetDefaultRef();
                         StMovement.Size = drStMovement["Size"] != null ? CommonDataManager.GetSize(drStMovement["Size"].ToString()) : CommonDataManager.GetDefaultRef();

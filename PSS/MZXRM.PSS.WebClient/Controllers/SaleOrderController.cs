@@ -505,7 +505,7 @@ namespace PatrocoalSalesSystem.Controllers
                 return Redirect("/SaleOrder/CreateDC");
             ViewBag.ThisDC = DC;
             ViewBag.ThisDO = DO;
-            //TODO: Kashif Abbas need to udpate the redirectotaction method
+            //ZTODO: Kashif Abbas need to udpate the redirectotaction method
             return View();
         }
 

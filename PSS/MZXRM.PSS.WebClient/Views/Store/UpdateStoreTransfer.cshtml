@@ -83,7 +83,7 @@
                                 <option value="0">--- Customer ---</option>
                                 @foreach (Customer customer in CustomerManager.AllCustomers)
                                 {
-                                    <option value="@customer.Id"  @((ThisST != null && ThisST.Customer.Id == customer.Id) ? "selected" : "")>@customer.Name</option>
+                                    <option value="@customer.Id"  @((ThisST != null && ThisST.Customer != null && ThisST.Customer.Id == customer.Id) ? "selected" : "")>@customer.Name</option>
                                 }
                             </select>
                         </div>
@@ -185,9 +185,9 @@
                             <label>Transporter</label>
                             <select class="form-control" name="Transporter">
                                 <option value="0">--- Transporter ---</option>
-                                @foreach (Item trader in Common.Trader)
+                                @foreach (Item transporter in Common.Transporter)
                                 {
-                                    <option value="@trader.Index" @((ThisST != null && ThisST.Transporter.Index == trader.Index) ? "selected" : "")>@trader.Value</option>
+                                    <option value="@transporter.Index" @((ThisST != null && ThisST.Transporter.Index == transporter.Index) ? "selected" : "")>@transporter.Value</option>
                                 }
                             </select>
                         </div>
