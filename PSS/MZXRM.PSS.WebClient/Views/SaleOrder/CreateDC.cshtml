@@ -95,137 +95,206 @@
                     }
                 </div>
                 <div class="row">
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>DC Date:</label>
-                            <div class="input-group date">
-                                <input type="text" class="form-control pull-right" data-selector="date" name="DCDate" value="@DateTime.Now.ToShortDateString()">
-                            </div>
-                            <!-- /.input group -->
-                        </div>
-                    </div>
-                    @*<div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Lead</label>
-                                <label class="required">*</label>
-                                <select class="form-control select2" name="Lead">
-                                    <option value="0">--- Lead ---</option>
-                                    @foreach (User item in UserManager.Users)
-                                    {
-                                        <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>*@
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Transporter</label>
-                            <label class="required">*</label>
-                            <select class="form-control select2" name="TransporterId">
-                                <option value="0">--- Transporter ---</option>
-                                @foreach (Item item in Common.Trader)
+                    <div class="col-sm-12">
+                        <table class="table table-condensed">
+                            <tbody>
+                               
+                                @for (int i = 1; i <= 10; i++)
                                 {
-                                    <option value="@item.Index">@item.Value</option>
+
+                                @*<div id="row_@i.ToString()" class="col-lg-10" style="border:solid">*@
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>DC Date:</th>
+                                        <th>Transporter *</th>
+                                        <th>Truck No</th>
+                                        <th>Bilty No</th>
+                                        <th>Slip No</th>
+                                        <th>Weight</th>
+                                        <th>Net Weight</th>
+                                        <th>Driver Name</th>
+                                        <th>Driver Phone</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr id="row">
+                                        <td>@i</td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input type="text" class="form-control pull-right" data-selector="date" name="DCDate_@i.ToString()" value="@DateTime.Now.ToShortDateString()">
+                                                </div>
+                                            </div>
+
+</td>
+
+                                        <td>
+
+                                            <div class="form-group">
+                                                <select class="form-control select2" name="TransporterId_@i.ToString()">
+                                                    <option value="0">--- Transporter ---</option>
+                                                    @foreach (Item item in Common.Trader)
+                                                    {
+                                                        <option value="@item.Index">@item.Value</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="TruckNo_@i.ToString()" value='@(Request.Form["TruckNo_"+i.ToString()]!=null?@Request.Form["TruckNo_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="BiltyNo_@i.ToString()" value='@(Request.Form["BiltyNo_"+i.ToString()]!=null?@Request.Form["BiltyNo_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="SlipNo_@i.ToString()" value='@(Request.Form["SlipNo_"+i.ToString()]!=null?@Request.Form["SlipNo_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="Weight_@i.ToString()" value='@(Request.Form["Weight_"+i.ToString()]!=null?@Request.Form["Weight_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="NetWeight_@i.ToString()" value='@(Request.Form["NetWeight_"+i.ToString()]!=null?@Request.Form["NetWeight_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="DriverName_@i.ToString()" value='@(Request.Form["DriverName_"+i.ToString()]!=null?@Request.Form["DriverName_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="DriverPhone_@i.ToString()" value='@(Request.Form["DriverPhone_"+i.ToString()]!=null?@Request.Form["DriverPhone_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <th></th>
+                                        <th>Loaded</th>
+                                        <th>Size</th>
+                                        <th>Unloaded</th>
+                                        <th>Size</th>
+                                        <th>Remarks</th>
+                                    </tr>
+
+                                    <tr id="row">
+                                        <td></td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="Loaded_@i.ToString()" value='@(Request.Form["Loaded_"+i.ToString()]!=null?@Request.Form["Loaded_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <select class="form-control select2" name="LoadedSize_@i.ToString()" value='@(Request.Form["LoadedSize_"+i.ToString()]!=null?@Request.Form["LoadedSize_"+i.ToString()].ToString():"")'>
+                                                    <option value="0">--- Size ---</option>
+                                                    @foreach (Item item in Common.Size)
+                                                    {
+                                                        <option value="@item.Index">@item.Value</option>
+                                                    }
+                                                </select>
+
+                                            </div>
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="Unloaded_@i.ToString()" value='@(Request.Form["Unloaded_"+i.ToString()]!=null?@Request.Form["Unloaded_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                        <td>
+
+                                            <div class="form-group">
+                                                <select class="form-control select2" name="UnloadedSize_@i.ToString()">
+                                                    <option value="0">--- Size ---</option>
+                                                    @foreach (Item item in Common.Size)
+                                                    {
+                                                        <option value="@item.Index">@item.Value</option>
+                                                    }
+                                                </select>
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+                                            @*class="col-sm-12"*@
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="Remarks_@i.ToString()" value='@(Request.Form["Remarks_"+i.ToString()]!=null?@Request.Form["Remarks_"+i.ToString()].ToString():"")'>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                @*</div>*@
                                 }
-                            </select>
-                        </div>
-                    </div>
-                    @*<div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="text" class="form-control" name="Quantity">
-                            </div>
-                        </div>*@
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Truck No</label>
-                            <input type="text" class="form-control" name="TruckNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Bilty No</label>
-                            <input type="text" class="form-control" name="BiltyNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Slip No</label>
-                            <input type="text" class="form-control" name="SlipNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Weight</label>
-                            <input type="text" class="form-control" name="Weight">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>NetWeight</label>
-                            <input type="text" class="form-control" name="NetWeight">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Driver Name</label>
-                            <input type="text" class="form-control" name="DriverName">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Driver Phone</label>
-                            <input type="text" class="form-control" name="DriverPhone">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Loaded</label>
-                            <input type="text" class="form-control" name="Loaded">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Size</label>
-                            <select class="form-control select2" name="LoadedSize">
-                                <option value="0">--- Size ---</option>
-                                @foreach (Item item in Common.Size)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Unloaded</label>
-                            <input type="text" class="form-control" name="Unloaded">
-                        </div>
-                    </div>
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label>Size</label>
-                            <select class="form-control select2" name="UnloadedSize">
-                                <option value="0">--- Size ---</option>
-                                @foreach (Item item in Common.Size)
-                                {
-                                    <option value="@item.Index">@item.Value</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-8">
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <input type="text" class="form-control" name="Remarks">
-                        </div>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-            </div>
-        </div>
-        <!-- /.box -->
-    </form>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+                    </div>
+                </div>
+                <!-- /.box -->
+</form>
 </section>
+@section scripts
+{
+    @*<script>
+
+      
+        showRow(1);
+        function showRow(i) {
+            if (i == 10)
+                alert('Max 10 rows');
+            if (i == 1)
+            { $('#row_' + i).show(); }
+            //debugger;
+            var v = 0;
+            v = parseInt(i);
+            v++;
+               // $('#row_' + v).show();
+               
+        }
+        function hideRow(i) {
+            $('#Customer_' + i).val("0");
+            $('#row_' + i).hide();
+        }
+    </script>*@
+}

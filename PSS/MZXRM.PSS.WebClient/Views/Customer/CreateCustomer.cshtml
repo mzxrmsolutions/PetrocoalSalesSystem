@@ -109,9 +109,13 @@
 
                     <div class="form-group">
                         <label>Remarks</label>
-                        <input type="text" class="form-control"  name="Remarks" />
+                        <input type="text" class="form-control" name="Remarks" />
                     </div>
                 </div>
+
+                <input type="button" class="btn btn-sm btn-default" id="somebutton" value="Add New Address" />
+                <input type="text" name="TotalDestinations" id="TotalDestinations" value="0"  hidden/>
+                <div class="col-sm-12" id="container"></div>
             </div>
         </div>
         <!-- /.box-body -->
@@ -125,5 +129,16 @@
             autoclose: true
         });
 
+        $(document).ready(function () {
+            var addredd = 0;
+        });
+
+        $("#somebutton").click(function () {
+            var counter = $('#TotalDestinations').val();
+            counter++;
+            $('#TotalDestinations').val(counter);
+            $("#container").append('<div class= "form-group" ><label>New Address</label><input type="text" class="form-control" name=' + counter +' /></div >');
+        });
     </script>
+
 }

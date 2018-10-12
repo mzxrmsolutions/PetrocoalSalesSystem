@@ -125,6 +125,15 @@ namespace MZXRM.PSS.Business
                     return trader;
             return new Item() { Index = 0, Value = "" };
         }
+        
+        public static Item GetTransporter(string id)
+        {
+            foreach (Item transporter in Transporter)
+                if (transporter.Index.ToString() == id)
+                    return transporter;
+            return new Item() { Index = 0, Value = "" };
+        }
+
 
         public static int GenerateIndex(List<Item> items)
         {

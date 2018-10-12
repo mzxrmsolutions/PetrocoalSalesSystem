@@ -381,6 +381,7 @@ namespace PatrocoalSalesSystem.Controllers
             if (!Common.isAuthorize())
                 Response.Redirect("/Login");
             String SONubmer = !string.IsNullOrEmpty(Request.QueryString["so"]) ? Request.QueryString["so"] : String.Empty;
+           
             if (!String.IsNullOrEmpty(SONubmer))
             {
                 SaleOrder SO = null;
@@ -420,7 +421,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                string formErrors = SaleManager.ValidateCreateDOForm(values);
                 if (formErrors == "")
                 {
                     DeliveryOrder DO = SaleManager.CreateDO(values);
@@ -473,7 +474,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                string formErrors = SaleManager.ValidateCreateDCForm(values);
                 if (formErrors == "")
                 {
                     DeliveryChalan DC = SaleManager.CreateDC(values);

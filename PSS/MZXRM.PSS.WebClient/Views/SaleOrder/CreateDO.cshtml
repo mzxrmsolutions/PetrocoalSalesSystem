@@ -92,145 +92,163 @@
                 </div>
                 @if (ThisSO != null)
                 {
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>DO Date:</label>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right" data-selector="date" name="DODate" value="@DateTime.Now.ToShortDateString()">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>DO Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
                                 </div>
-                                <!-- /.input group -->
+                                <input type="text" class="form-control pull-right" data-selector="date" name="DODate" value="@DateTime.Now.ToShortDateString()">
                             </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Location</label>
-                                <select class="form-control select2" name="Location">
-                                    <option value="0">--- Location ---</option>
-                                    @foreach (Reference saleStation in Common.AllSaleStations)
-                                    {
-                                        <option value="@saleStation.Id">@saleStation.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Lead</label>
-                                <label class="required">*</label>
-                                <select class="form-control select2" name="Lead">
-                                    <option value="0">--- Lead ---</option>
-                                    @foreach (User item in UserManager.Users)
-                                    {
-                                        <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="text" class="form-control" name="Quantity">
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Lifting Start Date:</label>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right" data-selector="date" name="LiftingStartDate" value="@DateTime.Now.ToShortDateString()">
-                                </div>
-                                <!-- /.input group -->
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Lifting End Date:</label>
-                                <div class="input-group date">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
-                                    <input type="text" class="form-control pull-right" data-selector="date" name="LiftingEndDate" value="@DateTime.Now.ToShortDateString()">
-                                </div>
-                                <!-- /.input group -->
-                            </div>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>DO Destination: </label>
-
-                                @{
-                                    Customer cust = CustomerManager.GetCustomer(ThisSO.Customer.Id);
-                                }
-                                <select class="form-control select2" name="DeliveryDestination">
-                                    @foreach (Item item in cust.Destination)
-                                    {
-                                        <option value="@item.Index">@item.Value</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Transporter</label>
-                                <select class="form-control select2" name="TransporterId">
-                                    <option value="0">--- Transporter ---</option>
-                                    @foreach (Item item in Common.Trader)
-                                    {
-                                        <option value="@item.Index">@item.Value</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Dumper Rate: </label>
-                                <input type="text" class="form-control" name="DumperRate" />
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Freight Payment Terms: </label>
-                                <input type="text" class="form-control" name="FreightPaymentTerms" />
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Freight Per Ton: </label>
-                                <input type="text" class="form-control" name="FreightPerTon" />
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Freight Tax Per Ton: </label>
-                                <input type="text" class="form-control" name="FreightTaxPerTon" />
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Freight Comission PSL: </label>
-                                <input type="text" class="form-control" name="FreightComissionPSL" />
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <label>Freight Comission Agent: </label>
-                                <input type="text" class="form-control" name="FreightComissionAgent" />
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label>Remarks: </label>
-                                <input type="text" class="form-control" name="Remarks" />
-                            </div>
+                            <!-- /.input group -->
                         </div>
                     </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Location</label>
+                            <select class="form-control select2" name="Location">
+                                <option value="0">--- Location ---</option>
+                                @foreach (Reference saleStation in Common.AllSaleStations)
+                                {
+                                    <option value="@saleStation.Id">@saleStation.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lead</label>
+                            <label class="required">*</label>
+                            <select class="form-control select2" name="Lead">
+                                <option value="0">--- Lead ---</option>
+                                @foreach (User item in UserManager.Users)
+                                {
+                                    <option value="@item.Id" @(item.Id == Common.CurrentUser.Id ? " selected " : "")>@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="text" class="form-control" name="Quantity">
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lifting Start Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingStartDate" value="@DateTime.Now.ToShortDateString()">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Lifting End Date:</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control pull-right" data-selector="date" name="LiftingEndDate" value="@DateTime.Now.ToShortDateString()">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Stores: </label>
+
+                            @{
+                                List<Store> Stores = StoreManager.ReadAllStore();
+                            }
+                            <select class="form-control select2" name="StoreId">
+                                <option value="0">--- Store ---</option>
+                                @foreach (Store store in Stores)
+                                {
+                                    <option value="@store.Id">@store.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>DO Destination: </label>
+
+                            @{
+                                Customer cust = CustomerManager.GetCustomer(ThisSO.Customer.Id);
+                            }
+                            <select class="form-control select2" name="DeliveryDestination">
+                                @foreach (Item item in cust.Destination)
+                                {
+                                    <option value="@item.Index">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Transporter</label>
+                            <select class="form-control select2" name="TransporterId">
+                                <option value="0">--- Transporter ---</option>
+                                @foreach (Item item in Common.Trader)
+                                {
+                                    <option value="@item.Index">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Dumper Rate: </label>
+                            <input type="text" class="form-control" name="DumperRate" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Payment Terms: </label>
+                            <input type="text" class="form-control" name="FreightPaymentTerms" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Per Ton: </label>
+                            <input type="text" class="form-control" name="FreightPerTon" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Tax Per Ton: </label>
+                            <input type="text" class="form-control" name="FreightTaxPerTon" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Comission PSL: </label>
+                            <input type="text" class="form-control" name="FreightComissionPSL" />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Freight Comission Agent: </label>
+                            <input type="text" class="form-control" name="FreightComissionAgent" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label>Remarks: </label>
+                            <input type="text" class="form-control" name="Remarks" />
+                        </div>
+                    </div>
+                </div>
                                     }
             </div>
             <!-- /.box-body -->

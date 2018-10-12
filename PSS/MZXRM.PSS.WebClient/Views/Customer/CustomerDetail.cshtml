@@ -74,9 +74,9 @@
                 </div>
                 <div class="col-sm-1 pull-right">
                     @if (ThisCustomer.Status == CustStatus.InActive)
-                    { <span class="badge bg-red pull-right">@ThisCustomer.Status</span>}
-                    else
-                    { <span class="badge bg-blue pull-right">@ThisCustomer.Status</span>}
+                    {<span class="badge bg-red pull-right">@ThisCustomer.Status</span>}
+                else
+                { <span class="badge bg-blue pull-right">@ThisCustomer.Status</span>}
                 </div>
             </div>
             <div class="row">
@@ -103,9 +103,9 @@
                 <div class="col-sm-1 pull-right">
                     <label>Total Stock:</label>
                     @if (ThisCustomer.TotalStock > 0)
-                    { <span class="badge bg-green pull-right">@ThisCustomer.TotalStock.ToString(Constants.QuantityFormat)</span>}
-                    else if (ThisCustomer.TotalStock < 0)
-                    { <span class="badge bg-red pull-right">@ThisCustomer.TotalStock.ToString(Constants.QuantityFormat)</span>}
+                    {<span class="badge bg-green pull-right">@ThisCustomer.TotalStock.ToString(Constants.QuantityFormat)</span>}
+                else if (ThisCustomer.TotalStock < 0)
+                { <span class="badge bg-red pull-right">@ThisCustomer.TotalStock.ToString(Constants.QuantityFormat)</span>}
                 </div>
             </div>
             <div class="row">
@@ -126,12 +126,14 @@
                     <p>@ThisCustomer.Remarks</p>
                 </div>
             </div>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-        </div>
+            <div class="row">
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+            </div>
 
-    </div>
+        </div>
     <!-- /.box -->
     <div class="box box-primary box-solid">
         <div class="box-header with-border">

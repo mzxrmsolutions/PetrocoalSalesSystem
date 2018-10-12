@@ -74,6 +74,16 @@ namespace MZXRM.PSS.Business.DBMap
 
             return keyValues;
         }
+
+        public static Dictionary<string, object> reMapCustDest(Guid customerId,string Address)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+            keyValues.Add("@CustomerId", customerId);
+            keyValues.Add("@Status", 1);
+            keyValues.Add("@Name", Address);
+
+            return keyValues;
+        }
         public static List<Customer> MapCustomerDataTable(DataTable dtCust, DataTable dtCustStock, DataTable dtCustDest)
         {
             List<Customer> AllCustomers = new List<Customer>();

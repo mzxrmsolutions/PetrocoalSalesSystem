@@ -159,7 +159,7 @@
                                 <option value="0">--- Location ---</option>
                                 @foreach (Reference saleStation in Common.AllSaleStations)
                                 {
-                                    <option value="@saleStation.Id" @(saleStation.Id == ThisDO.Location.Id?"selected":"")>@saleStation.Name</option>
+                                    <option value="@saleStation.Id" @(saleStation.Id == ThisDO.Location.Id ? "selected" : "")>@saleStation.Name</option>
                                 }
                             </select>
                         </div>
@@ -171,9 +171,9 @@
                             <select class="form-control select2" name="Lead">
                                 <option value="0">--- Lead ---</option>
                                 @foreach (User item in UserManager.Users)
-                            {
-                            <option value="@item.Id" @(item.Id == ThisDO.Lead.Id ? " selected " : "")>@item.Name</option>
-                            }
+                                {
+                                    <option value="@item.Id" @(item.Id == ThisDO.Lead.Id ? " selected " : "")>@item.Name</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -210,6 +210,23 @@
 
                     <div class="col-sm-2">
                         <div class="form-group">
+                            <label>Stores: </label>
+
+                            @{
+                                List<Store> Stores = StoreManager.ReadAllStore();
+                            }
+                            <select class="form-control select2" name="StoreId">
+                                <option value="0">--- Store ---</option>
+                                @foreach (Store store in Stores)
+                                {
+                                    <option value="@store.Id"  @(store.Id ==ThisDO.StoreId.Id  ? " selected " : "")>@store.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
                             <label>DO Destination: </label>
                             @*<input type="text" class="form-control" name="DeliveryDestination" value="@ThisDO.DeliveryDestination" />*@
                             @{Customer cust = CustomerManager.GetCustomer(ThisSO.Customer.Id);
@@ -220,7 +237,7 @@
                                     <option value="@item.Index" @((ThisDO.DeliveryDestination != null && item.Index == ThisDO.DeliveryDestination.Index) ? " selected " : "")>@item.Value</option>
                                 }
                             </select>
-                            
+
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -229,9 +246,9 @@
                             <select class="form-control select2" name="TransporterId">
                                 <option value="0">--- Transporter ---</option>
                                 @foreach (Item item in Common.Trader)
-                            {
-                            <option value="@item.Index" @(item.Index == ThisDO.Transportor.Index ? " selected " : "")>@item.Value</option>
-                            }
+                                {
+                                    <option value="@item.Index" @(item.Index == ThisDO.Transportor.Index ? " selected " : "")>@item.Value</option>
+                                }
                             </select>
                         </div>
                     </div>

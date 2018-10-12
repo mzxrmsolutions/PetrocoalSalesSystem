@@ -114,7 +114,22 @@
                                 </select>
                             </div>
                         </div>
-                       
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Vessel</label>
+                                <label class="required">*</label>
+                                <select class="form-control select2" name="Vessel">
+                                    <option value="0">--- Vessel ---</option>
+                                    @foreach (Item item in Common.Vessel)
+                                    {
+                                        <option value="@item.Index" @(item.Index.ToString() == Request.Form["Vessel"] ? " selected " : "")>@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>SO Date:</label>

@@ -126,6 +126,24 @@ namespace MZXRM.PSS.DataManager
                 return retId;
             }
         }
+
+        public static void CreateCustomerDestinations(Dictionary<string, object> keyValues)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertCustomerDestination", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                int retId =  int.Parse(obj.ToString());
+                //return retId;
+            }
+        }
+
         public static void UpdateCustomer(Dictionary<string, object> keyValues)
         {
             using (var dbc = DataFactory.GetConnection())

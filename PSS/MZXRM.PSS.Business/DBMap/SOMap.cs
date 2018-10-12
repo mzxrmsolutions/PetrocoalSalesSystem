@@ -67,6 +67,7 @@ namespace MZXRM.PSS.Business.DBMap
                         DeliveryOrder DO = new DeliveryOrder();
 
                         DO.Id = (int)drDo["Id"];
+                        DO.StoreId = StoreManager.GetStoreRef(drDo["StoreId"].ToString());    //.ReadAllStore().Where(x => x.StoreManager.Id == (Guid)drDo["StoreId"]).FirstOrDefault());
                         DO.Location = drDo["SaleStationId"] != null ? CommonDataManager.GetSaleStation(drDo["SaleStationId"].ToString()) : CommonDataManager.GetDefaultReference();
                         DO.Lead = drDo["LeadId"] != null ? UserManager.GetUserRef(drDo["LeadId"].ToString()) : UserManager.GetDefaultRef();
                         DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
@@ -163,10 +164,21 @@ namespace MZXRM.PSS.Business.DBMap
             keyValues.Add("@Leadid", SO.Lead.Id);
             keyValues.Add("@OriginId", SO.Origin.Index);
             keyValues.Add("@SizeId", SO.Size.Index);
+            keyValues.Add("@VesselId", SO.Vessel.Index);
 
             keyValues.Add("@CustomerId", SO.Customer.Id);
-            keyValues.Add("@TaxRateId", SO.AgreedTaxRate.Index);
-            keyValues.Add("@TraderId", SO.Trader.Index);
+            keyValues.Add("@TaxRateId", 0);
+            keyValues.Add("@TraderId", 0);
+            keyValues.Add("@AgreedRate", 0);
+            keyValues.Add("@TraderCommision", 0);
+            if (!SO.LC)
+            {
+                keyValues.Add("@TaxRateId", SO.AgreedTaxRate.Index);
+                keyValues.Add("@TraderId", SO.Trader.Index);
+                keyValues.Add("@TraderCommision", SO.TraderCommission);
+                keyValues.Add("@AgreedRate", SO.AgreedRate);
+            }
+            
             keyValues.Add("@Status", SO.Status);
             keyValues.Add("@SONumber", SO.SONumber);
 
@@ -178,8 +190,8 @@ namespace MZXRM.PSS.Business.DBMap
             keyValues.Add("@PartyPOExpiryDate", SO.POExpiry);
             keyValues.Add("@CreditPeriod", SO.CreditPeriod);
             keyValues.Add("@Quantity", SO.Quantity);
-            keyValues.Add("@AgreedRate", SO.AgreedRate);
-            keyValues.Add("@TraderCommision", SO.TraderCommission);
+            
+            
             if (SO.CompletedOn != null && SO.CompletedOn != DateTime.MinValue)
             {
                 keyValues.Add("@CompletedOn", SO.CompletedOn);
@@ -225,6 +237,8 @@ namespace MZXRM.PSS.Business.DBMap
             {
                 keyValues.Add("@DONumber", DO.DONumber);
             }
+            keyValues.Add("@StoreId", DO.StoreId.Id);
+
             keyValues.Add("@SaleStationId", DO.Location.Id);
             keyValues.Add("@LeadId", DO.Lead.Id);
             keyValues.Add("@SOId", DO.SaleOrder.Index);
@@ -297,7 +311,7 @@ namespace MZXRM.PSS.Business.DBMap
             }
 
             keyValues.Add("@DCDate", DC.DCDate);
-            keyValues.Add("@Quantity", DC.Quantity);
+            keyValues.Add("@Quantity", DC.NetWeight);
             keyValues.Add("@TruckNo", DC.TruckNo);
             keyValues.Add("@BiltyNo", DC.BiltyNo);
             keyValues.Add("@SlipNo", DC.SlipNo);

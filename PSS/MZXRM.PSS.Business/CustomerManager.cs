@@ -118,7 +118,7 @@ namespace MZXRM.PSS.Business
                     if (key == "HeadOffice" && value == "") throw new Exception("HeadOffice is required");
                 }
                 Customer cust = new Customer();
-                if (values["cId"] != null)
+                if (values.ContainsKey("cId"))
                     cust = GetCustomer(Guid.Parse(values["cId"]));
                 else
                     cust = NewCustomer();
@@ -133,6 +133,12 @@ namespace MZXRM.PSS.Business
                 cust.ContactPerson = values["ContactPerson"];
                 cust.HeadOffice = values["HeadOffice"];
                 cust.Remarks = values["Remarks"];
+
+                int totalDestinations = int.Parse(values["TotalDestinations"]);
+                for (int i = 1; i <= totalDestinations; i++)
+                {
+                    cust.Destination.Add(new Item() { Index = i, Value = values[i.ToString()] });
+                }
                 return cust;
             }
             catch (Exception ex)
@@ -144,6 +150,14 @@ namespace MZXRM.PSS.Business
         public static Guid CreateCustomer(Customer cust)
         {
             Guid custId = CustomerDataManager.CreateCustomer(CustomerMap.reMapCustData(cust));
+            if(custId!=null)
+            {
+                foreach(var m in cust.Destination)
+                {
+                     CustomerDataManager.CreateCustomerDestinations(CustomerMap.reMapCustDest(custId,m.Value));
+                }
+            }
+            ResetCache();
             return custId;
         }
         public static Customer NewCustomer()
@@ -155,6 +169,7 @@ namespace MZXRM.PSS.Business
             c.CreatedBy = c.ModifiedBy = c.Lead = new Reference() { Id = Common.CurrentUser.Id, Name = Common.CurrentUser.Name };
             c.Stock = new List<CustomerStock>();
             c.TotalStock = 0;
+            c.Destination = new List<Item>();
             return c;
         }
 
