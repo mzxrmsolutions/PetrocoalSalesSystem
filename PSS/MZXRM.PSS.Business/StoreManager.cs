@@ -94,6 +94,12 @@ namespace MZXRM.PSS.Business
             return null;
         }
 
+        public static List<Store> GetAllStore()
+        {
+           
+            return AllStore;
+        }
+
         public static string ValidateCreateStoreTransferForm(Dictionary<string, string> values)
         {
             try

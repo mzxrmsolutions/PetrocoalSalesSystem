@@ -40,7 +40,7 @@
                     <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
                    
                     <input type="hidden" name="SOID" value="@ThisSO.Id" />
-                    <input type="hidden" name="SONubmer" value="@ThisSO.SONumber" />
+                    <input type="hidden" name="SONumber" value="@ThisSO.SONumber" />
                     <input type="hidden" name="DOID" value="@ThisDO.Id" />
                     <input type="hidden" name="CreatedOn" value="@ThisDO.CreatedOn" />
                     <input type="hidden" name="DONumber" value="@ThisDO.DONumber" />
@@ -247,7 +247,7 @@
                                 <option value="0">--- Transporter ---</option>
                                 @foreach (Item item in Common.Trader)
                                 {
-                                    <option value="@item.Index" @(item.Index == ThisDO.Transportor.Index ? " selected " : "")>@item.Value</option>
+                                    <option value="@item.Index" @((item.Index == ThisDO.Transportor.Index)? " selected " : "")>@item.Value</option>
                                 }
                             </select>
                         </div>

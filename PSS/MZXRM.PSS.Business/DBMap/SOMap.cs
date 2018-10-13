@@ -167,10 +167,13 @@ namespace MZXRM.PSS.Business.DBMap
             keyValues.Add("@VesselId", SO.Vessel.Index);
 
             keyValues.Add("@CustomerId", SO.Customer.Id);
-            keyValues.Add("@TaxRateId", 0);
-            keyValues.Add("@TraderId", 0);
-            keyValues.Add("@AgreedRate", 0);
-            keyValues.Add("@TraderCommision", 0);
+            if (SO.LC)
+            {
+                keyValues.Add("@TaxRateId", 0);
+                keyValues.Add("@TraderId", 0);
+                keyValues.Add("@AgreedRate", 0);
+                keyValues.Add("@TraderCommision", 0);
+            }
             if (!SO.LC)
             {
                 keyValues.Add("@TaxRateId", SO.AgreedTaxRate.Index);

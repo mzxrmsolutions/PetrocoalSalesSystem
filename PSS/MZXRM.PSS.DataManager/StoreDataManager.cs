@@ -65,6 +65,34 @@ namespace MZXRM.PSS.DataManager
                 throw new Exception("Error! Get all from DataBase", ex);
             }
         }
+        public static DataRow[] GetAllStockMovementsByCustomer(string Id)
+        {
+            try
+            {
+                using (var dbc = DataFactory.GetConnection())
+                {
+
+                    IDbCommand command = CommandBuilder.CommandGetAll(dbc, "sp_GetAllStockMovement");
+
+                    if (command.Connection.State != ConnectionState.Open)
+                    {
+                        command.Connection.Open();
+                    }
+
+                    IDataReader datareader = command.ExecuteReader(); // execute select query
+                    DataTable dt = new DataTable();
+                    dt.Load(datareader);
+                    string searchExpression = "Id =" + Id;
+                    DataRow[] foundRows = dt.Select(searchExpression);
+
+                    return foundRows;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error! Get all from DataBase", ex);
+            }
+        }
         public static DataTable GetAllCustomerStock() {
             try
             {

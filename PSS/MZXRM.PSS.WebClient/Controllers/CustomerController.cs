@@ -59,6 +59,26 @@ namespace PatrocoalSalesSystem.Controllers
                     Customer ThisCustomer = CustomerManager.GetCustomer(CustId);
                     ViewBag.ThisCustomer = ThisCustomer;
                 }
+
+                Guid StoreId = Guid.Empty;
+                Guid CustId2 = new Guid(id);
+                List<StockMovement> storeMovementList = new List<StockMovement>();
+
+
+                if (Guid.TryParse(id, out StoreId))
+                {
+                    List<Store> AllStore = StoreManager.GetAllStore();
+                    foreach (var store in AllStore)
+                    {
+                        foreach (var stockMovement in store.ListStockMovement)
+                        {
+                            if(stockMovement.Customer.Id == CustId2)
+                                storeMovementList.Add(stockMovement);
+                        }
+                    }
+                    ViewBag.ThisStockMovement = storeMovementList;
+                }
+
             }
             catch (Exception ex)
             {

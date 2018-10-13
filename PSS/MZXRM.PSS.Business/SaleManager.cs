@@ -366,7 +366,7 @@ namespace MZXRM.PSS.Business
                 SO.Quantity = decimal.Parse(values["Quantity"].ToString());
                 SO.AgreedTaxRate = values.ContainsKey("TaxRate") ? Common.GetTaxRate(values["TaxRate"].ToString()) : null;
                 SO.Tax = !((SO.AgreedTaxRate == null) || (SO.AgreedTaxRate.Index == 0));
-                SO.AgreedRate = decimal.Parse(values["Rate"].ToString());
+                //SO.AgreedRate = decimal.Parse(values["AgreedRate"].ToString());
                 if (SO.Tax)
                 {
                     //SO.TaxAmount = decimal.Parse(values[""].ToString());
@@ -449,9 +449,9 @@ namespace MZXRM.PSS.Business
 
                 }
                 SO.Remarks = values["Remarks"].ToString();
-                //SO.PartyPOImage = values["POScanImage"].ToString();
+                SO.PartyPOImage = values["POScanImage"].ToString();
                 //todo: temp work
-                SO.PartyPOImage = String.Empty;
+                //SO.PartyPOImage = String.Empty;
                 SaleDataManager.SaveSO(SOMap.reMapSOData( SO));
                 return SO;
             }
@@ -576,18 +576,6 @@ namespace MZXRM.PSS.Business
             try
             {
                 string ErrorMessage = string.Empty;
-                //if (values["Origin"] == "0") ErrorMessage += "Origin, ";
-                //if (values["Size"] == "0") ErrorMessage += "Size, ";
-                //if (values["Vessel"] == "0") ErrorMessage += "Vessel, ";
-                //if (string.IsNullOrEmpty(values["PODate"])) ErrorMessage += "PO Date, ";
-                //if (string.IsNullOrEmpty(values["TargetDays"])) ErrorMessage += "Target Days, ";
-                //if (string.IsNullOrEmpty(values["Supplier"])) ErrorMessage += "Supplier, ";
-                //if (string.IsNullOrEmpty(values["Lead"])) ErrorMessage += "Lead, ";
-                //// if (key == "PaymentTerms" && string.IsNullOrEmpty(value)) throw new Exception("PaymentTerms is required");
-                //if (string.IsNullOrEmpty(values["BufferMin"])) ErrorMessage += "Buffer Min %, ";
-
-
-                //if (string.IsNullOrEmpty(values["BufferMax"])) ErrorMessage += "Buffer Max %, ";
                 if(values["ordertype"] == "1" || values["ordertype"] == "3")
                 {
                     if (string.IsNullOrEmpty(values["Rate"])) ErrorMessage += "Rate";
@@ -610,29 +598,7 @@ namespace MZXRM.PSS.Business
                 if (values["Origin"] == "0") ErrorMessage += "Origin, ";
                 if (values["Size"] == "0") ErrorMessage += "Size, ";
                 if (values["Vessel"] == "0") ErrorMessage += "Vessel, ";
-                //if (values["ordertype"] == "0") ErrorMessage += "ordertype, ";
-
-                //if (string.IsNullOrEmpty(ErrorMessage))
-                //{
-                //    bool error = false;
-                //    for (int i = 1; i <= 10; i++)
-                //    {
-                //        if (values["Customer_" + i] == "0")
-                //            continue;
-                //        if (string.IsNullOrEmpty(values["Quantity_" + i])) error = true;
-                //        if (string.IsNullOrEmpty(values["Rate_" + i])) error = true;
-                //        if (string.IsNullOrEmpty(values["AllowedWastage_" + i])) error = true;
-                //        if (string.IsNullOrEmpty(values["CostPerTon_" + i])) error = true;
-                //        DateTime tdate = new DateTime();
-                //        if (!DateTime.TryParse(values["TargetDate_" + i], out tdate)) error = true;
-                //        if (error)
-                //        {
-                //            ErrorMessage += "PO Detail";
-                //            break;
-                //        }
-                //    }
-
-                //}
+               
                 if (string.IsNullOrEmpty(ErrorMessage))
                 {
                     SaleOrder SO = NewSO();
@@ -643,48 +609,26 @@ namespace MZXRM.PSS.Business
                     SO.Vessel = Common.GetVessel(values["Vessel"]);
                     SO.Customer= CustomerManager.GetCustomerRef(values["Customer"]);
 
-                    //SO.Id = 0;
+                    
                     SO.Status = SOStatus.Created;
-                   // SO.OrderType = values.ContainsKey("ordertype") ? SOType.Commercial: SOType.LC;
-                    //SO.CreatedOn = values.ContainsKey("CreatedOn") ? DateTime.Parse(values["CreatedOn"]) : DateTime.MaxValue;
-                    //SO.ModifiedOn = values.ContainsKey("ModifiedOn") ? DateTime.Parse(values["ModifiedOn"]) : DateTime.MaxValue;
                     SO.PODate = values.ContainsKey("PODate") ? DateTime.Parse(values["PODate"]) : DateTime.MaxValue;
                     SO.SODate = values.ContainsKey("SODate") ? DateTime.Parse(values["SODate"]) : DateTime.MaxValue;
                     SO.SOExpiry = values.ContainsKey("SOExpiry") ? DateTime.Parse(values["SOExpiry"]) : DateTime.MaxValue;
-                    //SO.PODate = values.ContainsKey("PODate") ? DateTime.Parse(values["PODate"]) : DateTime.MaxValue;
                     SO.POExpiry = values.ContainsKey("POExpiry") ? DateTime.Parse(values["POExpiry"]) : DateTime.MaxValue;
-                    //SO.CompletedOn = values.ContainsKey("CompletedOn") ? DateTime.Parse(values["CompletedOn"]) : DateTime.MaxValue;
-                    //SO.ApprovedDate = values.ContainsKey("ApprovedDate") ? DateTime.Parse(values["ApprovedDate"]) : DateTime.MaxValue;
-                    //SO.ApprovedBy = UserManager.GetUserRef(values["ApprovedBy"]);
                     SO.SONumber = GenerateNextSONumber();
                     if (values["ordertype"] == "1" || values["ordertype"] == "3")
                     {
-                        //SO.AgreedTaxRate = values["Rate"];
                         SO.AgreedTaxRate = Common.GetTaxRate(values["TaxRate"]);
                         SO.Trader = Common.GetTrader(values["Trader"]);
                         SO.TraderCommission = values.ContainsKey("TraderCommission") ? decimal.Parse(values["TraderCommission"]) : 0;
                     }
                   
-                    //SO.SaleStation = Common.AllSaleStations(values["Trader"]);
                     SO.CreditPeriod = values.ContainsKey("CreditPeriod") ? int.Parse(values["CreditPeriod"]) : 0;
-                    //SO.PartyPONumber = values["PartyPONumber"];
-                        SO.Remarks = values["Remarks"];
-                    //SO.PartyPOImage = values["PartyPOImage"];
+                    SO.Remarks = values["Remarks"];
                     SO.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
-                    //SO.TaxAmount = values.ContainsKey("TaxAmount") ? decimal.Parse(values["TaxAmount"]) : 0;
-                   // SO.RateExcTax = values.ContainsKey("RateExcTax") ? decimal.Parse(values["RateExcTax"]) : 0;
-                    //SO.RateIncTax = values.ContainsKey("RateIncTax") ? decimal.Parse(values["RateIncTax"]) : 0;
-                   // SO.FinalPrice = values.ContainsKey("FinalPrice") ? decimal.Parse(values["FinalPrice"]) : 0;
-                    
-                    //SO.DeliveredQuantity = values.ContainsKey("DeliveredQuantity") ? decimal.Parse(values["DeliveredQuantity"]) : 0;
-                    //SO.RemainingQuantity = values.ContainsKey("RemainingQuantity") ? decimal.Parse(values["RemainingQuantity"]) : 0;
-                    //SO.LC = SO.Tax = true;
-                    //SO.DOList = new List<DeliveryOrder>();
 
 
                     SO = SaleDataManager.CalculateSO(SO);
-                    //if (SO.)
-                    //    return SO;
                     return "";
                 }
                 throw new Exception("Enter required fields: " + ErrorMessage);
@@ -762,6 +706,67 @@ namespace MZXRM.PSS.Business
             return null;
         }
 
+        public static string ValidateUpdateDCForm(Dictionary<string, string> values)
+        {
+            try
+            {
+                string ErrorMessage = string.Empty;
+
+                if (values["DONumber"] == "0") ErrorMessage += "Origin, ";
+                bool error = false;
+
+
+                if (values["TransporterId"] == "0") ErrorMessage += "TransporterId, ";
+
+                //if (values["UnloadedSize"] == "0") ErrorMessage += "UnloadedSize, ";
+                //if (values["LoadedSize"] == "0") ErrorMessage += "LoadedSize, ";
+                if (string.IsNullOrEmpty(values["TruckNo"])) ErrorMessage += "TruckNo, ";
+                    if (string.IsNullOrEmpty(values["BiltyNo"])) ErrorMessage += "BiltyNo, ";
+                    if (string.IsNullOrEmpty(values["SlipNo"])) ErrorMessage += "SlipNo, ";
+                    if (string.IsNullOrEmpty(values["Weight"])) ErrorMessage += "Weight, ";
+                    if (string.IsNullOrEmpty(values["NetWeight"])) ErrorMessage += "NetWeight, ";
+                   // if (string.IsNullOrEmpty(values["NetWeight"])) ErrorMessage += "NetWeight, ";
+                    if (string.IsNullOrEmpty(values["DriverPhone"])) ErrorMessage += "DriverPhone, ";
+                if (string.IsNullOrEmpty(values["DriverName"])) ErrorMessage += "DriverName, ";
+                //if (string.IsNullOrEmpty(values["Loaded"])) ErrorMessage += "Loaded, ";
+                //if (string.IsNullOrEmpty(values["Unloaded"])) ErrorMessage += "Unloaded, ";
+                if (string.IsNullOrEmpty(values["Remarks"])) ErrorMessage += "Remarks, ";
+                    DateTime tdate = new DateTime();
+                    if (!DateTime.TryParse(values["DCDate"], out tdate)) ErrorMessage += "DCDate, ";
+                    if (error)
+                    {
+                        ErrorMessage += "DC";
+                    }
+
+
+                if (string.IsNullOrEmpty(ErrorMessage))
+                {
+
+                    //if (values["TransporterId"] == "0")
+
+                    DeliveryChalan dc = NewDeliveryChalan();
+                    dc.TruckNo = values["TruckNo"];
+                    dc.DCDate = values.ContainsKey("DCDate") ? DateTime.Parse(values["DCDate"]) : DateTime.MaxValue;
+                    dc.Quantity = values.ContainsKey("NetWeight") ? decimal.Parse(values["NetWeight"]) : 0;
+                    dc.BiltyNo = values["BiltyNo"];
+                    dc.SlipNo = values["SlipNo"];
+                    dc.Weight = values.ContainsKey("Weight") ? decimal.Parse(values["Weight"]) : 0;
+                    dc.NetWeight = values.ContainsKey("NetWeight") ? decimal.Parse(values["NetWeight"]) : 0;
+                        dc.DriverName = values["DriverName"];
+                        dc.DriverPhone = values["DriverPhone"];
+                        dc.Remarks = values["Remarks"];
+                    
+                    return "";
+                }
+                throw new Exception("Enter required fields: " + ErrorMessage);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error(ex.Message);
+            }
+            return null;
+        }
+
         public static string ValidateCreateDOForm(Dictionary<string, string> values)
         {
             try
@@ -797,7 +802,16 @@ namespace MZXRM.PSS.Business
                 {
                        
                         string SONumber = values["SONumber"];
-                    SaleOrder SO = GetSOById(int.Parse(SONumber));
+                    SaleOrder SO = NewSO();
+                    try
+                    {
+                         SO = GetSOById(int.Parse(SONumber));
+                    }
+                    catch
+                    {
+                         SO = GetSOBySONumber(SONumber);
+                    }
+                    
 
                     DeliveryOrder dos = NewDO(SO);
                     dos.Transportor = values["TransporterId"] != null ? Common.GetTransporter(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
@@ -816,6 +830,71 @@ namespace MZXRM.PSS.Business
                     dos.FreightComissionAgent= values.ContainsKey("FreightComissionAgent") ? decimal.Parse(values["FreightComissionAgent"]) : 0;
                     dos.Remarks= values["Remarks"];
                   
+                    return "";
+                }
+                throw new Exception("Enter required fields: " + ErrorMessage);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Error(ex.Message);
+            }
+            return null;
+        }
+
+        public static string ValidateCreateDOFormUpdate(Dictionary<string, string> values)
+        {
+            try
+            {
+                string ErrorMessage = string.Empty;
+
+                //if (values["SONumber"] == "0") ErrorMessage += "SO, ";
+                //bool error = false;
+
+
+                if (values["TransporterId"] == "0") ErrorMessage += "TransporterId, ";
+                if (values["Lead"] == "0") ErrorMessage += "Lead, ";
+                if (values["Location"] == "0") ErrorMessage += "Location, ";
+                if (values["DeliveryDestination"] == "0") ErrorMessage += "DeliveryDestination, ";
+
+
+                if (string.IsNullOrEmpty(values["DODate"])) ErrorMessage += "DODate, ";
+                if (string.IsNullOrEmpty(values["Quantity"])) ErrorMessage += "Quantity, ";
+                if (string.IsNullOrEmpty(values["LiftingStartDate"])) ErrorMessage += "LiftingStartDate, ";
+                if (string.IsNullOrEmpty(values["LiftingEndDate"])) ErrorMessage += "LiftingEndDate, ";
+                if (string.IsNullOrEmpty(values["StoreId"])) ErrorMessage += "StoreId, ";
+                if (string.IsNullOrEmpty(values["DumperRate"])) ErrorMessage += "DumperRate, ";
+                if (string.IsNullOrEmpty(values["FreightPaymentTerms"])) ErrorMessage += "FreightPaymentTerms, ";
+                if (string.IsNullOrEmpty(values["FreightPerTon"])) ErrorMessage += "FreightPerTon, ";
+                if (string.IsNullOrEmpty(values["FreightTaxPerTon"])) ErrorMessage += "FreightTaxPerTon, ";
+                if (string.IsNullOrEmpty(values["FreightComissionPSL"])) ErrorMessage += "FreightComissionPSL, ";
+                if (string.IsNullOrEmpty(values["FreightComissionAgent"])) ErrorMessage += "FreightComissionAgent, ";
+                if (string.IsNullOrEmpty(values["Remarks"])) ErrorMessage += "Remarks, ";
+
+
+
+                if (string.IsNullOrEmpty(ErrorMessage))
+                {
+
+                    string SONumber = values["SONumber"];
+                    SaleOrder SO = GetSOById(int.Parse(SONumber));
+
+                    DeliveryOrder dos = NewDO(SO);
+                    dos.Transportor = values["TransporterId"] != null ? Common.GetTransporter(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                    dos.Lead = UserManager.GetUserRef(values["Lead"]);
+                    dos.Location = CommonDataManager.GetSaleStation(values["Location"]);
+                    dos.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
+                    dos.LiftingStartDate = values.ContainsKey("LiftingStartDate") ? DateTime.Parse(values["LiftingStartDate"]) : DateTime.MaxValue;
+                    dos.LiftingEndDate = values.ContainsKey("LiftingEndDate") ? DateTime.Parse(values["LiftingEndDate"]) : DateTime.MaxValue;
+                    dos.StoreId = StoreManager.GetStoreRef(values["StoreId"]);
+                    dos.DeliveryDestination = CustomerManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"]);
+                    dos.DumperRate = values.ContainsKey("DumperRate") ? decimal.Parse(values["DumperRate"]) : 0;
+                    dos.FreightPaymentTerms = values.ContainsKey("FreightPaymentTerms") ? decimal.Parse(values["FreightPaymentTerms"]) : 0;
+                    dos.FreightPerTon = values.ContainsKey("FreightPerTon") ? decimal.Parse(values["FreightPerTon"]) : 0;
+                    dos.FreightTaxPerTon = values.ContainsKey("FreightTaxPerTon") ? decimal.Parse(values["FreightTaxPerTon"]) : 0;
+                    dos.FreightComissionPSL = values.ContainsKey("FreightComissionPSL") ? decimal.Parse(values["FreightComissionPSL"]) : 0;
+                    dos.FreightComissionAgent = values.ContainsKey("FreightComissionAgent") ? decimal.Parse(values["FreightComissionAgent"]) : 0;
+                    dos.Remarks = values["Remarks"];
+
                     return "";
                 }
                 throw new Exception("Enter required fields: " + ErrorMessage);

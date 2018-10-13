@@ -256,7 +256,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                string formErrors = SaleManager.ValidateCreateDOForm(values);
                 if (formErrors == "")
                 {
                     DeliveryOrder DO = SaleManager.UpdateDO(values);
@@ -529,7 +529,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     values.Add(Key, form[Key]);
                 }
-                string formErrors = SaleManager.ValidateCreateSOForm(values);
+                string formErrors = SaleManager.ValidateUpdateDCForm(values);
                 if (formErrors == "")
                 {
                     DeliveryChalan DC = SaleManager.UpdateDC(values);

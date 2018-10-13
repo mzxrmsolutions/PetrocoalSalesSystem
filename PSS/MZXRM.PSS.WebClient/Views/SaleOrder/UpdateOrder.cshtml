@@ -61,25 +61,25 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>Customer</label><br />
-                                <p>@ThisSO.Customer.Name</p>
-                                @*<select class="form-control" name='Customer' id="selectCust">
+                                @*<p>@ThisSO.Customer.Name</p>*@
+                                <select class="form-control" name='Customer' id="selectCust">
                                     <option value="0">--- Customer ---</option>
                                     @foreach (Customer item in CustomerManager.AllCustomers)
                                     {
                                         <option value="@item.Id" @((ThisSO != null && ThisSO.Customer.Id == item.Id) ? "selected" : "" )>@item.Name</option>
                                     }
-                                </select>*@
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>Order Type</label><br />
-                                <p>@ThisSO.OrderType</p>
-                                @*<select class="form-control" name="ordertype" id="selectOrderType">
+                                @*<p>@ThisSO.OrderType</p>*@
+                                <select class="form-control" name="ordertype" id="selectOrderType">
                                     <option value="1" @( Ordertype == 1 ? "selected" : "" )>Commercial</option>
                                     <option value="2" @( Ordertype == 2 ? "selected" : "" )>LC</option>
                                     <option value="3" @( Ordertype == 3 ? "selected" : "" )>Loan</option>
-                                </select>*@
+                                </select>
                             </div>
                         </div>
                         <div class="col-sm-2">
@@ -108,7 +108,7 @@
                                 <label>Size</label>
                                 <select class="form-control" name="Size">
                                     <option value="0">--- Size ---</option>
-                                   
+
                                     @foreach (Item item in Common.Size)
                                     {
 
@@ -117,7 +117,20 @@
                                 </select>
                             </div>
                         </div>
-                       
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Vessel</label>
+                                <label class="required">*</label>
+                                <select class="form-control select2" name="Vessel">
+                                    <option value="0">--- Vessel ---</option>
+                                    @foreach (Item item in Common.Vessel)
+                                    {
+                                        <option value="@item.Index" @(item.Index.ToString() == Request.Form["Vessel"] ? " selected " : "")>@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>SO Date:</label>
@@ -209,7 +222,8 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label>Agreed Rate</label>
-                                    <input type="text" class="form-control" name="Rate" value="@ThisSO.AgreedRate">
+                                    @*<input type="text" class="form-control" name="Rate" value="@ThisSO.AgreedRate">*@
+                                    <input type="text" class="form-control" name="AgreedRate" value="@ThisSO.AgreedRate">
                                 </div>
                             </div>
                             <div class="col-sm-2">

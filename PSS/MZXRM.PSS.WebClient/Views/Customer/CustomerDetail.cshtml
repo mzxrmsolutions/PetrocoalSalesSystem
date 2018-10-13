@@ -2,6 +2,9 @@
 @using MZXRM.PSS.Business
 @using MZXRM.PSS.Common
 @{Customer ThisCustomer = ViewBag.ThisCustomer;}
+@{Store ThisStore = ViewBag.ThisStore;}
+@{ List<StockMovement> ThisCustomerStockMovement = ViewBag.ThisStockMovement; }
+
 
 <section class="content-header">
     <h1>
@@ -127,13 +130,13 @@
                 </div>
             </div>
             <div class="row">
-                </div>
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-            </div>
-
         </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+        </div>
+
+    </div>
     <!-- /.box -->
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
@@ -188,5 +191,64 @@
         <!-- /.box-body -->
     </div>
     <!-- /.box -->
-    
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Stock Movements</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+            <!-- /.box-tools -->
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Reference</th>
+                        <th>Origin</th>
+                        <th>Vessel</th>
+                        <th>Size</th>
+                        <th>In</th>
+                        <th>Out</th>
+                    </tr>
+                    @foreach (StockMovement stMovement in ThisCustomerStockMovement)
+                    {
+                        <tr>
+                            <td><a href="/Customer/CustomerDetail/@stMovement.Customer.Id">@stMovement.Customer.Name</a></td>
+                            @if (stMovement.Type == StMovType.GRNClear)
+                            {
+                                Reference PO = PurchaseManager.GetPOByDCL(@stMovement.HistoryRef);
+                                <td><a href="/Purchase/OrderDetail/@PO.Id">@PO.Name</a></td>
+                            }
+                            else if (stMovement.Type == StMovType.StoreMovement)
+                            {
+                                <td><a href="/Store/StoreInOut?store=@ThisStore.Id">@stMovement.HistoryRef</a></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                            <td>@stMovement.Origin.Value</td>
+                            <td>@stMovement.Vessel.Value</td>
+                            <td>@stMovement.Size.Value</td>
+                            @if (stMovement.IsIn)
+                            {
+                                <td><span class="badge bg-green">@stMovement.Quantity.ToString(Constants.QuantityFormat)</span></td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td><span class="badge bg-red">@stMovement.Quantity.ToString(Constants.QuantityFormat)</span></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
 </section>
