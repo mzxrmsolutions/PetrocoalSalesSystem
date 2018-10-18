@@ -100,7 +100,7 @@ namespace PatrocoalSalesSystem.Controllers
                 }
             }
             seiving.SeivingSizeQties = seivingSizeQtyList;
-
+            seiving.SeivingNo = GenerateSeivingNumber();
 
             if (ModelState.IsValid)
             {
@@ -191,6 +191,23 @@ namespace PatrocoalSalesSystem.Controllers
                 j.SeivingSizeQties = svQtyListByID;
                         }
             return PartialView("SeivingList", sevingList);
+        }
+
+        private string GenerateSeivingNumber()
+        {
+            var seivings = (from s in db.Seivings
+                            select s).ToList();
+
+            int lNumber = 1001;
+            foreach (var svn in seivings)
+            {
+                string svNumber = svn.SeivingNo.Replace("SV-", "");
+                int No = int.Parse(svNumber);
+                if (No > lNumber)
+                    lNumber = No;
+            }
+            lNumber++;
+            return "SV-" + lNumber.ToString();
         }
 
         #region /Purchase/CreateGRN

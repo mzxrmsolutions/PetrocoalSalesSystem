@@ -7,6 +7,9 @@
             @Html.DisplayNameFor(model => model.SeivingNo)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Origin)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Date)
         </th>
         <th>
@@ -15,9 +18,7 @@
         <th>
             @Html.DisplayNameFor(model => model.VesselId)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CoalDescription)
-        </th>
+
         <th>
             @Html.DisplayNameFor(model => model.FromSize)
         </th>
@@ -26,12 +27,12 @@
         </th>
         @*@foreach (var item2 in Model)
         {*@
-           
+
         @*<th>
-           
+
             To Quantity
         </th>*@
-            @*}*@
+        @*}*@
         @*<th>
             @Html.DisplayNameFor(model => model.Remarks)
         </th>*@
@@ -44,6 +45,9 @@
             @Html.DisplayFor(modelItem => item.SeivingNo)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.Origin)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
         <td>
@@ -52,9 +56,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.VesselId)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CoalDescription)
-        </td>
+
         <td>
             @Html.DisplayFor(modelItem => item.FromSize)
         </td>
