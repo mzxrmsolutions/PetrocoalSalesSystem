@@ -250,7 +250,23 @@ namespace MZXRM.PSS.Business
             return new Reference() { Id = Guid.Empty, Name = "" };
         }
 
-        
+
         #endregion
+
+        public static Seiving CreateSeving(Seiving seiving)
+        {
+
+
+            StoreDataManager.CreateSeving(StoreMap.reMapSeivingData(seiving));
+            
+            StoreDataManager.CreateSevingQuantity(StoreMap.reMapSeivingQuantityData(seiving.seivingSizeQty));
+
+            // ztodo: create store movement record
+
+
+            ResetCache();
+            return seiving;
+        }
+
     }
 }

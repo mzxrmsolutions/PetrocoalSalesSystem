@@ -240,5 +240,55 @@ namespace MZXRM.PSS.Business.DBMap
             return ListStores;
         }
 
+
+
+        public static Dictionary<string, object> reMapSeivingData(Seiving seiving)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+            if (seiving.ID != 0)
+                keyValues.Add("@id", seiving.ID);
+            keyValues.Add("@SeivingNo", seiving.SeivingNo);
+            keyValues.Add("@StoreId", seiving.StoreId);
+            if (seiving.Date == DateTime.MinValue)
+                keyValues.Add("@Date", DBNull.Value);
+            else
+                keyValues.Add("@Date", seiving.Date);
+            keyValues.Add("@CoalDescription", seiving.CoalDescription);
+            keyValues.Add("@FromQuantity", seiving.FromQuantity);
+            keyValues.Add("@FromSize", seiving.FromSize);
+            keyValues.Add("@Remarks", seiving.Remarks);
+            keyValues.Add("@VesselId", seiving.VesselId);
+
+            //if (ST.CreatedOn == DateTime.MinValue)
+            //    keyValues.Add("@CreatedOn", DBNull.Value);
+            //else
+            //    keyValues.Add("@CreatedOn", ST.CreatedOn);
+            //keyValues.Add("@CreatedBy", ST.CreatedBy == null ? Guid.Empty : ST.CreatedBy.Id);
+            //if (ST.ModifiedOn == DateTime.MinValue)
+            //    keyValues.Add("@ModifiedOn", DBNull.Value);
+            //else
+            //    keyValues.Add("@ModifiedOn", ST.ModifiedOn);
+            //keyValues.Add("@ModifiedBy", ST.ModifiedBy == null ? Guid.Empty : ST.ModifiedBy.Id);
+            return keyValues;
+        }
+        public static Dictionary<string, object> reMapSeivingQuantityData(List<SeivingSizeQty> seivingSizeQtyList)
+        {
+            Dictionary<string, object> keyValues = new Dictionary<string, object>();
+            foreach (SeivingSizeQty quantity in seivingSizeQtyList)
+            {
+               
+                if (quantity.ID != 0)
+                    keyValues.Add("@id", quantity.ID);
+
+                keyValues.Add("@SeivingID", quantity.SeivingID);
+                keyValues.Add("@SizeId", quantity.SizeId);
+                keyValues.Add("@ToQuantity", quantity.ToQuantity);
+
+            }
+            return keyValues;
+        }
+
+
+
     }
 }

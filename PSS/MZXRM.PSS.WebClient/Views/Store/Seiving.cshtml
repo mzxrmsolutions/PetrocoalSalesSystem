@@ -1,4 +1,13 @@
-﻿
+﻿@model MZXRM.PSS.WebClient.Models.Seiving
+@using MZXRM.PSS.Data
+@using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
+@{
+    ViewBag.Title = "SeivingCreate";
+
+    Customer ThisCust = ViewBag.ThisCust;
+}
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 <section class="content-header">
     <h1>
         Seiving
@@ -49,137 +58,203 @@
         </div>
         <!-- /.box-body -->
     </div>
+    @using (Html.BeginForm("Seiving", "Store", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-    <div class="box box-warning box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">Create Seiving</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
+        <div class="box box-warning box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Create Seiving</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
             </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-
-                <div class="col-md-6">
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="row">
 
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label>Seiving Number</label>
-                            <input type="text" class="form-control" id="input" value="" disabled>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>Date</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="text" class="form-control pull-right" id="datepicker">
-                            </div>
-                            <!-- /.input group -->
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label>Store</label>
-                            <select class="form-control">
-                                <option>--Store--</option>
-                                <option>KPT</option>
-                                <option>Hawks bay</option>
-                                <option>New Godown</option>
-                                <option>New Godown 2</option>
-                                <option>Groney Yard</option>
-                                <option>Port Qasim</option>
-                                <option>Wazir Mention</option>
-                                <option>Train/transit</option>
-                                <option>CCM</option>
+                            <label>Origin</label>
+                            <label class="required">*</label>
+                            <select id="Origin" class="form-control" name="Origin" required>
+                                <option value="0">--- Origin ---</option>
+                                @foreach (Item item in Common.Origin)
+                                {
+                                    <option  value="@item.Index" @(item.Index.ToString() == Request.Form["Origin"] ? " selected " : "")>@item.Value</option>
+                                }
                             </select>
+                            @Html.ValidationMessageFor(model => model.Origin, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <label class="required">*</label>
+                            <select id="FromSize" name="FromSize" class="form-control">
+                                <option value="0">--- Size ---</option>
+                                @foreach (Item item in Common.Size)
+                                {
+                                    <option value="@item.Index" @(item.Index.ToString() == Request.Form["FromSize"] ? " selected " : "")>@item.Value</option>
+                                }
+                            </select>
+                            @Html.ValidationMessageFor(model => model.FromSize, "", new { @class = "text-danger" })
+
+                        </div>
+                    </div>
+                    @*<div class="col-sm-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FromSize, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.FromSize, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FromSize, "", new { @class = "text-danger" })
+
+            </div>
+        </div>*@
+                    <div class="col-sm-2">
                         <div class="form-group">
                             <label>Vessel</label>
-                            <select class="form-control">
-                                <option>--Vessel--</option>
-                                <option>item 1</option>
-                                <option>item 2</option>
+                            <label class="required">*</label>
+                            <select id="VesselId" name="VesselId" class="form-control">
+                                <option value="0">--- Vessel ---</option>
+                                @foreach (Item item in Common.Vessel)
+                                {
+                                    <option value="@item.Index" @(item.Index.ToString() == Request.Form["VesselId"] ? " selected " : "")>@item.Value</option>
+                                }
                             </select>
+                            @Html.ValidationMessageFor(model => model.VesselId, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group">
-                            <label>Coal Description</label>
-                            <select class="form-control">
-                                <option>Indonesian</option>
-                                <option>South African</option>
-                                <option>Afghani</option>
+                            <label>Customer</label>
+                            <select id="CustomerId" name="CustomerId" class="form-control">
+                                <option value="0">--- Customer ---</option>
+                                @foreach (Customer item in CustomerManager.AllCustomers)
+                                {
+                                    <option  value="@item.Id" @((ThisCust != null && ThisCust.Id == item.Id) ? "selected" : "" )>@item.Name</option>
+                                }
                             </select>
+                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+
+
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group">
-                            <label>From Size</label>
-                            <select class="form-control">
-                                <option>--size--</option>
-                                <option>0-50</option>
-                                <option>10-25</option>
-                                <option>25-50</option>
-                                <option>0-0</option>
+                            <label>Stores: </label>
+
+                            @{
+                                List<Store> Stores = StoreManager.ReadAllStore();
+                            }
+                            <select id="StoreId" name="StoreId" class="form-control">
+                                <option value="0">--- Store ---</option>
+                                @foreach (Store store in Stores)
+                                {
+                                    <option value="@store.Id">@store.Name</option>
+                                }
                             </select>
+                            @Html.ValidationMessageFor(model => model.StoreId, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label>From Quantity</label>
-                            <input type="text" class="form-control" id="input" value="">
+                    @*<div class="form-group">
+            @Html.LabelFor(model => model.VesselId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.EditorFor(model => model.VesselId, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.VesselId, "", new { @class = "text-danger" })
+
+        </div>*@
+                    <div class="col-md-6">
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+
+                                @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+                        @*<div class="col-sm-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.StoreId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.EditorFor(model => model.StoreId, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.StoreId, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>*@
+                        <div class="col-sm-3">
+
+                        </div>
+
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.FromQuantity, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.EditorFor(model => model.FromQuantity, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FromQuantity, "", new { @class = "text-danger" })
+                                @*<label>From Quantity</label>
+                    <input type="text" class="form-control" id="input" value="">*@
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                @*<label>Remarks</label>
+                    <input type="text" class="form-control" id="input" value="">*@
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <input type="text" class="form-control" id="input" value="">
-                        </div>
+
+                    <div class="col-md-6" id="model-listing">
+
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <table class="table table-condensed">
-                        <tbody>
-                            <tr>
-                                <th>To Size</th>
-                                <th>Quantity</th>
-                            </tr>
-                            <tr>
-                                <th>0-50</th>
-                                <td><input type="text" class="form-control" id="input" value="" /></td>
-                            </tr>
-                            <tr>
-                                <th>10-25</th>
-                                <td><input type="text" class="form-control" id="input" value="" /></td>
-                            </tr>
-                            <tr>
-                                <th>25-50</th>
-                                <td><input type="text" class="form-control" id="input" value="" /></td>
-                            </tr>
-                            <tr>
-                                <th>0-0</th>
-                                <td><input type="text" class="form-control" id="input" value="" disabled/></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    @*<div class="col-md-6">
+            <table class="table table-condensed">
+                <tbody>
+                    <tr>
+                        <th>To Size</th>
+                        <th>Quantity</th>
+                    </tr>
+                    <tr>
+                        <th>0-50</th>
+                        <td><input type="text" class="form-control" id="input" value="" /></td>
+                    </tr>
+                    <tr>
+                        <th>10-25</th>
+                        <td><input type="text" class="form-control" id="input" value="" /></td>
+                    </tr>
+                    <tr>
+                        <th>25-50</th>
+                        <td><input type="text" class="form-control" id="input" value="" /></td>
+                    </tr>
+                    <tr>
+                        <th>0-0</th>
+                        <td><input type="text" class="form-control" id="input" value="" disabled /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>*@
                 </div>
             </div>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-            <div class="col-sm-3">
-                <a href="/seiving" class="btn btn-primary">Create Seiving</a>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <div class="col-sm-3">
+                    <input type="submit" value="Create Seiving" class="btn btn-default" />
+
+                    @*<a href="/seiving" class="btn btn-primary">Create Seiving</a>*@
+                </div>
             </div>
+
         </div>
-    </div>
+    }
 
 
 
@@ -241,54 +316,58 @@
                 </div>
                 <!-- /.box-body -->
             </div>
-            <table class="table table-condensed">
-                <tbody>
-                    <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Store</th>
-                        <th>Vessel</th>
-                        <th>Coal Description</th>
-                        <th>From (0-50)</th>
-                        <th>To (25-50)</th>
-                        <th>To (10-25)</th>
-                        <th>To (0-0)</th>
-                    </tr>
-                    <tr>
-                        <th>SVN-1001</th>
-                        <td>01 Nov 2017</td>
-                        <td>KPT</td>
-                        <td>NP</td>
-                        <td>ind</td>
-                        <td><span class="badge bg-red">100</span></td>
-                        <td><span class="badge bg-green">58</span></td>
-                        <td><span class="badge bg-green">30</span></td>
-                        <td><span class="badge bg-green">12</span></td>
-                    </tr>
-                    <tr>
-                        <th>SVN-1002</th>
-                        <td>01 Nov 2017</td>
-                        <td>KPT</td>
-                        <td>NP</td>
-                        <td>ind</td>
-                        <td><span class="badge bg-red">100</span></td>
-                        <td><span class="badge bg-green">59</span></td>
-                        <td><span class="badge bg-green"></span></td>
-                        <td><span class="badge bg-green"></span></td>
-                    </tr>
-                    <tr>
-                        <th>SVN-1003</th>
-                        <td>01 Nov 2017</td>
-                        <td>KPT</td>
-                        <td>NP</td>
-                        <td>ind</td>
-                        <td><span class="badge bg-red">100</span></td>
-                        <td><span class="badge bg-green">100</span></td>
-                        <td><span class="badge bg-green">40</span></td>
-                        <td><span class="badge bg-green">1</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div id="model-SevingList">
+
+            </div>
+
+            @*<table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Store</th>
+                            <th>Vessel</th>
+                            <th>Coal Description</th>
+                            <th>From (0-50)</th>
+                            <th>To (25-50)</th>
+                            <th>To (10-25)</th>
+                            <th>To (0-0)</th>
+                        </tr>
+                        <tr>
+                            <th>SVN-1001</th>
+                            <td>01 Nov 2017</td>
+                            <td>KPT</td>
+                            <td>NP</td>
+                            <td>ind</td>
+                            <td><span class="badge bg-red">100</span></td>
+                            <td><span class="badge bg-green">58</span></td>
+                            <td><span class="badge bg-green">30</span></td>
+                            <td><span class="badge bg-green">12</span></td>
+                        </tr>
+                        <tr>
+                            <th>SVN-1002</th>
+                            <td>01 Nov 2017</td>
+                            <td>KPT</td>
+                            <td>NP</td>
+                            <td>ind</td>
+                            <td><span class="badge bg-red">100</span></td>
+                            <td><span class="badge bg-green">59</span></td>
+                            <td><span class="badge bg-green"></span></td>
+                            <td><span class="badge bg-green"></span></td>
+                        </tr>
+                        <tr>
+                            <th>SVN-1003</th>
+                            <td>01 Nov 2017</td>
+                            <td>KPT</td>
+                            <td>NP</td>
+                            <td>ind</td>
+                            <td><span class="badge bg-red">100</span></td>
+                            <td><span class="badge bg-green">100</span></td>
+                            <td><span class="badge bg-green">40</span></td>
+                            <td><span class="badge bg-green">1</span></td>
+                        </tr>
+                    </tbody>
+                </table>*@
 
             <!-- /.box-body -->
         </div>
@@ -304,4 +383,30 @@
     $('#datepicker').datepicker({
         autoclose: true
     })
+</script>
+
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Content("SizeList")'
+            })
+                .done(function (partialViewResult) {
+                    $("#model-listing").html(partialViewResult);
+            });
+
+           $.ajax({
+                url: '@Url.Content("SeivingList")'
+            })
+                .done(function (partialViewResult) {
+                    $("#model-SevingList").html(partialViewResult);
+            });
+
+        });
 </script>

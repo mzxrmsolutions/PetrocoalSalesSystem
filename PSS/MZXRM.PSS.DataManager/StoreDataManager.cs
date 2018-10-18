@@ -273,6 +273,45 @@ private static void UpdateCustomerStock(CustomerStock CustomerStock);*/
 
 
 
+        public static void CreateSeving(Dictionary<string, object> keyValues)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStoreInOut", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                //todo                                      //
+                //StoreDataManager.CreateStockMovementStoreOut(ST);
+                //Guid retId = new Guid(obj.ToString());
+                //return retId;
+            }
+        }
+
+        public static void CreateSevingQuantity(Dictionary<string, object> keyValues)
+        {
+            using (var dbc = DataFactory.GetConnection())
+            {
+                IDbCommand command = CommandBuilder.CommandInsert(dbc, "sp_InsertStoreInOut", keyValues);
+
+                if (command.Connection.State != ConnectionState.Open)
+                {
+                    command.Connection.Open();
+                }
+
+                object obj = command.ExecuteScalar(); //execute query
+                //todo                                      //
+                //StoreDataManager.CreateStockMovementStoreOut(ST);
+                //Guid retId = new Guid(obj.ToString());
+                //return retId;
+            }
+        }
+
+
 
 
 

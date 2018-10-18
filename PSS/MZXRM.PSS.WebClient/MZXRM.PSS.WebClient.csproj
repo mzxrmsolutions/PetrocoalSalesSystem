@@ -146,6 +146,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -224,6 +226,30 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PetroCoal.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PetroCoal.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PetroCoal.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PetroCoal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PetroCoal.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PetroCoal.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Seiving.cs">
+      <DependentUpon>PetroCoal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SeivingSizeQty.cs">
+      <DependentUpon>PetroCoal.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Size.cs">
+      <DependentUpon>PetroCoal.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -234,6 +260,16 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Models\PetroCoal.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PetroCoal.edmx</DependentUpon>
+      <LastGenOutput>PetroCoal.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\PetroCoal.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PetroCoal.edmx</DependentUpon>
+      <LastGenOutput>PetroCoal.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -241,6 +277,13 @@
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EntityDeploy Include="Models\PetroCoal.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PetroCoal.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\PetroCoal.edmx.diagram">
+      <DependentUpon>PetroCoal.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -253,7 +296,11 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Views\Store\SeivingCreate.cshtml" />
+    <Content Include="Views\Store\SizeListing.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -312,6 +359,7 @@
     <Content Include="Views\Store\UpdateStoreTransfer.cshtml" />
     <Content Include="Views\Test\Index.cshtml" />
     <Content Include="Views\Test\Index2.cshtml" />
+    <Content Include="Views\Store\SeivingList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -341,6 +389,9 @@
       <Project>{a5fe1f3a-0f43-4d85-8360-eb2cc9c4066e}</Project>
       <Name>MZXRM.PSS.Data</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,79 @@
+﻿@model IEnumerable<MZXRM.PSS.WebClient.Models.Seiving>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.SeivingNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StoreId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VesselId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CoalDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FromSize)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FromQuantity)
+        </th>
+        @*@foreach (var item2 in Model)
+        {*@
+           
+        @*<th>
+           
+            To Quantity
+        </th>*@
+            @*}*@
+        @*<th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>*@
+
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.SeivingNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StoreId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VesselId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CoalDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FromSize)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FromQuantity)
+        </td>
+        @*@foreach (var m in item.SeivingSizeQties)
+        {
+            <td>
+                @m.SizeQuantity
+            </td>
+        }*@
+
+
+        @*<td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>*@
+
+    </tr>
+}
+
+</table>

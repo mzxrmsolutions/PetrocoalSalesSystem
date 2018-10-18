@@ -29,5 +29,7 @@ namespace MZXRM.PSS.WebClient.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<MZXRM.PSS.Data.Seiving> Seivings { get; set; }
     }
 }
