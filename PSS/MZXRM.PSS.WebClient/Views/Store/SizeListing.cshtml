@@ -16,9 +16,18 @@
         <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
-        <td>
-            <input id="Qty_@item.Id" name="Qty_@item.Id" value=""/>
-        </td>
+        @if (item.Name != "00-00")
+        {
+            <td>
+                <input id="Qty_@item.Id" name="Qty_@item.Id" value="" onchange="adjustQuantity(@item.Id);" />
+            </td>}
+
+        else
+        {
+            <td>
+                <input id="Qty_@item.Id" name="Qty_@item.Id" value="" onchange="adjustQuantity(@item.Id);" disabled />
+            </td>
+        }
 
     </tr>
 }

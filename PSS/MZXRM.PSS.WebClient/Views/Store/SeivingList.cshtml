@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<MZXRM.PSS.WebClient.Models.Seiving>
-
+@using MZXRM.PSS.Data
+@using MZXRM.PSS.Business
+@using MZXRM.PSS.Common
 
 <table class="table">
     <tr>
@@ -26,56 +28,73 @@
             @Html.DisplayNameFor(model => model.FromQuantity)
         </th>
         @*@foreach (var item2 in Model)
-        {*@
+            {*@
 
         @*<th>
 
-            To Quantity
-        </th>*@
+                To Quantity
+            </th>*@
         @*}*@
         @*<th>
-            @Html.DisplayNameFor(model => model.Remarks)
-        </th>*@
+                @Html.DisplayNameFor(model => model.Remarks)
+            </th>*@
 
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.SeivingNo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Origin)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StoreId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.VesselId)
-        </td>
-
-        <td>
-            @Html.DisplayFor(modelItem => item.FromSize)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FromQuantity)
-        </td>
-        @*@foreach (var m in item.SeivingSizeQties)
-        {
+    @foreach (var item in Model)
+    {
+        <tr>
             <td>
-                @m.SizeQuantity
+                @Html.DisplayFor(modelItem => item.SeivingNo)
             </td>
-        }*@
+            <td>
+                @{
+                    var originObj = (from t in Common.Origin
+                                     where t.Index == @item.Origin
+                                     select t.Value
+                                     ).FirstOrDefault();
+                }
+               @originObj             
+               @*@Html.DisplayFor(modelItem => item.Origin)*@
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @*@{
+                    var storeObj = (from t in StoreManager.AllStore
+                                    where t.Id.ToString() == @item.StoreId
+                                    select t.Name
+                                     ).FirstOrDefault();
+                }
+
+                storeObj*@
+                @Html.DisplayFor(modelItem => item.StoreId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VesselId)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FromSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FromQuantity)
+            </td>
+            @*@foreach (var m in item.SeivingSizeQties)
+                {
+                    <td>
+                        @m.SizeQuantity
+                    </td>
+                }*@
 
 
-        @*<td>
-            @Html.DisplayFor(modelItem => item.Remarks)
-        </td>*@
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.Remarks)
+                </td>*@
 
-    </tr>
-}
+        </tr>
+    }
 
 </table>

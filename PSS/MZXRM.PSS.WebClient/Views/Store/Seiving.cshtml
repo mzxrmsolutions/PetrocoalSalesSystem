@@ -196,7 +196,7 @@
                         <div class="col-sm-4">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.FromQuantity, htmlAttributes: new { @class = "control-label col-md-2" })
-                                @Html.EditorFor(model => model.FromQuantity, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.EditorFor(model => model.FromQuantity, new { htmlAttributes = new { @class = "form-control" }})
                                 @Html.ValidationMessageFor(model => model.FromQuantity, "", new { @class = "text-danger" })
                                 @*<label>From Quantity</label>
                     <input type="text" class="form-control" id="input" value="">*@
@@ -408,5 +408,27 @@
                     $("#model-SevingList").html(partialViewResult);
             });
 
-        });
+    });
+    //function QunatityValue() {
+    //    var available = $("#FromQuantity").val();
+    //    $("#Qty_7").val($("#FromQuantity").val());
+    //}
+
+    $('#FromQuantity').change(function () {
+        var available = $("#FromQuantity").val();
+        $("#Qty_7").val($("#FromQuantity").val());
+    });
+
+
+
+    function adjustQuantity(id) {
+        var addedQuantity = document.getElementById('Qty_' + id).value;
+        
+        var totalavailableQunatity = $("#Qty_7").val();
+        var leftAvailable = parseInt(totalavailableQunatity) - parseInt(addedQuantity);
+        $("#Qty_7").val(leftAvailable.toString());
+
+
+    }
+
 </script>
