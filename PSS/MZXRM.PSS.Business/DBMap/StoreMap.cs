@@ -186,6 +186,7 @@ namespace MZXRM.PSS.Business.DBMap
                 Store mapData = new Store();
                 mapData.Id = new Guid(dr["id"].ToString());
                 mapData.Status = (StoreStatus)Enum.Parse(typeof(StoreStatus), dr["status"].ToString());
+                mapData.SaleStationId = CommonDataManager.GetSaleStation(dr["SaleStationId"].ToString());
 
                 mapData.CreatedOn = dr["CreatedOn"] != DBNull.Value ? DateTime.Parse(dr["CreatedOn"].ToString()) : DateTime.MinValue;
                 mapData.CreatedBy = dr["CreatedBy"] != null ? UserManager.GetUserRef(dr["CreatedBy"].ToString()) : UserManager.GetDefaultRef();

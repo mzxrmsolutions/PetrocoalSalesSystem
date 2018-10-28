@@ -164,6 +164,7 @@ namespace PatrocoalSalesSystem.Controllers
 
             ViewBag.ThisCust = !string.IsNullOrEmpty(Request.QueryString["cust"]) ? CustomerManager.GetCustomer(Guid.Parse(Request.QueryString["cust"])) : null;
             ViewBag.Ordertype = !string.IsNullOrEmpty(Request.QueryString["type"]) ? int.Parse(Request.QueryString["type"]) : 0;
+            ViewData["Success"] = "";
             return View();
         }
         [AcceptVerbs(HttpVerbs.Post)]
@@ -189,7 +190,12 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     SaleOrder SO = SaleManager.CreateSO(values);
                     if (SO != null)
-                        Response.Redirect("/SaleOrder/UpdateOrder/" + SO.SONumber);
+                    {
+                        ViewData["Success"] = "Sale Order Created Successfully!";
+                        //Response.Redirect("/SaleOrder/UpdateOrder/" + SO.SONumber);
+                        //return View("OrderDetail", new { id = SO.SONumber });
+                        return RedirectToAction( "OrderDetail", new { id = SO.SONumber.ToString()});
+                    }
                 }
                 else
                     ExceptionHandler.Warning("Validation! " + formErrors);
@@ -261,7 +267,7 @@ namespace PatrocoalSalesSystem.Controllers
                 {
                     DeliveryOrder DO = SaleManager.UpdateDO(values);
                     if (DO != null)
-                        Response.Redirect("/SaleOrder/DODetail/" + DO.DONumber);
+                       Response.Redirect("/SaleOrder/DODetail/" + DO.DONumber);
                 }
                 else
                     ExceptionHandler.Warning("Validation! " + formErrors);
@@ -446,8 +452,11 @@ namespace PatrocoalSalesSystem.Controllers
         {
             //ViewBag.ThisSO
             Common.MyUrl = Request.RawUrl;
-            if(!String.IsNullOrEmpty(id))
+           
+            if (!String.IsNullOrEmpty(id))
             {
+                var DO = SaleManager.GetDOByDONumber(id);
+                ViewBag.ThisDO = DO;
                 ViewBag.DONumber = id;
             }
             if (!Common.isAuthorize())

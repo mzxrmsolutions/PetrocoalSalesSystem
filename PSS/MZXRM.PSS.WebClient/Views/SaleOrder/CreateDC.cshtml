@@ -78,6 +78,8 @@
                             <div class="form-group">
                                 <label>Total Quantity</label>
                                 <p>@ThisDO.Quantity.ToString(Constants.QuantityFormat)</p>
+                                <input id="maxQuantity" name="maxQuantity" value="@ThisDO.Quantity" hidden />
+                                
                             </div>
                         </div>
                         <div class="col-sm-2">
@@ -103,162 +105,188 @@
                                 {
 
                                 @*<div id="row_@i.ToString()" class="col-lg-10" style="border:solid">*@
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>DC Date:</th>
-                                        <th>Transporter *</th>
-                                        <th>Truck No</th>
-                                        <th>Bilty No</th>
-                                        <th>Slip No</th>
-                                        <th>Weight</th>
-                                        <th>Net Weight</th>
-                                        <th>Driver Name</th>
-                                        <th>Driver Phone</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr id="row">
-                                        <td>@i</td>
-                                        <td>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>DC Date:</th>
+                                    <th>Store</th>
+                                    <th>Transporter *</th>
+                                    <th>Truck No</th>
+                                    <th>Bilty No</th>
+                                    <th>Slip No</th>
+                                    <th>Weight</th>
+                                    <th>Net Weight</th>
+                                    <th>Driver Name</th>
+                                    <th>Driver Phone</th>
+                                    <th></th>
+                                </tr>
+                                <tr id="row">
+                                    <td>@i</td>
+                                    <td>
 
-                                            <div class="form-group">
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </div>
-                                                    <input type="text" class="form-control pull-right" data-selector="date" name="DCDate_@i.ToString()" value="@DateTime.Now.ToShortDateString()">
+                                        <div class="form-group">
+                                            <div class="input-group date">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
                                                 </div>
+                                                <input type="text" class="form-control pull-right" data-selector="date" name="DCDate_@i.ToString()" value="@DateTime.Now.ToShortDateString()">
                                             </div>
+                                        </div>
 
-</td>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
 
-                                        <td>
+                                            @{List<Store> Stores;
+                                                if (ThisDO != null)
+                                                {
+                                                    Stores = StoreManager.ReadStoreBySaleStation(ThisDO.Location.Id);
+                                                }
+                                                else
+                                                {
+                                                    Stores = StoreManager.GetAllStore();
 
-                                            <div class="form-group">
-                                                <select class="form-control select2" name="TransporterId_@i.ToString()">
-                                                    <option value="0">--- Transporter ---</option>
-                                                    @foreach (Item item in Common.Trader)
+                                                }
+                                            }
+                                                <select class="form-control select2" name="Store_@i.ToString()">
+                                                    <option value="0">--- Store ---</option>
+                                                    @foreach (Store store in Stores)
                                                     {
-                                                        <option value="@item.Index">@item.Value</option>
-                                                    }
-                                                </select>
-                                            </div>
-
-                                        </td>
-
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="TruckNo_@i.ToString()" value='@(Request.Form["TruckNo_"+i.ToString()]!=null?@Request.Form["TruckNo_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="BiltyNo_@i.ToString()" value='@(Request.Form["BiltyNo_"+i.ToString()]!=null?@Request.Form["BiltyNo_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="SlipNo_@i.ToString()" value='@(Request.Form["SlipNo_"+i.ToString()]!=null?@Request.Form["SlipNo_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Weight_@i.ToString()" value='@(Request.Form["Weight_"+i.ToString()]!=null?@Request.Form["Weight_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="NetWeight_@i.ToString()" value='@(Request.Form["NetWeight_"+i.ToString()]!=null?@Request.Form["NetWeight_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="DriverName_@i.ToString()" value='@(Request.Form["DriverName_"+i.ToString()]!=null?@Request.Form["DriverName_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="DriverPhone_@i.ToString()" value='@(Request.Form["DriverPhone_"+i.ToString()]!=null?@Request.Form["DriverPhone_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <th></th>
-                                        <th>Loaded</th>
-                                        <th>Size</th>
-                                        <th>Unloaded</th>
-                                        <th>Size</th>
-                                        <th>Remarks</th>
-                                    </tr>
-
-                                    <tr id="row">
-                                        <td></td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Loaded_@i.ToString()" value='@(Request.Form["Loaded_"+i.ToString()]!=null?@Request.Form["Loaded_"+i.ToString()].ToString():"")'>
-                                            </div>
-
-                                        </td>
-                                        <td>
-
-                                            <div class="form-group">
-                                                <select class="form-control select2" name="LoadedSize_@i.ToString()" value='@(Request.Form["LoadedSize_"+i.ToString()]!=null?@Request.Form["LoadedSize_"+i.ToString()].ToString():"")'>
-                                                    <option value="0">--- Size ---</option>
-                                                    @foreach (Item item in Common.Size)
-                                                    {
-                                                        <option value="@item.Index">@item.Value</option>
+                                                        <option value="@store.Id">@store.Name</option>
                                                     }
                                                 </select>
 
-                                            </div>
-                                        </td>
-                                        <td>
 
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Unloaded_@i.ToString()" value='@(Request.Form["Unloaded_"+i.ToString()]!=null?@Request.Form["Unloaded_"+i.ToString()].ToString():"")'>
-                                            </div>
 
-                                        </td>
-                                        <td>
+                                        </div>
+                                    </td>
+                                    <td>
 
-                                            <div class="form-group">
-                                                <select class="form-control select2" name="UnloadedSize_@i.ToString()">
-                                                    <option value="0">--- Size ---</option>
-                                                    @foreach (Item item in Common.Size)
-                                                    {
-                                                        <option value="@item.Index">@item.Value</option>
-                                                    }
-                                                </select>
-                                            </div>
+                                        <div class="form-group">
+                                            <select class="form-control select2" name="TransporterId_@i.ToString()">
+                                                <option value="0">--- Transporter ---</option>
+                                                @foreach (Item item in Common.Trader)
+                                                {
+                                                    <option value="@item.Index">@item.Value</option>
+                                                }
+                                            </select>
+                                        </div>
 
-                                        </td>
+                                    </td>
 
-                                        <td>
-                                            @*class="col-sm-12"*@
-                                            <div class="form-group">
-                                                <input type="text" class="form-control" name="Remarks_@i.ToString()" value='@(Request.Form["Remarks_"+i.ToString()]!=null?@Request.Form["Remarks_"+i.ToString()].ToString():"")'>
-                                            </div>
+                                    <td>
 
-                                        </td>
-                                    </tr>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="TruckNo_@i.ToString()" value='@(Request.Form["TruckNo_"+i.ToString()]!=null?@Request.Form["TruckNo_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="BiltyNo_@i.ToString()" value='@(Request.Form["BiltyNo_"+i.ToString()]!=null?@Request.Form["BiltyNo_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="SlipNo_@i.ToString()" value='@(Request.Form["SlipNo_"+i.ToString()]!=null?@Request.Form["SlipNo_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Weight_@i.ToString()" value='@(Request.Form["Weight_"+i.ToString()]!=null?@Request.Form["Weight_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="NetWeight_@i.ToString()" value='@(Request.Form["NetWeight_"+i.ToString()]!=null?@Request.Form["NetWeight_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="DriverName_@i.ToString()" value='@(Request.Form["DriverName_"+i.ToString()]!=null?@Request.Form["DriverName_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="DriverPhone_@i.ToString()" value='@(Request.Form["DriverPhone_"+i.ToString()]!=null?@Request.Form["DriverPhone_"+i.ToString()].ToString():"")'>
+                                        </div>
+
+                                    </td>
+                                </tr>
+
+
+                                     <tr>
+                                         <th></th>
+                                         <th>Loaded</th>
+                                         <th>Size</th>
+                                         <th>Unloaded</th>
+                                         <th>Size</th>
+                                         <th>Remarks</th>
+                                     </tr>
+
+                                     <tr id="row">
+                                         <td></td>
+                                         <td>
+
+                                             <div class="form-group">
+                                                 <input type="text" class="form-control" name="Loaded_@i.ToString()" id="Loaded_@i.ToString()" onchange="adjustQuantity(@i.ToString());" value='@(Request.Form["Loaded_"+i.ToString()]!=null?@Request.Form["Loaded_"+i.ToString()].ToString():"")'>
+                                             </div>
+
+                                         </td>
+                                         <td>
+
+                                             <div class="form-group">
+                                                 <select class="form-control select2" name="LoadedSize_@i.ToString()" value='@(Request.Form["LoadedSize_"+i.ToString()]!=null?@Request.Form["LoadedSize_"+i.ToString()].ToString():"")'>
+                                                     <option value="0">--- Size ---</option>
+                                                     @foreach (Item item in Common.Size)
+                                                     {
+                                                         <option value="@item.Index">@item.Value</option>
+                                                     }
+                                                 </select>
+
+                                             </div>
+                                         </td>
+                                         <td>
+
+                                             <div class="form-group">
+                                                 <input type="text" class="form-control" name="Unloaded_@i.ToString()" value='@(Request.Form["Unloaded_"+i.ToString()]!=null?@Request.Form["Unloaded_"+i.ToString()].ToString():"")'>
+                                             </div>
+
+                                         </td>
+                                         <td>
+
+                                             <div class="form-group">
+                                                 <select class="form-control select2" name="UnloadedSize_@i.ToString()">
+                                                     <option value="0">--- Size ---</option>
+                                                     @foreach (Item item in Common.Size)
+                                                     {
+                                                         <option value="@item.Index">@item.Value</option>
+                                                     }
+                                                 </select>
+                                             </div>
+
+                                         </td>
+
+                                         <td>
+                                             @*class="col-sm-12"*@
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="Remarks_@i.ToString()" value='@(Request.Form["Remarks_"+i.ToString()]!=null?@Request.Form["Remarks_"+i.ToString()].ToString():"")'>
+                                    </div>
+
+                                    </td>
+                                </tr>
                                 @*</div>*@
                                 }
 
@@ -276,6 +304,27 @@
 </section>
 @section scripts
 {
+<script>
+        function adjustQuantity(id) {
+            var sumQuantity = 0;
+            var maxQty = document.getElementById('maxQuantity').value; 
+
+            var j;
+            for ( j = 1; j <= id; j++) {
+                var addedQuantity = document.getElementById('Loaded_' + j).value;
+                sumQuantity += parseInt(addedQuantity);
+
+
+            }
+            if (maxQty != null) {
+                if (sumQuantity > maxQty) {
+                    document.getElementById('Loaded_' + id).value = "0";
+                    alert("Quantity Exceeds DO Quantity");
+                }
+            }
+
+        }
+</script>
     @*<script>
 
       

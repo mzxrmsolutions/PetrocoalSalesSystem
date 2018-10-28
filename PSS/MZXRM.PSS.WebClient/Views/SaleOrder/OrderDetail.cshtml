@@ -5,6 +5,7 @@
     SaleOrder ThisSO = ViewBag.ThisSO;
     Customer ThisCust = ViewBag.ThisCust;
     int Ordertype = ViewBag.OrderType;
+    //string success = ViewData["Success"].ToString();
 }
 <section class="content-header">
     <h1>
@@ -28,6 +29,15 @@
         </div>
         { ExceptionHandler.CloseException(); }
     }
+    @*@if (success != "")
+    {
+        <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h4><i class="icon fa fa-ban"></i> Success!</h4>
+        @success
+        </div>
+
+    }*@
     <div class="box box-default box-solid">
         <!-- /.box-header -->
         <div class="box-body">
@@ -126,9 +136,9 @@
                     <p>@ThisSO.AgreedRate.Value.ToString(Constants.PriceFormat)</p>
                 </div>
                 @*<div class="col-sm-2">
-                    <label>Agreed Tax Rate:</label>
-                    <p>@ThisSO.AgreedTaxRate.Value</p>
-                </div>*@
+                        <label>Agreed Tax Rate:</label>
+                        <p>@ThisSO.AgreedTaxRate.Value</p>
+                    </div>*@
                 <div class="col-sm-2">
                     <label>Rate inc. Tax:</label>
                     <p><span class="badge bg-green">@ThisSO.RateIncTax</span></p>
@@ -150,6 +160,14 @@
                 <div class="col-sm-4">
                     <label>Remarks:</label>
                     <p>@ThisSO.Remarks</p>
+                </div>
+                <div class="col-sm-2">
+                    <label>Min Quantity Buffer (%):</label>
+                    <p>@ThisSO.BufferQuantityMin</p>
+                </div>
+                <div class="col-sm-2">
+                    <label>Max Quantity Buffer (%):</label>
+                    <p>@ThisSO.BufferQuantityMax</p>
                 </div>
                 <div class="col-sm-1">
                     <label>Lead:</label>
@@ -196,7 +214,7 @@
                             <td><a href="/SaleOrder/DODetail/@dos.DONumber" class="btn btn-block btn-primary btn-sm">@dos.DONumber</a></td>
                             <td>@dos.DODate.ToShortDateString()</td>
                             <td>@dos.LiftingStartDate.ToShortDateString()</td>
-                            <td>@dos.DeliveryDestination</td>
+                            <td>@dos.DeliveryDestination.Value</td>
                             <td><span class="badge bg-green">@dos.DumperRate</span></td>
                             <td>@dos.FreightPerTon</td>
                             <td>@dos.Quantity.ToString(Constants.QuantityFormat)</td>

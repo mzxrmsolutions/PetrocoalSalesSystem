@@ -6,6 +6,7 @@ namespace MZXRM.PSS.Data
     {
         public int Id { get; set; }
         public Item DeliveryOrder { get; set; }
+        public Reference Store { get; set; }
         public Reference Lead { get; set; }
         public Item Transporter { get; set; }
         public DCStatus Status { get; set; }

@@ -88,7 +88,7 @@
                                 <p>@ThisCust.TotalStock.ToString(Constants.QuantityFormat)</p>
                             </div>
                         </div>
-                      
+
                     </div>
                     <div class="row">
                         <div class="col-sm-2">
@@ -258,14 +258,29 @@
                             </div>
                         </div>
                     }
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <label>Remarks</label>
-                            <div class="form-group">
-                                <input type="text" style="width:25%;" name="Remarks" value="@ThisSO.Remarks"/>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Min Quantity Buffer (%)</label>
+                                    <input type="text" class="form-control" name="BufferMin" value='@(Request.Form["BufferMin"]!=null?Request.Form["BufferMin"].ToString():"10")' />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label>Max Quantity Buffer (%)</label>
+                                    <input type="text" class="form-control" name="BufferMax" value='@(Request.Form["BufferMax"]!=null?@Request.Form["BufferMax"].ToString():"10")' />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <label>Remarks</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" style="width:25%;" name="Remarks" value="@ThisSO.Remarks" />
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                   
+
                 </div>
                 <!-- /.box-body -->
             </form>

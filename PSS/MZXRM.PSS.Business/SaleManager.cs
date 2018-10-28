@@ -163,7 +163,7 @@ namespace MZXRM.PSS.Business
                 DeliveryOrder DO = new DeliveryOrder();
 
                 SaleOrder SO = GetSOById(Convert.ToInt32(values["SONumber"]));
-                DO.StoreId = StoreManager.GetStoreRef(values["StoreId"].ToString());
+                //DO.StoreId = StoreManager.GetStoreRef(values["StoreId"].ToString());
                 DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
                 DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
@@ -194,6 +194,7 @@ namespace MZXRM.PSS.Business
                 DO.ModifiedOn = DateTime.Now;
                 //todo: temp work
                 SaleDataManager.SaveDO(SOMap.reMapDOData( DO));
+                ResetCache();
                 return DO;
             }
             catch (Exception ex)
@@ -212,7 +213,7 @@ namespace MZXRM.PSS.Business
                 SaleOrder SO = GetSOById(Convert.ToInt32(values["SOID"]));
                 DO.Id = Convert.ToInt32(values["DOID"]);
 
-                DO.StoreId = StoreManager.GetStoreRef(values["StoreId"].ToString());
+                //DO.StoreId = StoreManager.GetStoreRef(values["StoreId"].ToString());
                 DO.Location = CommonDataManager.GetSaleStation(values["Location"]);
                 DO.SaleOrder = new Item { Index = SO.Id, Value = SO.SONumber };
                 DO.Lead = UserManager.GetUserRef(values["Lead"].ToString());
@@ -271,9 +272,13 @@ namespace MZXRM.PSS.Business
                     DC.Lead = new Reference() { Id = DO.Lead.Id, Name = DO.Lead.Name };//UserManager.GetUserRef(values["Lead"].ToString());
                     //TODO: trader and transporter are different
                     DC.Transporter = values["TransporterId_" + i] != null ? CommonDataManager.GetTrader(values["TransporterId_" + i].ToString()) : CommonDataManager.GetDefaultRef();
+
+                    
+                    DC.Store = StoreManager.GetStoreRef(values["Store_"+i].ToString());
+
                     DC.Status = DCStatus.InTransit;
                     DC.DCDate = DateTime.Parse(values["DCDate_" + i].ToString());
-                    DC.Quantity = decimal.Parse(values["NetWeight_" + i].ToString());
+                    DC.Quantity = decimal.Parse(values["Loaded_" + i].ToString());
                     DC.TruckNo = values["TruckNo_" + i].ToString();
                     DC.BiltyNo = values["BiltyNo_" + i].ToString();
                     DC.SlipNo = values["SlipNo_" + i].ToString();
@@ -315,6 +320,7 @@ namespace MZXRM.PSS.Business
                 DC.Lead = UserManager.GetUserRef(values["Lead"].ToString());
                 //TODO: trader and transporter are different
                 DC.Transporter = values["TransporterId"] != null ? CommonDataManager.GetTrader(values["TransporterId"].ToString()) : CommonDataManager.GetDefaultRef();
+                DC.Store = StoreManager.GetStoreRef(values["Store"].ToString());
                 DC.Status = DCStatus.InTransit;
                 DC.DCDate = DateTime.Parse(values["DCDate"].ToString());
                 DC.Quantity = decimal.Parse(values["Quantity"].ToString());
@@ -364,6 +370,8 @@ namespace MZXRM.PSS.Business
                 SO.Size = Common.GetSize(values["Size"].ToString());
                 SO.Vessel = Common.GetVessel(values["Vessel"].ToString());
                 SO.Quantity = decimal.Parse(values["Quantity"].ToString());
+                SO.BufferQuantityMin = decimal.Parse(values["BufferMin"].ToString());
+                SO.BufferQuantityMax = decimal.Parse(values["BufferMax"].ToString());
                 SO.AgreedTaxRate = values.ContainsKey("TaxRate") ? Common.GetTaxRate(values["TaxRate"].ToString()) : null;
                 SO.Tax = !((SO.AgreedTaxRate == null) || (SO.AgreedTaxRate.Index == 0));
                 //SO.AgreedRate = decimal.Parse(values["AgreedRate"].ToString());
@@ -420,6 +428,8 @@ namespace MZXRM.PSS.Business
                 SO.Size = Common.GetSize(values["Size"].ToString());
                 SO.Vessel = Common.GetVessel(values["Vessel"].ToString());
                 SO.Quantity = decimal.Parse(values["Quantity"].ToString());
+                SO.BufferQuantityMin = decimal.Parse(values["BufferMin"].ToString());
+                SO.BufferQuantityMax = decimal.Parse(values["BufferMax"].ToString());
                 SO.LC = SO.OrderType == SOType.LC;
                 if (values["ordertype"] == "1" || values["ordertype"] == "3")
                 {
@@ -453,6 +463,7 @@ namespace MZXRM.PSS.Business
                 //todo: temp work
                 //SO.PartyPOImage = String.Empty;
                 SaleDataManager.SaveSO(SOMap.reMapSOData( SO));
+                ResetCache();
                 return SO;
             }
             catch (Exception ex)
@@ -578,7 +589,9 @@ namespace MZXRM.PSS.Business
                 string ErrorMessage = string.Empty;
                 if(values["ordertype"] == "1" || values["ordertype"] == "3")
                 {
-                    if (string.IsNullOrEmpty(values["Rate"])) ErrorMessage += "Rate";
+                    //Rate is changed to AgreedRate
+                    //if (string.IsNullOrEmpty(values["Rate"])) ErrorMessage += "Rate"; 
+                    if (string.IsNullOrEmpty(values["AgreedRate"])) ErrorMessage += "AgreedRate";
                     if (string.IsNullOrEmpty(values["TaxRate"])) ErrorMessage += "TaxRate";
                     if (string.IsNullOrEmpty(values["Trader"])) ErrorMessage += "Trader";
                     if (string.IsNullOrEmpty(values["TraderCommission"])) ErrorMessage += "TraderCommission";
@@ -587,7 +600,9 @@ namespace MZXRM.PSS.Business
                 if (string.IsNullOrEmpty(values["CreditPeriod"])) ErrorMessage += "CreditPeriod";
                 if (string.IsNullOrEmpty(values["Remarks"])) ErrorMessage += "Remarks";
                 if (string.IsNullOrEmpty(values["Quantity"])) ErrorMessage += "Quantity";
-                if (string.IsNullOrEmpty(values["POScanImage"])) ErrorMessage += "POScanImage";
+                //if (string.IsNullOrEmpty(values["POScanImage"])) ErrorMessage += "POScanImage";
+                if (string.IsNullOrEmpty(values["BufferMin"])) ErrorMessage += "Buffer Min %, ";
+                if (string.IsNullOrEmpty(values["BufferMax"])) ErrorMessage += "Buffer Max %, ";
                 if (string.IsNullOrEmpty(values["POExpiry"])) ErrorMessage += "POExpiry";
                 if (string.IsNullOrEmpty(values["PODate"])) ErrorMessage += "PODate";
                 if (string.IsNullOrEmpty(values["PONumber"])) ErrorMessage += "PONumber";
@@ -609,7 +624,10 @@ namespace MZXRM.PSS.Business
                     SO.Vessel = Common.GetVessel(values["Vessel"]);
                     SO.Customer= CustomerManager.GetCustomerRef(values["Customer"]);
 
-                    
+                    SO.BufferQuantityMin = values.ContainsKey("BufferMin") ? decimal.Parse(values["BufferMin"]) : 10;
+                    SO.BufferQuantityMax = values.ContainsKey("BufferMax") ? decimal.Parse(values["BufferMax"]) : 10;
+
+
                     SO.Status = SOStatus.Created;
                     SO.PODate = values.ContainsKey("PODate") ? DateTime.Parse(values["PODate"]) : DateTime.MaxValue;
                     SO.SODate = values.ContainsKey("SODate") ? DateTime.Parse(values["SODate"]) : DateTime.MaxValue;
@@ -653,8 +671,8 @@ namespace MZXRM.PSS.Business
 
                     if (values["TransporterId_" + i] == "0")
                         continue;
-
-
+                  
+                    if (values["Store_" + i] == "0") ErrorMessage += "Store, ";
                     if (values["UnloadedSize_" + i] == "0") ErrorMessage += "UnloadedSize_, ";
                     if (values["LoadedSize_" + i] == "0") ErrorMessage += "LoadedSize_, ";
                     if (string.IsNullOrEmpty(values["TruckNo_" + i])) ErrorMessage += "TruckNo_, ";
@@ -683,10 +701,15 @@ namespace MZXRM.PSS.Business
                         if (values["TransporterId_" + i] == "0")
                             continue;
 
+                        if (values["Store_" + i] == "0")
+                            continue;
+
                         DeliveryChalan dc = NewDeliveryChalan();
+                        if (values.ContainsKey("Store"))
+                            dc.Store = StoreManager.GetStoreRef(values["Store"].ToString());
                         dc.TruckNo = values["TruckNo_" + i.ToString()];
                         dc.DCDate = values.ContainsKey("DCDate_" + i.ToString()) ? DateTime.Parse(values["DCDate_" + i.ToString()]) : DateTime.MaxValue;
-                        dc.Quantity = values.ContainsKey("NetWeight_" + i.ToString()) ? decimal.Parse(values["NetWeight_" + i.ToString()]) : 0;
+                        dc.Quantity = values.ContainsKey("Loaded_" + i.ToString()) ? decimal.Parse(values["Loaded_" + i.ToString()]) : 0;
                         dc.BiltyNo = values["BiltyNo_" + i.ToString()];
                         dc.SlipNo = values["SlipNo_" + i.ToString()];
                         dc.Weight = values.ContainsKey("Weight_" + i.ToString()) ? decimal.Parse(values["Weight_" + i.ToString()]) : 0;
@@ -725,8 +748,9 @@ namespace MZXRM.PSS.Business
                     if (string.IsNullOrEmpty(values["SlipNo"])) ErrorMessage += "SlipNo, ";
                     if (string.IsNullOrEmpty(values["Weight"])) ErrorMessage += "Weight, ";
                     if (string.IsNullOrEmpty(values["NetWeight"])) ErrorMessage += "NetWeight, ";
-                   // if (string.IsNullOrEmpty(values["NetWeight"])) ErrorMessage += "NetWeight, ";
-                    if (string.IsNullOrEmpty(values["DriverPhone"])) ErrorMessage += "DriverPhone, ";
+                if (string.IsNullOrEmpty(values["Quantity"])) ErrorMessage += "Quantity, ";
+                // if (string.IsNullOrEmpty(values["NetWeight"])) ErrorMessage += "NetWeight, ";
+                if (string.IsNullOrEmpty(values["DriverPhone"])) ErrorMessage += "DriverPhone, ";
                 if (string.IsNullOrEmpty(values["DriverName"])) ErrorMessage += "DriverName, ";
                 //if (string.IsNullOrEmpty(values["Loaded"])) ErrorMessage += "Loaded, ";
                 //if (string.IsNullOrEmpty(values["Unloaded"])) ErrorMessage += "Unloaded, ";
@@ -747,7 +771,8 @@ namespace MZXRM.PSS.Business
                     DeliveryChalan dc = NewDeliveryChalan();
                     dc.TruckNo = values["TruckNo"];
                     dc.DCDate = values.ContainsKey("DCDate") ? DateTime.Parse(values["DCDate"]) : DateTime.MaxValue;
-                    dc.Quantity = values.ContainsKey("NetWeight") ? decimal.Parse(values["NetWeight"]) : 0;
+                   
+                    dc.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
                     dc.BiltyNo = values["BiltyNo"];
                     dc.SlipNo = values["SlipNo"];
                     dc.Weight = values.ContainsKey("Weight") ? decimal.Parse(values["Weight"]) : 0;
@@ -787,7 +812,7 @@ namespace MZXRM.PSS.Business
                     if (string.IsNullOrEmpty(values["Quantity"])) ErrorMessage  += "Quantity, ";
                     if (string.IsNullOrEmpty(values["LiftingStartDate"])) ErrorMessage += "LiftingStartDate, ";
                 if (string.IsNullOrEmpty(values["LiftingEndDate"])) ErrorMessage += "LiftingEndDate, ";
-                if (string.IsNullOrEmpty(values["StoreId"])) ErrorMessage += "StoreId, ";
+                //if (string.IsNullOrEmpty(values["StoreId"])) ErrorMessage += "StoreId, ";
                 if (string.IsNullOrEmpty(values["DumperRate"])) ErrorMessage += "DumperRate, ";
                 if (string.IsNullOrEmpty(values["FreightPaymentTerms"])) ErrorMessage += "FreightPaymentTerms, ";
                 if (string.IsNullOrEmpty(values["FreightPerTon"])) ErrorMessage += "FreightPerTon, ";
@@ -820,7 +845,7 @@ namespace MZXRM.PSS.Business
                     dos.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
                     dos.LiftingStartDate = values.ContainsKey("LiftingStartDate") ? DateTime.Parse(values["LiftingStartDate"]) : DateTime.MaxValue;
                     dos.LiftingEndDate = values.ContainsKey("LiftingEndDate") ? DateTime.Parse(values["LiftingEndDate"]) : DateTime.MaxValue;
-                    dos.StoreId = StoreManager.GetStoreRef(values["StoreId"]);
+                    //dos.StoreId = StoreManager.GetStoreRef(values["StoreId"]);
                     dos.DeliveryDestination = CustomerManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"]); 
                     dos.DumperRate = values.ContainsKey("DumperRate") ? decimal.Parse(values["DumperRate"]) : 0;
                     dos.FreightPaymentTerms = values.ContainsKey("FreightPaymentTerms") ? decimal.Parse(values["FreightPaymentTerms"]) : 0;
@@ -861,7 +886,7 @@ namespace MZXRM.PSS.Business
                 if (string.IsNullOrEmpty(values["Quantity"])) ErrorMessage += "Quantity, ";
                 if (string.IsNullOrEmpty(values["LiftingStartDate"])) ErrorMessage += "LiftingStartDate, ";
                 if (string.IsNullOrEmpty(values["LiftingEndDate"])) ErrorMessage += "LiftingEndDate, ";
-                if (string.IsNullOrEmpty(values["StoreId"])) ErrorMessage += "StoreId, ";
+                //if (string.IsNullOrEmpty(values["StoreId"])) ErrorMessage += "StoreId, ";
                 if (string.IsNullOrEmpty(values["DumperRate"])) ErrorMessage += "DumperRate, ";
                 if (string.IsNullOrEmpty(values["FreightPaymentTerms"])) ErrorMessage += "FreightPaymentTerms, ";
                 if (string.IsNullOrEmpty(values["FreightPerTon"])) ErrorMessage += "FreightPerTon, ";
@@ -885,7 +910,7 @@ namespace MZXRM.PSS.Business
                     dos.Quantity = values.ContainsKey("Quantity") ? decimal.Parse(values["Quantity"]) : 0;
                     dos.LiftingStartDate = values.ContainsKey("LiftingStartDate") ? DateTime.Parse(values["LiftingStartDate"]) : DateTime.MaxValue;
                     dos.LiftingEndDate = values.ContainsKey("LiftingEndDate") ? DateTime.Parse(values["LiftingEndDate"]) : DateTime.MaxValue;
-                    dos.StoreId = StoreManager.GetStoreRef(values["StoreId"]);
+                    //dos.StoreId = StoreManager.GetStoreRef(values["StoreId"]);
                     dos.DeliveryDestination = CustomerManager.GetCustomerDestination(SO.Customer.Id, values["DeliveryDestination"]);
                     dos.DumperRate = values.ContainsKey("DumperRate") ? decimal.Parse(values["DumperRate"]) : 0;
                     dos.FreightPaymentTerms = values.ContainsKey("FreightPaymentTerms") ? decimal.Parse(values["FreightPaymentTerms"]) : 0;
@@ -993,7 +1018,7 @@ namespace MZXRM.PSS.Business
             DO.Id = 0;
             DO.Status = DOStatus.Created;
             DO.Location = DO.Lead = new Reference() { Id = Guid.Empty, Name = "" };
-            DO.StoreId =DO.CreatedBy=DO.Lead  = DO.ApprovedBy = new Reference() { Id = Guid.Empty, Name = "" };
+            DO.CreatedBy=DO.Lead  = DO.ApprovedBy = new Reference() { Id = Guid.Empty, Name = "" };
             DO.DONumber = DO.Remarks = "";
             DO.CreatedOn = DO.ModifiedOn = DO.CompletedOn = DO.ApprovedDate = DO.LiftingStartDate = DO.DODate = DO.LiftingEndDate = DateTime.Now;
             DO.CreatedOn  = DateTime.MinValue;

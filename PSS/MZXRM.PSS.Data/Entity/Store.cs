@@ -19,7 +19,7 @@ namespace MZXRM.PSS.Data
 
         public string Name;
         public string Location;
-        //public string SaleStationId;
+        public Reference SaleStationId;
         //public string SubType;
 
         public decimal Capacity;

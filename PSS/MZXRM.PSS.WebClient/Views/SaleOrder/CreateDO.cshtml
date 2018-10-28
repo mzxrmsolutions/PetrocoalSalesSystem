@@ -133,7 +133,7 @@
                     <div class="col-sm-2">
                         <div class="form-group">
                             <label>Quantity</label>
-                            <input type="text" class="form-control" name="Quantity">
+                            <input type="text" class="form-control" name="Quantity"  id="Quantity" onchange="adjustQuantity();">
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -161,7 +161,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-2">
+                    @*<div class="col-sm-2">
                         <div class="form-group">
                             <label>Stores: </label>
 
@@ -176,7 +176,7 @@
                                 }
                             </select>
                         </div>
-                    </div>
+                    </div>*@
 
 
                     <div class="col-sm-2">
@@ -272,5 +272,14 @@
                 window.location.href = url;
             });
         });
+
+        function adjustQuantity() {
+            var addedQuantity = parseInt($("#Quantity").val()); //document.getElementById("Quantity").value);
+
+            var totalavailableQunatity = parseInt(@ThisSO.Quantity.ToString());
+            if (addedQuantity > totalavailableQunatity) {
+                $("#Quantity").val(totalavailableQunatity.toString());
+            }
+        }
     </script>
 }

@@ -4,6 +4,7 @@
 @{
     Customer ThisCust = ViewBag.ThisCust;
     int Ordertype = ViewBag.OrderType;
+    //string success = ViewData["Success"].ToString();
 }
 <section class="content-header">
     <h1>
@@ -29,11 +30,43 @@
             </div>
             { ExceptionHandler.CloseException(); }
         }
+        @*@if (success != "")
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Success!</h4>
+                @success
+            </div>
+
+        }*@
         <div class="box box-default box-solid">
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="col-lg-6">
-                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+                    @if (ThisCust != null && Ordertype == 2)
+                    {
+                        <div class="col-sm-2">
+                            <span>
+                                @if (ThisCust.TotalStock != 0)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+
+                                }
+
+                            </span>
+                        </div>
+                    }
+                    @if (ThisCust != null && Ordertype != 2)
+                    {
+                        <div class="col-sm-2">
+                            <span>
+                                    <button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>
+
+                            </span>
+                        </div>
+                    }
+
+                    @*<button type="submit" class="btn btn-sm btn-primary" name="btn" value="Save"><i class="fa fa-floppy-o"></i> Save</button>*@
                     <button type="reset" class="btn btn-sm btn-default" name="btn" value="Reset"><i class="fa fa-refresh"></i> Reset</button>
                     <a class="btn btn-sm btn-default" href="/SaleOrder/CreateDO"><i class="fa fa-plus"></i> New DO</a>
                     <a class="btn btn-sm btn-default" href="/SaleOrder/CreateDC"><i class="fa fa-plus"></i> New DC</a>
@@ -114,6 +147,7 @@
                                 </select>
                             </div>
                         </div>
+
 
                         <div class="col-sm-2">
                             <div class="form-group">
@@ -216,7 +250,7 @@
                             </div>
                         </div>
                     </div>
-                    @if (Ordertype == 1 || Ordertype==3)
+                    @if (Ordertype == 1 || Ordertype == 3)
                     {
                         <div class="row">
                             <div class="col-sm-2">
@@ -257,15 +291,34 @@
                             </div>
 
                         </div>
+
+
                     }
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <label>Remarks</label>
-                            <div class="form-group">
-                                <input type="text" name="Remarks"  />
+                        <div class="row">
+
+                            <div class="col-sm-2">
+                                <label>Min Quantity Buffer (%)</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="BufferMin" value='@(Request.Form["BufferMin"]!=null?Request.Form["BufferMin"].ToString():"10")' />
+                                </div>
                             </div>
+                            <div class="col-sm-2">
+                                <label>Max Quantity Buffer (%)</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="BufferMax" value='@(Request.Form["BufferMax"]!=null?@Request.Form["BufferMax"].ToString():"10")' />
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <label>Remarks</label>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="Remarks" />
+                                </div>
+                            </div>
+
                         </div>
-                    </div>
+
+                  
+
                 </div>
                 <!-- /.box-body -->
             </form>

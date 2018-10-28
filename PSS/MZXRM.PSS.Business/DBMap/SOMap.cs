@@ -67,7 +67,7 @@ namespace MZXRM.PSS.Business.DBMap
                         DeliveryOrder DO = new DeliveryOrder();
 
                         DO.Id = (int)drDo["Id"];
-                        DO.StoreId = StoreManager.GetStoreRef(drDo["StoreId"].ToString());    //.ReadAllStore().Where(x => x.StoreManager.Id == (Guid)drDo["StoreId"]).FirstOrDefault());
+                        //DO.StoreId = StoreManager.GetStoreRef(drDo["StoreId"].ToString());    //.ReadAllStore().Where(x => x.StoreManager.Id == (Guid)drDo["StoreId"]).FirstOrDefault());
                         DO.Location = drDo["SaleStationId"] != null ? CommonDataManager.GetSaleStation(drDo["SaleStationId"].ToString()) : CommonDataManager.GetDefaultReference();
                         DO.Lead = drDo["LeadId"] != null ? UserManager.GetUserRef(drDo["LeadId"].ToString()) : UserManager.GetDefaultRef();
                         DO.Status = (DOStatus)Enum.Parse(typeof(DOStatus), drDo["status"].ToString());
@@ -185,6 +185,9 @@ namespace MZXRM.PSS.Business.DBMap
             keyValues.Add("@Status", SO.Status);
             keyValues.Add("@SONumber", SO.SONumber);
 
+            keyValues.Add("@BufferQuantityMax", SO.BufferQuantityMax);
+            keyValues.Add("@BufferQuantityMin", SO.BufferQuantityMin);
+
             keyValues.Add("@OrderType", SO.OrderType);
             keyValues.Add("@SODate", SO.SODate);
             keyValues.Add("@SOExpiryDate", SO.SOExpiry);
@@ -240,7 +243,7 @@ namespace MZXRM.PSS.Business.DBMap
             {
                 keyValues.Add("@DONumber", DO.DONumber);
             }
-            keyValues.Add("@StoreId", DO.StoreId.Id);
+            //keyValues.Add("@StoreId", DO.StoreId.Id);
 
             keyValues.Add("@SaleStationId", DO.Location.Id);
             keyValues.Add("@LeadId", DO.Lead.Id);
@@ -313,8 +316,9 @@ namespace MZXRM.PSS.Business.DBMap
                 keyValues.Add("@DCNumber", DC.DCNumber);
             }
 
+            keyValues.Add("@Store", DC.Store == null ? Guid.Empty : DC.Store.Id);
             keyValues.Add("@DCDate", DC.DCDate);
-            keyValues.Add("@Quantity", DC.NetWeight);
+            keyValues.Add("@Quantity", DC.Quantity);
             keyValues.Add("@TruckNo", DC.TruckNo);
             keyValues.Add("@BiltyNo", DC.BiltyNo);
             keyValues.Add("@SlipNo", DC.SlipNo);

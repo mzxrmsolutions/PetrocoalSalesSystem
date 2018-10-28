@@ -108,88 +108,104 @@
                     </div>
                     <div class="col-sm-2">
                         <div class="form-group">
-                            <label>Lead</label>
-                            <label class="required">*</label>
-                            <select class="form-control select2" name="Lead">
-                                <option value="0">--- Lead ---</option>
-                                @foreach (User item in UserManager.Users)
+                            <label>Store</label>
+                            @{
+                                List<Store> Stores = StoreManager.ReadStoreBySaleStation(ThisDO.Location.Id);
+                            }
+                            <select class="form-control select2" name="Store">
+                                <option value="0">--- Store ---</option>
+                                @foreach (Store store in Stores)
                                 {
-                                    <option value="@item.Id" @(item.Id == ThisDC.Lead.Id ? " selected " : "")>@item.Name</option>
+                                    <option value="@store.Id">@store.Name</option>
                                 }
                             </select>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Transporter</label>
-                            <label class="required">*</label>
-                            <select class="form-control select2" name="TransporterId">
-                                <option value="0">--- Transporter ---</option>
-                                @foreach (Item item in Common.Trader)
-                                {
-                                    <option value="@item.Index" @(item.Index == ThisDC.Transporter.Index ? " selected " : "")>@item.Value</option>
-                                }
-                            </select>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Lead</label>
+                                <label class="required">*</label>
+                                <select class="form-control select2" name="Lead">
+                                    <option value="0">--- Lead ---</option>
+                                    @foreach (User item in UserManager.Users)
+                                    {
+                                        <option value="@item.Id" @(item.Id == ThisDC.Lead.Id ? " selected " : "")>@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Transporter</label>
+                                <label class="required">*</label>
+                                <select class="form-control select2" name="TransporterId">
+                                    <option value="0">--- Transporter ---</option>
+                                    @foreach (Item item in Common.Trader)
+                                    {
+                                        <option value="@item.Index" @(item.Index == ThisDC.Transporter.Index ? " selected " : "")>@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input type="text" class="form-control" name="Quantity" value="@ThisDC.Quantity.ToString(Constants.QuantityFormat)">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Truck No</label>
+                                <input type="text" class="form-control" name="TruckNo" value="@ThisDC.TruckNo">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Bilty No</label>
+                                <input type="text" class="form-control" name="BiltyNo" value="@ThisDC.BiltyNo">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Slip No</label>
+                                <input type="text" class="form-control" name="SlipNo" value="@ThisDC.SlipNo">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Weight</label>
+                                <input type="text" class="form-control" name="Weight" value="@ThisDC.Weight">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>NetWeight</label>
+                                <input type="text" class="form-control" name="NetWeight" value="@ThisDC.NetWeight">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Driver Name</label>
+                                <input type="text" class="form-control" name="DriverName" value="@ThisDC.DriverName">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Driver Phone</label>
+                                <input type="text" class="form-control" name="DriverPhone" value="@ThisDC.DriverPhone">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="text" class="form-control" name="Quantity" value="@ThisDC.Quantity.ToString(Constants.QuantityFormat)">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Truck No</label>
-                            <input type="text" class="form-control" name="TruckNo" value="@ThisDC.TruckNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Bilty No</label>
-                            <input type="text" class="form-control" name="BiltyNo" value="@ThisDC.BiltyNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Slip No</label>
-                            <input type="text" class="form-control" name="SlipNo" value="@ThisDC.SlipNo">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Weight</label>
-                            <input type="text" class="form-control" name="Weight" value="@ThisDC.Weight">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>NetWeight</label>
-                            <input type="text" class="form-control" name="NetWeight" value="@ThisDC.NetWeight">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Driver Name</label>
-                            <input type="text" class="form-control" name="DriverName" value="@ThisDC.DriverName">
-                        </div>
-                    </div>
-                    <div class="col-sm-2">
-                        <div class="form-group">
-                            <label>Driver Phone</label>
-                            <input type="text" class="form-control" name="DriverPhone" value="@ThisDC.DriverPhone">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <input type="text" class="form-control" name="Remarks" value="@ThisDC.Remarks">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <input type="text" class="form-control" name="Remarks" value="@ThisDC.Remarks">
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- /.box-body -->
             <div class="box-footer">
             </div>

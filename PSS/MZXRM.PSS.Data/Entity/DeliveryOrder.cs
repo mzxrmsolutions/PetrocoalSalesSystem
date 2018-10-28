@@ -12,7 +12,7 @@ namespace MZXRM.PSS.Data
         public Reference Location { get; set; }
         public DOStatus Status { get; set; }
         public Item SaleOrder { get; set; }
-        public Reference StoreId { get; set; }
+        //public Reference StoreId { get; set; }
         public DateTime CreatedOn { get; set; }
         public Reference CreatedBy { get; set; }
         public DateTime ModifiedOn { get; set; }

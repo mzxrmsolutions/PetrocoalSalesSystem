@@ -52,6 +52,15 @@ namespace MZXRM.PSS.Business
             _allStores = calculatedStores;
             return calculatedStores;
         }
+
+        public static List<Store> ReadStoreBySaleStation(Guid saleStationId)
+        {
+            List<Store> myStores = new List<Store>();
+            foreach (Store store in AllStore)
+                if (store.SaleStationId.Id == saleStationId)
+                    myStores.Add(store);
+            return myStores;
+        }
         public static Store CalculateStoreQuantity(Store Store)
         {
             decimal quantity = 0;

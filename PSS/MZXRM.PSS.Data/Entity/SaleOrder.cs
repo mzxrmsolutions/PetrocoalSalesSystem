@@ -20,6 +20,8 @@ namespace MZXRM.PSS.Data
         public Reference Lead;
         public Reference ApprovedBy;
         public DateTime ApprovedDate;
+        public decimal BufferQuantityMax;
+        public decimal BufferQuantityMin;
 
         public string SONumber;
         public DateTime SODate;
@@ -65,11 +67,11 @@ namespace MZXRM.PSS.Data
     }
     public enum SOStatus
     {
-        Created,
-        PendingApproval,
-        InProcess,
-        Completed,
-        Cancelled
+        Created=1,
+        PendingApproval=2,
+        InProcess=3,
+        Completed=4,
+        Cancelled=5
     }
    public enum SOType
     {
